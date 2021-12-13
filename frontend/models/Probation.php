@@ -42,6 +42,8 @@ public $Probation_End_date;
 public $Overview_Rejection_Comments;
 public $Supervisor_Rejection_Comments;
 
+public $Hr_UserId;
+
     public function rules()
     {
         return [
@@ -125,6 +127,11 @@ public $Supervisor_Rejection_Comments;
     public function isAppraisee()
     {
         return (Yii::$app->user->identity->{'Employee No_'} == $this->Employee_No);
+    }
+
+    public function isHR()
+    {
+        return ($this->Hr_UserId == Yii::$app->user->identity->getId());
     }
 
 

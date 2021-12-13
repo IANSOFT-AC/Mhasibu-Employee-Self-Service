@@ -57,26 +57,46 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
             
             <div class="card-body info-box">
 
-                <div class="row">
-                    <?php if(($model->Goal_Setting_Status == 'New' && $model->isAppraisee()) || $model->Appraisal_Status == 'Agreement_Level'): ?>
+                <div class="row justify-content-between">
+                    
+                    <!-- Appraisee actions -->
 
-                                <div class="col-md-4">
+                    <?php 
+                       
+                        if($model->isAppraisee()) 
+                        {
+                            echo $this->render('_appraisee_actions', ['model' => $model]);
+                        }
 
-                                    <?= 
-                                    
-                                    Html::a('<i class="fas fa-forward"></i> submit',['submit','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],['class' => 'btn btn-app submitforapproval','data' => [
-                                            'confirm' => 'Are you sure you want to submit this probation appraisal to supervisor ?',
-                                            'method' => 'post',
-                                        ],
-                                        'title' => 'Submit KRAs to Line Manager.'
+                        // Supervisor actions 
 
-                                    ]) ?>
-                                </div>
+                        if($model->isSupervisor()) 
+                        {
+                            echo $this->render('_supervisor_actions', ['model' => $model]);
+                        }
 
-                    <?php endif; ?>
+                         // Overview actions
+                         
+                         if($model->isOverview()) 
+                        {
+                            echo $this->render('_overview_actions', ['model' => $model]);
+                        }
 
-                        
-                    <div class="col-md-4">
+                        // HR actions
+
+                        if($model->isHR()) 
+                        {
+                            echo $this->render('_hr_actions', ['model' => $model]);
+                        }
+
+                    ?>
+
+                     
+                    
+
+
+                    <!-- This action is universal unless otgerwise advised, hence not in a partial view -->
+                    <div class="col-md-4 mx-1">
                                 <?=  Html::a('<i class="fas fa-book-open"></i> P.A Report',['report','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],[
                                     'class' => 'btn btn-app bg-success  pull-right mx-1',
                                     'title' => 'Generate Performance Appraisal Report',
@@ -90,208 +110,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                                         'method' => 'post',]
                                 ]);
                                 ?>
-
                     </div>
-
-
-                    
-                    <?php if($model->Goal_Setting_Status == 'Supervisor_Level' && $model->isSupervisor()): ?>
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-forward"></i> To Overview',['submittooverview','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],['class' => 'btn btn-app submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to submit this appraisal to Overview Manager ?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Submit Goals for Approval'
-
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-backward"></i>Send Back',['backtoemp','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                ['
-                                class' => 'mx-1 btn btn-app bg-danger rejectgoalsettingbyoverview',
-                                'rel' => $_GET['Appraisal_No'],
-                                'rev' => $_GET['Employee_No'],
-                                'title' => 'Reject KRAs and Send them Back to Appraisee.'
-
-                            ]) ?>
-                        </div>
-
-                    <?php endif; ?>
-
-
-                     <?php if($model->Goal_Setting_Status == 'Overview_Manager' && $model->isOverview()): ?>
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-backward"></i> Line Mgr.',['backtolinemgr','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-                                    'class' => 'mx-1 btn btn-app bg-danger rejectgoals',
-                                    'rel' => $_GET['Appraisal_No'],
-                                    'rev' => $_GET['Employee_No'],
-                                    'title' => 'Submit Probation  Back to Line Manager'
-
-                            ]) ?>
-                        </div>
-                        <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-forward"></i> Approve',['approvegoals','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-
-                                'class' => 'mx-2 btn btn-app submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to approve goals ?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Approve Set Probation Goals .'
-                            ]) ?>
-
-                        </div>
-
-                    <?php endif; ?>
-
-                    <!-- Send Probation to Line Mgr -->
-
-                    <?php if($model->Appraisal_Status == 'Appraisee_Level' && $model->isAppraisee()): ?>
-
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-forward"></i> Submit ',['submitprobationtolinemgr','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-
-                                'class' => 'mx-1 btn btn-app submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to Submit Probation Appraisal to Line Manager ?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Submit Probation to Line Manager.'
-                            ]) ?>
-
-                        </div>
-
-                    <?php endif; ?>
-
-                        
-
-                    <!-- Line Mgr Actions on complete goals -->
-
-                    <?php if($model->Appraisal_Status == 'Supervisor_Level' && $model->isSupervisor()): ?>
-
-
-                         <?= Html::a('<i class="fas fa-backward"></i> To Appraisee.',['probationbacktoappraisee','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-                                    'class' => 'btn btn-app bg-danger rejectappraiseesubmition',
-                                    'rel' => $_GET['Appraisal_No'],
-                                    'rev' => $_GET['Employee_No'],
-                                    'title' => 'Submit Probation  Back to Appraisee'
-
-                            ]) ?>
-
-
-                            <!-- Send Probation to Overview -->
-
-                            <?= Html::a('<i class="fas fa-forward"></i> Submit ',['submitprobationtooverview','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-
-                                'class' => 'mx-1 btn btn-app submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to Submit Probation Appraisal to Overview Manager ?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Submit Probation to Overview Manager.'
-                            ]) ?>
-
-
-                           
-
-
-
-                    <?php endif; ?>
-
-                    <!-- Overview Manager Actions -->
-
-                    <?php if($model->Appraisal_Status == 'Overview_Manager' && $model->isOverview()): ?>
-                        
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-backward"></i> To Line Mgr.',['overviewbacktolinemgr','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-                                    'class' => 'mx-1 btn btn-app bg-danger Overviewbacktolinemgr',
-                                    'rel' => $_GET['Appraisal_No'],
-                                    'rev' => $_GET['Employee_No'],
-                                    'title' => 'Send Probation Appraisal Back to Line Manager'
-
-                            ]) ?>
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-check"></i> Approve',['approveprobationoverview','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
-                                [
-
-                                'class' => 'mx-1 btn btn-app bg-success submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to approve goals ?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Approve Probation Appraisal.'
-                            ]) ?>
-
-                        </div>
-
-                    <?php endif; ?>
-
-
-
-                   
-
-
-                    <?php if($model->Appraisal_Status == 'HR_Level' && $model->Hr_UserId == Yii::$app->user->identity->getId() ): ?>
-
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-forward"></i> Approve',['close','appraisalNo'=> $_GET['Appraisal_No'],'employeeNo' => $_GET['Employee_No']],['class' => 'btn bg-success btn-app submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to approve this probation appraisal?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Approve and Close Probation Appraisal.'
-
-                            ]) ?>
-                        </div>
-
-                        <div class="col-md-4">&nbsp;</div>
-
-                        <div class="col-md-4">
-
-                            <?= Html::a('<i class="fas fa-backward"></i> Send Back',['backtosuper','appraisalNo'=> $_GET['Appraisal_No'],'employeeNo' => $_GET['Employee_No']],['class' => 'btn btn-app bg-danger submitforapproval','data' => [
-                                'confirm' => 'Are you sure you want to send back this probation appraisal to supervisor ?',
-                                'method' => 'post',
-                            ],
-                                'title' => 'Send Probation Appraisal Back to Supervisor.'
-
-                            ]) ?>
-                        </div>
-
-
-
-                    <?php endif; ?>
-
-                    <div class="col-md-4">
-                             <?=  ($model->Appraisal_Status == 'Closed')?Html::a('<i class="fas fa-book-open"></i> P.A Report',['report','appraisalNo'=> $_GET['Appraisal_No'],'employeeNo' => $_GET['Employee_No']],[
-                                'class' => 'btn btn-app bg-success  pull-right',
-                                'title' => 'Generate Performance Appraisal Report',
-                                'target'=> '_blank',
-                                'data' => [
-                                    // 'confirm' => 'Are you sure you want to send appraisal to peer 2?',
-                                    'params'=>[
-                                        'appraisalNo'=> $_GET['Appraisal_No'],
-                                        'employeeNo' => $_GET['Employee_No'],
-                                    ],
-                                    'method' => 'post',]
-                            ]):'';
-                            ?>
-                    </div>
-                    
-
 
 
                 </div>
