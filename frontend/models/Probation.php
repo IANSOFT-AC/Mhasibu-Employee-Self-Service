@@ -106,9 +106,22 @@ public $Hr_UserId;
         return $results;
     }
 
+    // Get answers
+
+    public function getAnswers($questionLineNo)
+    {
+        $service = Yii::$app->params['ServiceName']['EmployeeAppraisalAnswers'];
+        $filter = [
+            'Question_Line_No' => $questionLineNo
+        ];
+
+        $result = Yii::$app->navhelper->getData($service, $filter);
+        return $result;
+    }
 
 
-    //get supervisor status
+
+    // Get Appraisal State
 
     public function isSupervisor()
     {

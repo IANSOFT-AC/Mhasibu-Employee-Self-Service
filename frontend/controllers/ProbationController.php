@@ -236,7 +236,7 @@ class ProbationController extends Controller
             $model = Yii::$app->navhelper->loadmodel($appraisal[0],$model);
         }
 
-        //Yii::$app->recruitment->printrr($model->getObjectives());
+        //Yii::$app->recruitment->printrr($appraisal[0]);
 
         $appraisal_status = [
             '_blank_' => '_blank_',
@@ -258,7 +258,8 @@ class ProbationController extends Controller
             'model' => $model,
             'card' => $appraisal[0],
             'appraisal_status' => $appraisal_status,
-            'action' => $action
+            'action' => $action,
+            'appraisal' => $appraisal[0], // Raw object -- using this to avoid writing getter functions in model: Just for reading data
         ]);
     }
 

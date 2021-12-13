@@ -127,8 +127,6 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
             <div class="card-header">
 
 
-
-
                 <h3 class="card-title">Appraisal : <?= $model->Appraisal_No?></h3>
 
             </div>
@@ -145,12 +143,12 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                            <?= $form->field($model, 'Appraisal_No')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Employee_No')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Employee_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-
+                           <?= $form->field($model, 'Job_Title')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Probation_Start_Date')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Probation_End_date')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
 
                            <p class="parent"><span>+</span>
-                               <?= $form->field($model, 'Job_Title')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+                               
 
                                <?= $form->field($model, 'Goal_Setting_Status')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
 
@@ -163,13 +161,16 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 
                            <?= $form->field($model, 'Appraisal_Status')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Supervisor_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+                           <?= $form->field($model, 'Overview_Manager_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+                           <?= $form->field($model, 'Over_View_Manager_Comments')->textInput(['readonly'=> true]) ?>
+                           <?= $form->field($model, 'Supervisor_Overall_Comments')->textInput(['readonly'=> true]) ?>
                            <?= $form->field($model, 'Overall_Score')->textInput(['readonly'=> true]) ?>
 
                            <p class="parent"><span>+</span>
 
                                <?= $form->field($model, 'Supervisor_User_Id')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                               
-                               <?= $form->field($model, 'Overview_Manager_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+                              
                                
                               
                               
@@ -195,6 +196,108 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 
             </div>
         </div><!--end details card-->
+
+
+        <!-- Recommended Action -->
+        <?php if($model->Appraisal_Status == 'Supervisor_Level' || $model->Appraisal_Status == 'Overview_Manager' || $model->Appraisal_Status == 'Human_Resource' || $model->Appraisal_Status == 'Closed'): ?>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Recommended Action</div>
+                </div>
+                <div class="card-body">
+                <?= ($model->Appraisal_Status == 'Supervisor_Level') ?$form->field($model, 'Probation_Recomended_Action')->dropDownList(
+                                                        [
+                                                            '_blank_' => '_blank_',
+                                                            'Confirm' => 'Confirm',
+                                                            'Extend_Probation' => 'Extend_Probation',
+                                                            'Terminate_Employee' => 'Terminate_Employee'
+                                                        ],['prompt' => 'Select ...']
+                                                    ):  $form->field($model, 'Probation_Recomended_Action')->textInput(['readonly' => true]) ?>
+
+
+                   
+                </div>
+            </div>
+
+        <?php endif; ?>
+
+
+        <!-- Employee Appraisal Questions -->
+
+
+        <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Employee Appraisal Questions</div>
+                </div>
+                <div class="card-body">
+               
+                    <?php if(property_exists($appraisal->Employee_Appraisal_Questions, 'Employee_Appraisal_Questions')): ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td>#</td>
+                                        <td><b>Question</b></td>  
+                                        <td><b>Action</b></td>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($appraisal->Employee_Appraisal_Questions->Employee_Appraisal_Questions as $q):
+                                         $answerLink = Html::a('<i class="fa fa-plus-square"></i>',['probation-answer/create','Employee_No'=>$model->Employee_No,'Appraisal_No' => $model->Appraisal_No,'Question_No' => $q->Line_No  ],['class'=>'mx-1 add btn btn-success btn-xs','title' => 'Add an Answer.']);
+                                        ?>
+
+                                        <tr class="parent">
+                                            <td><span>+</span></td>
+                                            <td><?= !empty($q->Question)?$q->Question:'Not Set' ?></td>
+                                            <td><?=($model->Goal_Setting_Status == 'New')?$answerLink:'' ?></td>
+                                        </tr>
+                                        <tr class="child">
+                                                <td colspan="3">
+                                                    <div class="table-responsive">
+                                                                    <table class="table table-hover table-borderless table-info">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <td class="text-bold">#</td>
+                                                                                <td class="text-bold">Answer</td>
+                                                                                <td class="text-bold">Actions</td>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <?php if(is_array($model->getAnswers($q->Line_No))): ?>
+
+
+                                                                                    <?php foreach($model->getAnswers($q->Line_No) as $a):
+                                                                                        $updateLink = Html::a('<i class="fa fa-edit"></i>',['probation-answer/update', 'Key'=> $a->Key],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Update Key Result Area']);
+                                                                                        $deleteLink = ($model->Goal_Setting_Status == 'New')?Html::a('<i class="fa fa-trash"></i>',['probation-answer/delete','Key'=> $a->Key ],['class'=>'mx-1 delete btn btn-danger btn-xs', 'title' => 'Delete Record']):'';
+                                                                                        ?>
+                                                                                        <tr>
+                                                                                
+                                                                                            <td><?= !empty($a->Answer)?$a->Answer:'Not Set' ?></td>
+                                                                                            <td><?= $updateLink.$deleteLink ?></td>
+                                                                                        
+                                                                                        </tr>
+                                                                                
+                                                                                    <?php endforeach; ?>
+
+                                                                            <?php else: ?>
+
+                                                                                <tr><td colspan="3" class="text-center">No answers to show.</td></tr>
+
+                                                                            <?php endif; ?>
+                                                                        </tbody>
+                                                                    </table>
+                                                    </div>
+                                                </td>
+                                        </tr>
+
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
 
 
         <!--Objectives card -->
@@ -303,7 +406,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 
         <!--objectives card -->
 
-         <!--Competencies Card--->
+        <!--Competencies Card--->
 
 
         <div class="card">
@@ -311,7 +414,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                 <div class="card-title">Employee Appraisal Competence</div>
 
                 <div class="card-tools">
-                    <?php Html::a('<i class="fa fa-plus"></i> Add Competence',['competence/create','Appraisal_Code'=> $model->Appraisal_No],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Create Record ?']); ?>
+                    <?= Html::a('<i class="fa fa-plus"></i> Add Competence',['competence/create','Appraisal_Code'=> $model->Appraisal_No],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Create Record ?']); ?>
                 </div>
             </div>
             <div class="card-body">
@@ -415,16 +518,91 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
         </div>
 
 
+        <!-- Employee Qualifications -->
+
+       <div class="card">
+           <div class="card-header">
+               <div class="card-title">Employee Qualifications</div>
+           </div>
+           <div class="card-body">
+               <div class="table-reponsive-lg">
+                   <table class="table table-bordered">
+                       <thead>
+                           <tr>
+                               <td class="text-bold">Qualification Code</td>
+                               <td class="text-bold">From Date</td>
+                               <td class="text-bold">To Date</td>
+                               <td class="text-bold">Type</td>
+                               <td class="text-bold">Description</td>
+                               <td class="text-bold">Expiration Date</td>
+                               <td class="text-bold">Institution / Company</td>
+                               <td class="text-bold">Course / Grade</td>
+                               <td class="text-bold">Certificate No.</td>
+                               <td class="text-bold">Comment</td>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <?php if(property_exists($appraisal->Employee_Qualifications, 'Employee_Qualifications')): ?>
+                                    
+
+                                    <?php foreach($appraisal->Employee_Qualifications->Employee_Qualifications as $qualification) : ?>
+
+                                        <tr>
+                                            <td><?= !empty($qualification->Qualification_Code)?$qualification->Qualification_Code:'' ?></td>
+                                            <td><?= !empty($qualification->From_Date)?$qualification->From_Date:'' ?></td>
+                                            <td><?= !empty($qualification->To_Date)?$qualification->To_Date:'' ?></td>
+                                            <td><?= !empty($qualification->Type)?$qualification->Type:'' ?></td>
+                                            <td><?= !empty($qualification->Description)?$qualification->Description:'' ?></td>
+                                            <td><?= !empty($qualification->Expiration_Date)?$qualification->Expiration_Date:'' ?></td>
+                                            <td><?= !empty($qualification->Institution_Company)?$qualification->Institution_Company:'' ?></td>
+                                            <td><?= !empty($qualification->Course_Grade)?$qualification->Course_Grade:'' ?></td>
+                                            <td><?= !empty($qualification->Certificate_no)?$qualification->Certificate_no:'' ?></td>
+                                            <td><?= !empty($qualification->Comment)?$qualification->Comment:'' ?></td>
+                                        </tr>
+
+                                    <?php endforeach; ?>
+
+
+                            <?php else: ?>
+                                <tr>
+                                    <td class="text-center">No qualifications to show.</td>
+                                </tr>
+                            <?php endif; ?>
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+       </div>                                     
 
 
 
-
-
-
-    </>
+    </div>
 </div>
 
+<!-- Modals -->
 
+<!--My Bs Modal template  --->
+
+<div class="modal fade bs-example-modal-lg bs-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel" style="position: absolute">Probation Appraisal</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 <!-- Goal setting rejection by Line -->
@@ -448,81 +626,6 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 <!-- Goal setting rejection by Line -->
 
 <!-- Goal setting rejection by overview -->
-
-                <div class="row">
-                      
-
-                        <div class="col-lg-5">
-                                    <div class="card">
-
-                                        <div class="card-header">
-                                            <div class="card-title">
-                                                Overview Rejection Comments
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <?= $form->field($model, 'Overview_Rejection_Comments')->textArea(['rows' => 2,'readonly'=> true]) ?>
-                                        </div>
-                                    </div>
-                        </div>
-
-                        <div class="col-lg-4">
-                                      <div class="card">
-                                          <div class="card-header">
-                                              <div class="card-title">
-                                                  Supervisor Rejection Manager Comments
-                                              </div>
-                                          </div>
-                                          <div class="card-body">
-                                                <?= $form->field($model, 'Supervisor_Rejection_Comments')->textArea(['rows' => 2,'readonly'=> true]) ?>
-                                          </div>
-                                      </div>
-                      </div>
-
-                      <div class="col-lg-4">
-                           <?php if($model->Appraisal_Status == 'Supervisor_Level' || $model->Appraisal_Status == 'Overview_Manager' || $model->Appraisal_Status == 'Closed'): ?>
-                                      <div class="card">
-
-                                          <div class="card-header">
-                                              <div class="card-title">
-                                                  Recommended Action
-                                              </div>
-                                          </div>
-                                          <div class="card-body">
-                                               <?= ($model->Appraisal_Status == 'Supervisor_Level') ?$form->field($model, 'Probation_Recomended_Action')->dropDownList(
-                                                  [
-                                                      '_blank_' => '_blank_',
-                                                      'Confirm' => 'Confirm',
-                                                      'Extend_Probation' => 'Extend_Probation',
-                                                      'Terminate_Employee' => 'Terminate_Employee'
-                                                  ],['prompt' => 'Select ...']
-                                                 ): '' ?>
-
-
-                                                  <?= ($model->Appraisal_Status == 'Overview_Manager' || $model->Appraisal_Status == 'Appraisee_Level' || $model->Appraisal_Status == 'Closed') ?$form->field($model, 'Probation_Recomended_Action')->textInput(['readonly' => true]): '' ?>
-                                          </div>
-                                      </div>
-
-
-                                      <div class="card">
-
-                                      <div class="card-header">
-                                              <div class="card-title">
-                                                  Line Manager Comments
-                                              </div>
-                                          </div>
-                                          <div class="card-body">
-                                               <?= ($model->Appraisal_Status == 'Supervisor_Level') ?$form->field($model, 'Supervisor_Overall_Comments')->textArea(['rows' => 2, 'maxlength'=> '140']): '' ?>
-                                                  <span class="text-success" id="confirmation-super">Comment Saved Successfully.</span>
-
-                                                  <?= ($model->Appraisal_Status !== 'Supervisor_Level') ?$form->field($model, 'Supervisor_Overall_Comments')->textArea(['rows' => 2, 'readonly' => true, 'disabled' =>  true]): '' ?>
-                                          </div>
-                          </div>
-
-                          <?php endif; ?>
-                      </div>
-            
-                </div>
 
 
 <div id="backtolinemgr" style="display: none">
@@ -596,7 +699,7 @@ $script = <<<JS
            
          var url = $(this).attr('href');
          $.get(url).done(function(msg){
-             $('#modal').modal('show')
+             $('.modal').modal('show')
                     .find('.modal-body')
                     .html(msg.note);
          },'json');
@@ -608,7 +711,7 @@ $script = <<<JS
              e.preventDefault();
             var url = $(this).attr('href');
             console.log('clicking...');
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
 
@@ -621,7 +724,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 
@@ -633,7 +736,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 
@@ -646,7 +749,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 
@@ -659,7 +762,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 
@@ -671,7 +774,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 
@@ -681,7 +784,7 @@ $script = <<<JS
       
     
     /*Handle modal dismissal event  */
-    $('#modal').on('hidden.bs.modal',function(){
+    $('.modal').on('hidden.bs.modal',function(){
         var reld = location.reload(true);
         setTimeout(reld,1000);
     }); 
@@ -714,7 +817,7 @@ $script = <<<JS
            
             
             console.log('clicking...');
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
             
@@ -727,7 +830,7 @@ $script = <<<JS
             e.preventDefault();
             var url = $(this).attr('href');
             
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
             
@@ -743,7 +846,7 @@ $script = <<<JS
             var url = $(this).attr('href');
                        
             console.log('clicking...');
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
             
@@ -757,7 +860,7 @@ $script = <<<JS
             var url = $(this).attr('href');
                        
             console.log('clicking...');
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
             
@@ -872,7 +975,7 @@ $script = <<<JS
         console.log('Employee No: '+Employee_No);
         
         //Display the rejection comment form
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .append(form);
         
@@ -887,7 +990,7 @@ $script = <<<JS
             const data = $(this).serialize();
             const url = $(this).attr('action');
             $.post(url,data).done(function(msg){
-                    $('#modal').modal('show')
+                    $('.modal').modal('show')
                     .find('.modal-body')
                     .html(msg.note);
         
@@ -913,7 +1016,7 @@ $script = <<<JS
         console.log('Employee No: '+Employee_No);
         
         //Display the rejection comment form
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .append(form);
         
@@ -928,7 +1031,7 @@ $script = <<<JS
             const data = $(this).serialize();
             const url = $(this).attr('action');
             $.post(url,data).done(function(msg){
-                    $('#modal').modal('show')
+                    $('.modal').modal('show')
                     .find('.modal-body')
                     .html(msg.note);
         
@@ -951,7 +1054,7 @@ $script = <<<JS
             console.log('Employee No: '+Employee_No);
             
             //Display the rejection comment form
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .append(form);
             
@@ -966,7 +1069,7 @@ $script = <<<JS
                 const data = $(this).serialize();
                 const url = $(this).attr('action');
                 $.post(url,data).done(function(msg){
-                        $('#modal').modal('show')
+                        $('.modal').modal('show')
                         .find('.modal-body')
                         .html(msg.note);
             
@@ -992,7 +1095,7 @@ $script = <<<JS
                 console.log('Employee No: '+Employee_No);
                 
                 //Display the rejection comment form
-                $('#modal').modal('show')
+                $('.modal').modal('show')
                                 .find('.modal-body')
                                 .append(form);
                 
@@ -1007,7 +1110,7 @@ $script = <<<JS
                     const data = $(this).serialize();
                     const url = $(this).attr('action');
                     $.post(url,data).done(function(msg){
-                            $('#modal').modal('show')
+                            $('.modal').modal('show')
                             .find('.modal-body')
                             .html(msg.note);
                 
@@ -1069,4 +1172,3 @@ $script = <<<JS
 JS;
 
 $this->registerJs($script);
-

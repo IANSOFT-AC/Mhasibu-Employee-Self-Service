@@ -250,6 +250,8 @@ return [
         'ProbationKRAs' => 'ProbationKRAs', //60001
         'ProbationKPIs' => 'ProbationKPIs', //60002
 
+        'EmployeeAppraisalAnswers' => 'EmployeeAppraisalAnswers', //60044
+
 
         /*Performance Improvement Program  - PIP*/
 

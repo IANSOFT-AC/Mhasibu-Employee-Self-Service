@@ -75,10 +75,7 @@ class AdminlteAsset extends AssetBundle
         'https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js',
         'https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js ',
         'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js',
-
-
         'Js/custom.js',
-        'Js/ShowModal.js', // Helps in Global Modal4
         'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js',
 
     ];
