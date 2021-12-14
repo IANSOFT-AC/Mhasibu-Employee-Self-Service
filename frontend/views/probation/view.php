@@ -244,7 +244,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                                 </thead>
                                 <tbody>
                                     <?php foreach($appraisal->Employee_Appraisal_Questions->Employee_Appraisal_Questions as $q):
-                                         $answerLink = Html::a('<i class="fa fa-plus-square"></i>',['probation-answer/create','Employee_No'=>$model->Employee_No,'Appraisal_No' => $model->Appraisal_No,'Question_No' => $q->Line_No  ],['class'=>'mx-1 add btn btn-success btn-xs','title' => 'Add an Answer.']);
+                                         $answerLink = Html::a('<i class="fa fa-plus-square"></i>',['probation-answer/create','Employee_No'=>$model->Employee_No,'Appraisal_No' => $model->Appraisal_No,'Question_Line_No' => $q->Line_No  ],['class'=>'mx-1 add btn btn-success btn-xs','title' => 'Add an Answer.']);
                                         ?>
 
                                         <tr class="parent">
@@ -267,12 +267,15 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                                                                             <?php if(is_array($model->getAnswers($q->Line_No))): ?>
 
 
-                                                                                    <?php foreach($model->getAnswers($q->Line_No) as $a):
+                                                                                    <?php
+                                                                                    $i = 0;
+                                                                                    foreach($model->getAnswers($q->Line_No) as $a):
+                                                                                        ++$i;
                                                                                         $updateLink = Html::a('<i class="fa fa-edit"></i>',['probation-answer/update', 'Key'=> $a->Key],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Update Key Result Area']);
                                                                                         $deleteLink = ($model->Goal_Setting_Status == 'New')?Html::a('<i class="fa fa-trash"></i>',['probation-answer/delete','Key'=> $a->Key ],['class'=>'mx-1 delete btn btn-danger btn-xs', 'title' => 'Delete Record']):'';
                                                                                         ?>
                                                                                         <tr>
-                                                                                
+                                                                                            <td><?= $i ?></td>
                                                                                             <td><?= !empty($a->Answer)?$a->Answer:'Not Set' ?></td>
                                                                                             <td><?= $updateLink.$deleteLink ?></td>
                                                                                         
@@ -368,7 +371,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 
                                                     foreach($model->getKpi($obj->Line_No) as $kpi):
 
-                             $updateLink = Html::a('<i class="fa fa-edit"></i>',['probation-kpi/update','Line_No'=> $kpi->Line_No,'Employee_No'=>$model->Employee_No,'Appraisal_No' => $model->Appraisal_No,'KRA_Line_No' => $obj->Line_No],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Update Key Result Area']);
+                             $updateLink = Html::a('<i class="fa fa-edit"></i>',['probation-kpi/update','Key'=> $kpi->Key],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Update Key Result Area']);
                              $deleteLink = ($model->Goal_Setting_Status == 'New')?Html::a('<i class="fa fa-trash"></i>',['probation-kpi/delete','Key'=> $kpi->Key ],['class'=>'mx-1 delete btn btn-danger btn-xs', 'title' => 'Delete Key Performance Indicator/ Objective']):'';
 
 
@@ -444,7 +447,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                                 <td><?= !empty($competency->Maximum_Weigth)?$competency->Maximum_Weigth:'' ?></td>
                                 <td><?= !empty($competency->Overal_Rating)?$competency->Overal_Rating:'' ?></td>
                                 <td><?= !empty($competency->Total_Weigth)?$competency->Total_Weigth:'' ?></td>
-                                <td><?= $updateLink ?></td>
+                                <td><?= $updateLink.$deleteLink ?></td>
                             </tr>
                              <tr class="child">
                             <!-- Start Child -->
@@ -720,7 +723,7 @@ $script = <<<JS
         
       //Add a training plan
     
-     $('.add-objective, .update-objective').on('click',function(e){
+     $('.add-objective, .update-objective, .add').on('click',function(e){
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
@@ -732,15 +735,7 @@ $script = <<<JS
      
      
     
-     $('.add').on('click',function(e){
-        e.preventDefault();
-        var url = $(this).attr('href');
-        console.log('clicking...');
-        $('.modal').modal('show')
-                        .find('.modal-body')
-                        .load(url); 
-
-     });
+    
      
      
      //Update/ Evalute Employeeappraisal behaviour -- evalbehaviour

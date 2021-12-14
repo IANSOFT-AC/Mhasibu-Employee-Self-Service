@@ -41,7 +41,7 @@ class Navision extends Component
         try {
             $result = $client->ReadMultiple(['filter' => $filter, 'setSize' => 1000]);
             return $result;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
@@ -52,7 +52,7 @@ class Navision extends Component
         try {
             $result = $client->Read([$filter => $filterValue]);
             return $result;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
@@ -67,7 +67,7 @@ class Navision extends Component
         try {
             $result = $client->Read([$filter => $filterValue]);
             return $result;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
@@ -951,19 +951,7 @@ class Navision extends Component
     }
 
 
-    /*Imprest*/
-
-    public function CongriImprest($credentials, $soapWsdl, $Entry,$method)
-    {
-        $client = $this->createClient($credentials, $soapWsdl);
-        try {
-            $result = $client->$method($Entry);
-            return $result;
-        } catch (\SoapFault $e) {
-            return $e->getMessage();
-        }
-
-    }
+    
 
     /*Portal Reports*/
 
@@ -1007,6 +995,40 @@ class Navision extends Component
         }
 
     }
+
+
+     // Get Record Id from Key
+
+     public function getRecordID($credentials, $soapWsdl,$Key)
+     {
+         $client = $this->createClient($credentials, $soapWsdl);
+         try {
+             $result = $client->GetRecIdFromKey(['Key' => $Key]);
+             return $result;
+         } catch (\Exception $e) {
+             return $e->getMessage();
+         }
+     }
+ 
+ 
+     // ReaD By RecordId
+ 
+ 
+      public function readByRecID($credentials, $soapWsdl,$Key)
+     {
+ 
+         $RecordId = $this->getRecordID($credentials, $soapWsdl, $Key);
+ 
+         //Yii::$app->recruitment->printrr($RecordId);
+ 
+         $client = $this->createClient($credentials, $soapWsdl);
+         try {
+             $result = $client->ReadByRecId(['recId' => $RecordId->GetRecIdFromKey_Result]);
+             return $result;
+         } catch (\Exception $e) {
+             return $e->getMessage();
+         }
+     }
 
 
 

@@ -4,10 +4,10 @@ use yii;
 use yii\base\Component;
 use common\models\Services;
 use yii\web\Response;
-//http://app-svr.rbss.com:7047/BC130/WS/RBA UAT/Page/Recruitment_Needs
+
 
 /*
- * Written By francnjamb@gmail.com
+ * Written By francnjamb - on Twitter
  * Lots of love too....
  * */
 class Navhelper extends Component{
@@ -61,7 +61,7 @@ class Navhelper extends Component{
 
      /*Read a single entry*/
 
-     public function findOne($service,$credentials = [],$filterKey, $filterValue){
+    public function findOne($service,$credentials = [],$filterKey, $filterValue){
      
 
         $url  =  new Services($service);
@@ -85,6 +85,38 @@ class Navhelper extends Component{
             return false;
         }
 
+    }
+
+
+    /*Read a single Record By Key*/
+
+
+    public function readByKey($service,$Key){
+
+        $url  =  new Services($service);
+        $wsdl = $url->getUrl();
+        $username = (!Yii::$app->user->isGuest)? Yii::$app->user->identity->{'User ID'} : Yii::$app->params['ldPrefix'].'\\'.Yii::$app->params['NavisionUsername'];
+        $password = Yii::$app->session->has('IdentityPassword')? Yii::$app->session->get('IdentityPassword'):Yii::$app->params['NavisionPassword'];
+
+        $creds = (object)[];
+        $creds->UserName = $username;
+        $creds->PassWord = $password;
+
+        if(!Yii::$app->navision->isUp($wsdl,$creds)) {
+
+            return ['error' => 'Service unavailable.'];
+
+        }
+
+
+        $res = (array)$result = Yii::$app->navision->readByRecID($creds, $wsdl, $Key);
+
+        if(count($res)){
+            return $res[$service];
+        }else{
+            return false;
+        }
+        
     }
 
 

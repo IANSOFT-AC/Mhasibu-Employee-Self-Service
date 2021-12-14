@@ -74,24 +74,19 @@ class ProbationKpiController extends Controller
         $model->Appraisal_No = $Appraisal_No;
         $model->Employee_No = $Employee_No;
         $model->KRA_Line_No = $KRA_Line_No;
+        $model->Line_No = time();
 
         if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Probationkpi'],$model)  && $model->validate() ){
-            Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-
-            $filter = [
-                'Line_No' => $model->Line_No
-            ];
-            $request = Yii::$app->navhelper->getData($service, $filter);
-            if(is_array($request)){
-                $model->Key = $request[0]->Key;
-            }
-    
+            
             $result = Yii::$app->navhelper->updateData($service,$model);
-
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             if(is_object($result)){
+
                 return ['note' => '<div class="alert alert-success">Record Added Successfully. </div>'];
+
             }else{
-                return ['note' => '<div class="alert alert-danger">'.$result.' </div>'];
+
+                return ['note' => '<div class="alert alert-danger">Error : '.$result.'</div>' ];
 
             }
 
@@ -151,52 +146,47 @@ class ProbationKpiController extends Controller
         $model->Employee_No =  Yii::$app->user->identity->employee[0]->No;
         $model->KRA_Line_No = Yii::$app->request->post('KRA_NO');
         $model->Appraisal_No = Yii::$app->request->post('AppraisalNo');
+        $Key = Yii::$app->request->post('Key');
 
-        $request = Yii::$app->navhelper->postData($service, $model);
+        if(empty($Key)){
+            $request = Yii::$app->navhelper->postData($service, $model);
+        }else{
+            $model->Key = $Key;
+            $request = Yii::$app->navhelper->updateData($service, $model);
+        }
+       
         Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
         return $request; 
 
     }
 
 
-    public function actionUpdate(){
+    public function actionUpdate($Key){
         $model = new Probationkpi() ;
         $model->isNewRecord = false;
         $service = Yii::$app->params['ServiceName']['ProbationKPIs'];
-        $filter = [
-            'KRA_Line_No' => Yii::$app->request->get('KRA_Line_No'),
-            'Employee_No' => Yii::$app->request->get('Employee_No'),
-            'Appraisal_No' => Yii::$app->request->get('Appraisal_No'),
-            'Line_No' => Yii::$app->request->get('Line_No'),
-        ];
-        $result = Yii::$app->navhelper->getData($service,$filter);
+        
+        $result = Yii::$app->navhelper->readByKey($service,$Key);
 
        
 
-        if(is_array($result)){
+        if(is_object($result)){
             //load nav result to model
-            $model = Yii::$app->navhelper->loadmodel($result[0],$model) ;
+            $model = Yii::$app->navhelper->loadmodel($result,$model) ;
 
         }else{
-            Yii::$app->recruitment->printrr($result);
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['note' => '<div class="alert alert-danger">Error Updating KPI: '.$result.'</div>'];
         }
 
 
         if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Probationkpi'],$model) && $model->validate() ){
             
-            // Yii::$app->recruitment->printrr(Yii::$app->request->post());
+            
+                $request = Yii::$app->navhelper->readByKey($service, $model->Key);
+                Yii::$app->navhelper->loadmodel($request,$model) ;
 
-            if(Yii::$app->request->isAjax){
-
-                $filter = [
-                    'Line_No' => $model->Line_No
-                ];
-                $request = Yii::$app->navhelper->getData($service, $filter);
-                if(is_array($request)){
-                    $model->Key = $request[0]->Key;
-                }
-
-                // $model->Appraiser_Rating = (int)Yii::$app->request->post()['Probationkpi']['Appraiser_Rating'];
+                
                 $result = Yii::$app->navhelper->updateData($service,$model);
     
               
@@ -208,7 +198,7 @@ class ProbationKpiController extends Controller
     
                     return ['note' => '<div class="alert alert-danger">Error Updating KPI: '.$result.'</div>'];
                 }
-            }
+            
 
 
         }
