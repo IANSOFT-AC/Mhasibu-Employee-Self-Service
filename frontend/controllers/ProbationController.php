@@ -61,7 +61,8 @@ class ProbationController extends Controller
                     'overviewprobationlist',
                     'getagreementlist',
                     'closedappraisallist',
-                    'get-linemanagerobjlist'
+                    'get-linemanagerobjlist',
+                    'list-hr'
 
                 ],
                 'formatParam' => '_format',
@@ -115,17 +116,16 @@ class ProbationController extends Controller
     }
 
     public function actionAgreementlist(){
-
-
         return $this->render('agreementlist');
+    }
 
+    public function actionHrList()
+    {
+        return $this->render('hrlist');
     }
 
     public function actionClosedlist(){
-
-
         return $this->render('closedlist');
-
     }
 
 
@@ -337,17 +337,49 @@ class ProbationController extends Controller
         }
     }
 
-    /*Data access functions */
+    // Get HR Probations List
 
-    public function actionLeavebalances(){
+     // Employee List
 
-        $balances = $this->Getleavebalance();
+     public function actionListHr(){
+        $service = Yii::$app->params['ServiceName']['ProbationHRList'];
+        $filter = [
+            //'Hr_UserId' => Yii::$app->user->identity->{'User ID'},
+        ];
 
-        return $this->render('leavebalances',['balances' => $balances]);
+        //Yii::$app->recruitment->printrr($filter);
+        $appraisals = \Yii::$app->navhelper->getData($service,$filter);
+        //ksort($appraisals);
+        $result = [];
 
+        if(is_array($appraisals)){
+            foreach($appraisals as $req){
+
+                $Viewlink = Html::a('View', ['view','Employee_No' => $req->Employee_No, 'Appraisal_No' => !empty($req->Appraisal_No)?$req->Appraisal_No: ''], ['class' => 'btn btn-outline-primary btn-xs']);
+
+                $result['data'][] = [
+                    'Appraisal_No' => !empty($req->Appraisal_No) ? $req->Appraisal_No : 'Not Set',
+                    'Employee_No' => !empty($req->Employee_No) ? $req->Employee_No : '',
+                    'Employee_Name' => !empty($req->Employee_Name) ? $req->Employee_Name : 'Not Set',
+                    'Level_Grade' => !empty($req->Level_Grade) ? $req->Level_Grade : 'Not Set',
+                    'Job_Title' => !empty($req->Job_Title) ? $req->Job_Title : '',
+                    'Appraisal_Start_Date' =>  !empty($req->Appraisal_Start_Date) ?$req->Appraisal_Start_Date : '',
+                    'Appraisal_End_Date' =>  !empty($req->Appraisal_End_Date) ?$req->Appraisal_End_Date : '',
+                    'Hr_UserId' =>  !empty($req->Hr_UserId) ?$req->Hr_UserId : '',
+                    
+                    'Action' => !empty($Viewlink) ? $Viewlink : '',
+
+                ];
+
+            }
+        }
+
+        return $result;
     }
 
-    // Employee List
+   
+
+    // Probations List
 
     public function actionGetprobations(){
         $service = Yii::$app->params['ServiceName']['ObjectiveSettingList'];
@@ -744,11 +776,11 @@ class ProbationController extends Controller
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Probation Appraisal Send to Agreement Successfully.', true);
-            return $this->redirect(['view','Appraisal_No' => $appraisalNo,'Employee_No' => $employeeNo]);
+            return $this->redirect(['probation/superproblist']);
         }else{
 
             Yii::$app->session->setFlash('error', 'Error Sending to Agreement : '. $result);
-            return $this->redirect(['view','Appraisal_No' => $appraisalNo,'Employee_No' => $employeeNo]);
+            return $this->redirect(['probation/superproblist']);
 
         }
 
@@ -977,6 +1009,31 @@ class ProbationController extends Controller
 
     }
 
+// submit Appraisalto HR
+
+public function actionToHr($appraisalNo,$employeeNo)
+    {
+        $service = Yii::$app->params['ServiceName']['AppraisalWorkflow'];
+        $data = [
+            'appraisalNo' => $appraisalNo,
+            'employeeNo' => $employeeNo,
+            'sendEmail' => 1,
+            'approvalURL' => Yii::$app->urlManager->createAbsoluteUrl(['probation/view', 'Appraisal_No' =>$appraisalNo, 'Employee_No' =>$employeeNo ])
+        ];
+
+        $result = Yii::$app->navhelper->CodeUnit($service,$data,'IanSendEYAppraisalToHumanResources');
+
+        if(!is_string($result)){
+            Yii::$app->session->setFlash('success', 'Probation Appraisal Submitted Successfully to HR.', true);
+            return $this->redirect(['superproblist']);
+        }else{
+
+            Yii::$app->session->setFlash('error', 'Error Submitting Probation Appraisal : '. $result);
+            return $this->redirect(['superproblist']);
+
+        }
+
+    }
 
 // Submit Appraisal to Overview
     public function actionSubmitprobationtooverview($appraisalNo,$employeeNo)
@@ -1153,5 +1210,17 @@ class ProbationController extends Controller
         ]);
 
     }
+
+    
+         /** Updates a single field */
+         public function actionSetfield($field){
+            $service = 'ProbationCard';
+            $value = Yii::$app->request->post('fieldValue');
+           
+            $result = Yii::$app->navhelper->Commit($service,[$field => $value],Yii::$app->request->post('Key'));
+            Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+            return $result;
+              
+        }
 
 }

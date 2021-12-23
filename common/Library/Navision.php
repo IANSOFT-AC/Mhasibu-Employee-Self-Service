@@ -1089,17 +1089,22 @@ class Navision extends Component
                 "features" => SOAP_SINGLE_ELEMENT_ARRAYS,
                 "stream_context" => $context);
 
-            /*
+            
 
-            UNCOMMENT THIS FOR NAV PWD AUTH */
-        //    $client = new \SoapClient($soapWsdl, $options);
+          
+            // Using NTLM - AD AUTH
+            if(Yii::$app->params['SystemConfigs']['UsingNTLM'] == 'Yes')
+            {
+                stream_wrapper_unregister('http');
+                // we register the new HTTP wrapper //'\\common\\components\\NTLMStream'
+                stream_wrapper_register('http', '\\common\\library\\NTLMStream') or die("Failed to register protocol");
+                $client = new NTLMSoapClient($soapWsdl, $options);
+            }
+            else{ // Using Basic Auth
+                $client = new \SoapClient($soapWsdl, $options);
+            }
 
-          stream_wrapper_unregister('http');
-            // we register the new HTTP wrapper //'\\common\\components\\NTLMStream'
-            stream_wrapper_register('http', '\\common\\library\\NTLMStream') or die("Failed to register protocol");
-
-
-            $client = new NTLMSoapClient($soapWsdl, $options);
+            
             
 
             return $client;

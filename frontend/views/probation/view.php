@@ -162,21 +162,33 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                            <?= $form->field($model, 'Appraisal_Status')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Supervisor_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                            <?= $form->field($model, 'Overview_Manager_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-                           <?= $form->field($model, 'Over_View_Manager_Comments')->textInput(['readonly'=> true]) ?>
-                           <?= $form->field($model, 'Supervisor_Overall_Comments')->textInput(['readonly'=> true]) ?>
+                           <?= ($model->Appraisal_Status == 'Overview_Manager' && $model->isOverview())?
+                                $form->field($model, 'Over_View_Manager_Comments')->textarea(['row'=> 2]):
+                                $form->field($model, 'Over_View_Manager_Comments')->textInput(['readonly'=> true])
+                            ?>
+                            
+                           <?= ($model->Appraisal_Status == 'Agreement_Level' && $model->isSupervisor())?
+                            $form->field($model, 'Supervisor_Overall_Comments')->textarea(['rows'=> 2]) 
+                           :
+                           $form->field($model, 'Supervisor_Overall_Comments')->textInput(['readonly'=> true]) ?>
+
+
+                           <?= ($model->Appraisal_Status == 'Human_Resource' && $model->isHR())?
+                            $form->field($model, 'Hr_Overall_Comments')->textarea(['rows'=> 2]) 
+                           :
+                           $form->field($model, 'Hr_Overall_Comments')->textInput(['readonly'=> true]) ?>
+
+
+
                            <?= $form->field($model, 'Overall_Score')->textInput(['readonly'=> true]) ?>
+                           
 
                            <p class="parent"><span>+</span>
 
                                <?= $form->field($model, 'Supervisor_User_Id')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-                              
-                              
-                               
-                              
-                              
-
-
-                                <input type="hidden" id="Key" value="<?= $model->Key ?>">
+                               <?= $form->field($model, 'Hr_UserId')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+                               <?= $form->field($model, 'Key')->textInput(['readonly'=> true]) ?>
+                              <input type="hidden" id="Key" value="<?= $model->Key ?>">
                                 
                            </p>
 
@@ -199,13 +211,13 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 
 
         <!-- Recommended Action -->
-        <?php if($model->Appraisal_Status == 'Supervisor_Level' || $model->Appraisal_Status == 'Overview_Manager' || $model->Appraisal_Status == 'Human_Resource' || $model->Appraisal_Status == 'Closed'): ?>
+        <?php if($model->Appraisal_Status == 'Agreement_Level' || $model->Appraisal_Status == 'Supervisor_Level' || $model->Appraisal_Status == 'Overview_Manager' || $model->Appraisal_Status == 'Human_Resource' || $model->Appraisal_Status == 'Closed'): ?>
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Recommended Action</div>
                 </div>
                 <div class="card-body">
-                <?= ($model->Appraisal_Status == 'Supervisor_Level') ?$form->field($model, 'Probation_Recomended_Action')->dropDownList(
+                <?= ($model->Appraisal_Status == 'Agreement_Level' && $model->isSupervisor()) ?$form->field($model, 'Probation_Recomended_Action')->dropDownList(
                                                         [
                                                             '_blank_' => '_blank_',
                                                             'Confirm' => 'Confirm',
@@ -222,9 +234,31 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
         <?php endif; ?>
 
 
+        <!-- Appraisee ASgreement Actions -->
+
+        <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Appraisee Agreement Actions</div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                             <?= $form->field($model, 'Agree_With_Sup_Rating')->dropDownList([
+                                                            'Yes' => 'Yes',
+                                                            'No' => 'No'
+                                                        ],['prompt' => 'Select ...']) ?>
+                        </div>
+
+                        <?php if($model->Agree_With_Sup_Rating == 'No'): ?>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'Disagreement_Reason')->textarea(['rows' => 2]) ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+        </div>
+
         <!-- Employee Appraisal Questions -->
-
-
         <div class="card">
                 <div class="card-header">
                     <div class="card-title">Employee Appraisal Questions</div>
@@ -250,7 +284,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                                         <tr class="parent">
                                             <td><span>+</span></td>
                                             <td><?= !empty($q->Question)?$q->Question:'Not Set' ?></td>
-                                            <td><?=($model->Goal_Setting_Status == 'New')?$answerLink:'' ?></td>
+                                            <td><?=($model->Goal_Setting_Status == 'Closed' && $model->Appraisal_Status == 'Appraisee_Level')?$answerLink:'' ?></td>
                                         </tr>
                                         <tr class="child">
                                                 <td colspan="3">
@@ -409,116 +443,10 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 
         <!--objectives card -->
 
-        <!--Competencies Card--->
+        
 
 
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Employee Appraisal Competence</div>
-
-                <div class="card-tools">
-                    <?= Html::a('<i class="fa fa-plus"></i> Add Competence',['competence/create','Appraisal_Code'=> $model->Appraisal_No],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Create Record ?']); ?>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <?php if(is_array($model->Competencies)): ?>
-                    <table class="table table-bordered">
-                        <thead>
-                            <td colspan="2" ><b>Category</b></td>
-                            <td ><b>Maximum Weight</b></td>
-                            <td ><b>Overall Rating</b></td>
-                            <td ><b>Total Weight</b></td>
-                            <td></td>
-                        </thead>
-                        <tbody>
-                            <?php foreach($model->Competencies as $competency):
-
-
-                                 $updateLink = Html::a('<i class="fa fa-edit"></i>',['competence/update','Line_No'=> $competency->Line_No],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Update Record ?']);
-                             $deleteLink = Html::a('<i class="fa fa-trash"></i>',['competence/delete','Key'=> $competency->Key ],['class'=>'mx-1 delete btn btn-danger btn-xs', 'title' => 'Delete Record']);
-
-                             $addBehaviour =  Html::a('<i class="fa fa-plus"></i>',['employeeappraisalbehaviour/create','Appraisal_No'=> $model->Appraisal_No,'Employee_No' => Yii::$app->user->identity->{'Employee No_'},'Category_Line_No' => $competency->Line_No],['class' => 'mx-1 update-objective btn btn-xs btn-outline-info', 'title' => 'Add Competence Behaviour ?']); 
-
-                             ?>
-                            <tr class="parent">
-                                 <td><span>+</span></td>
-                                <td><?= !empty($competency->Category)?$competency->Category:'' ?></td>
-                                <td><?= !empty($competency->Maximum_Weigth)?$competency->Maximum_Weigth:'' ?></td>
-                                <td><?= !empty($competency->Overal_Rating)?$competency->Overal_Rating:'' ?></td>
-                                <td><?= !empty($competency->Total_Weigth)?$competency->Total_Weigth:'' ?></td>
-                                <td><?= $updateLink.$deleteLink ?></td>
-                            </tr>
-                             <tr class="child">
-                            <!-- Start Child -->
-
-                                <td colspan="6">
-                                    <table class="table table-hover table-borderless table-info">
-                                            <thead>
-                                            <tr>
-                                                <th colspan="7" style="text-align: center;">Employee Appraisal Behaviours</th>
-                                            </tr>
-                                            <tr>
-                                                
-                                                <td><b>Behaviour Name</b></td>
-                                               <!--  <td><b>Applicable</b></td> -->
-                                                <!-- <td width="7%"><b>Current Proficiency level</b></td>
-                                                <td width="7%"><b>Expected Proficiency Level</b></td> -->
-                                                <!--<td width="7%">Behaviour Description</td>-->
-                                                <td><b>Self Rating</b></td>
-                                                <td><b>Appraisee Remark</b></td>
-                                                <td width="4%"><b>Appraiser Rating</b></td>
-                                               <!--  <td width="4%"><b>Peer 1</b></td>
-                                                <td width="10%"><b>Peer 1 Remark</b></td>
-                                                <td width="4%"><b>Peer 2</b></td>-->
-                                                <td><b>Weight</b></td>
-                                                <!-- <td><b>Agreed Rating</b></td> -->
-                                                <td><b>Appraiser Remarks</b></td>
-                                                <td><b>Action</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php if(is_array($model->getBehaviours($competency->Line_No, $model->Appraisal_No))){
-
-                                                foreach($model->getBehaviours($competency->Line_No, $model->Appraisal_No) as $be):  ?>
-                                                    <tr>
-                                                        
-                                                        <td><?= isset($be->Behaviour_Name)?$be->Behaviour_Name:'Not Set' ?></td>
-                                                       <!--  <td><?= Html::checkbox('Applicable',$be->Applicable,['disabled' => true]) ?></td> -->
-                                                       <!--  <td><?= !empty($be->Current_Proficiency_Level)?$be->Current_Proficiency_Level:'' ?></td>
-                                                        <td><?= !empty($be->Expected_Proficiency_Level)?$be->Expected_Proficiency_Level:'' ?></td> -->
-                                                        <td><?= !empty($be->Self_Rating)?$be->Self_Rating:'' ?></td>
-                                                        <td><?= !empty($be->Appraisee_Remark)?$be->Appraisee_Remark:'' ?></td>
-                                                        <td><?= !empty($be->Appraiser_Rating)?$be->Appraiser_Rating:'' ?></td>
-                                                       <!--  <td><?= !empty($be->Peer_1)?$be->Peer_1:'' ?></td>
-                                                        <td><?= !empty($be->Peer_1_Remark)?$be->Peer_1_Remark:'' ?></td>
-                                                        <td><?= !empty($be->Peer_2)?$be->Peer_2:'' ?></td>-->
-                                                        <td><?= !empty($be->Weight)?$be->Weight:'' ?></td>
-                                                       <!--  <td><?= !empty($be->Agreed_Rating)?$be->Agreed_Rating:'' ?></td> -->
-                                                        <td><?= !empty($be->Overall_Remarks)?$be->Overall_Remarks:'' ?></td>
-                                                        <td><?= (
-                                                            $model->Goal_Setting_Status == 'New' ||
-                                                            $model->Appraisal_Status == 'Appraisee_Level' ||
-                                                            $model->Appraisal_Status == 'Supervisor_Level'
-                                                             )?Html::a('<i title="Evaluate Behaviour" class="fa fa-edit"></i>',['employeeappraisalbehaviour/update','Employee_No'=>$be->Employee_No,'Line_No'=> $be->Line_No,'Appraisal_No' => $be->Appraisal_Code ],['class' => ' evalbehaviour btn btn-info btn-xs']):'' ?></td>
-                                                    </tr>
-                                                    <?php
-                                                endforeach;
-                                            }
-                                            ?>
-                                            </tbody>
-                                        </table>
-                                </td>
-
-                            <!-- End Child -->
-                             </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php endif; ?>
-                </div>
-            </div>
-        </div>
+        
 
 
         <!-- Employee Qualifications -->
@@ -575,10 +503,67 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                    </table>
                </div>
            </div>
-       </div>                                     
+       </div> 
+       
+       <!-- Employee Resolution -->
 
 
 
+       <div class="card">
+           <div class="card-header">
+               <div class="card-title">Employee Appraisal Resolution</div>
+               <div class="card-tools">
+                    <?= (Yii::$app->session->get('Goal_Setting_Status') == 'Closed' && Yii::$app->session->get('Appraisal_Status') == 'Agreement_Level' && $model->isAppraisee())?Html::a('<i class="fa fa-plus-square"></i> Add Resolution',['resolution/create','Employee_No'=>$model->Employee_No,'Appraisal_No' => $model->Appraisal_No],['class' => 'create-resolution btn btn-sm btn-outline-info']):'' ?>
+                </div>
+           </div>
+           <div class="card-body">
+               <div class="table-reponsive-lg">
+                   <table class="table table-bordered">
+                       <thead>
+                           <tr>
+                               
+                               <td class="text-bold">Resolution</td>
+                               <?php if(Yii::$app->session->get('Goal_Setting_Status') == 'Closed' && Yii::$app->session->get('Appraisal_Status') == 'Agreement_Level' && $model->isAppraisee()): ?>
+                               <td>Action</td>
+                               <?php endif; ?>
+                               
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <?php if(property_exists($appraisal->Employee_appraisal_Resolutions, 'Employee_appraisal_Resolutions')): ?>
+                                    
+
+                                    <?php foreach($appraisal->Employee_appraisal_Resolutions->Employee_appraisal_Resolutions as $res) :
+
+                                        $updateLink = ''; //Html::a('<i class="fa fa-edit"></i>',['resolution/update','Key'=> $res->Key],['class' => 'mx-1 update-resolution btn btn-xs btn-outline-info', 'title' => 'Update Record']);
+                                        $deleteLink = (Yii::$app->session->get('Goal_Setting_Status') == 'Closed' && Yii::$app->session->get('Appraisal_Status') == 'Agreement_Level' && $model->isAppraisee())?
+                                        Html::a('<i class="fa fa-trash"></i>',['resolution/delete','Key'=> $res->Key ],['class'=>'mx-1 delete btn btn-danger btn-xs', 'title' => 'Delete Record.']): '';
+                                        
+                                        ?>
+
+                                        <tr>
+                                            <td><?= !empty($res->Resolution)?$res->Resolution:'' ?></td> 
+                                            <?php if(Yii::$app->session->get('Goal_Setting_Status') == 'Closed' && Yii::$app->session->get('Appraisal_Status') == 'Agreement_Level' && $model->isAppraisee()): ?>
+                                            <td><?= $updateLink.$deleteLink ?></td>  
+                                            <?php endif; ?>                                         
+                                        </tr>
+
+                                    <?php endforeach; ?>
+
+
+                            <?php else: ?>
+                                <tr>
+                                    <td class="text-center">No Resolution to show.</td>
+                                </tr>
+                            <?php endif; ?>
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+       </div>
+
+
+       <!-- End Employee Resolution -->
     </div>
 </div>
 
@@ -684,6 +669,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
 </div>
 
 <input type="hidden" name="url" value="<?= $absoluteUrl ?>">
+<input type="hidden" name="absolute" value="<?= $absoluteUrl ?>">
 <?php
 
 $script = <<<JS
@@ -753,7 +739,7 @@ $script = <<<JS
       /*Add learning assessment competence-----> add-learning-assessment */
       
       
-      $('.add-learning-assessment').on('click',function(e){
+      $('.create-resolution, .update-resolution').on('click',function(e){
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
@@ -1119,43 +1105,49 @@ $script = <<<JS
             /*Commit Line Manager Comment*/
      
      $('#confirmation-super').hide();
-     $('#probation-supervisor_overall_comments').change(function(e){
 
-        const Comments = e.target.value;
-        const Appraisal_No = $('#probation-appraisal_no').val();
+     $('#probation-over_view_manager_comments').change((e) => {
+            console.log('Changed triggered......');
+            globalFieldUpdate('probation',false,'Over_View_Manager_Comments', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500);
+    });
 
-       
-        if(Appraisal_No.length){
+     $('#probation-supervisor_overall_comments').change((e) => {
+            console.log('Changed triggered......');
+            globalFieldUpdate('probation',false,'Supervisor_Overall_Comments', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500);
+    });
+    
 
-      
-            const url = $('input[name=url]').val()+'shortterm/setfield?field=Supervisor_Overall_Comments';
-            $.post(url,{'Supervisor_Overall_Comments': Comments,'Appraisal_No': Appraisal_No}).done(function(msg){
-                   //populate empty form fields with new data
-                   
-                  
-                   $('#probation-key').val(msg.Key);
-                  
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-probation-supervisor_overall_comments');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                      
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-probation-supervisor_overall_comments');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = ''; 
-                        $('#confirmation-super').show();
-                        
-                        
-                    }
-                    
-                },'json');
-            
-        }     
-     });
+     $('#probation-agree_with_sup_rating').change((e) => {
+            console.log('Changed triggered......');
+            globalFieldUpdate('probation',false,'Agree_With_Sup_Rating', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500);
+    });
 
+    $('#probation-disagreement_reason').change((e) => {
+            console.log('Changed triggered......');
+            globalFieldUpdate('probation',false,'Disagreement_Reason', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500);
+    });
+
+    // Commit HR Module
+
+    $('#probation-hr_overall_comments').change((e) => {
+            console.log('HR OVERALL COMMENT triggered......');
+            globalFieldUpdate('probation',false,'Hr_Overall_Comments', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500);
+    });
 
 
         

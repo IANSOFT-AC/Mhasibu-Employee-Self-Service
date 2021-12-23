@@ -164,12 +164,10 @@ class ProbationKpiController extends Controller
     public function actionUpdate($Key){
         $model = new Probationkpi() ;
         $model->isNewRecord = false;
-        $service = Yii::$app->params['ServiceName']['ProbationKPIs'];
-        
+        $service = Yii::$app->params['ServiceName']['ProbationKPIs'];   
         $result = Yii::$app->navhelper->readByKey($service,$Key);
 
        
-
         if(is_object($result)){
             //load nav result to model
             $model = Yii::$app->navhelper->loadmodel($result,$model) ;
@@ -236,38 +234,8 @@ class ProbationKpiController extends Controller
     }
 
     public function actionView($ApplicationNo){
-        $service = Yii::$app->params['ServiceName']['leaveApplicationCard'];
-        $leaveTypes = $this->getLeaveTypes();
-        $employees = $this->getEmployees();
-
-        $filter = [
-            'Application_No' => $ApplicationNo
-        ];
-
-        $leave = Yii::$app->navhelper->getData($service, $filter);
-
-        //load nav result to model
-        $leaveModel = new Leave();
-        $model = $this->loadtomodel($leave[0],$leaveModel);
-
-
-        return $this->render('view',[
-            'model' => $model,
-            'leaveTypes' => ArrayHelper::map($leaveTypes,'Code','Description'),
-            'relievers' => ArrayHelper::map($employees,'No','Full_Name'),
-        ]);
+       
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public function loadtomodel($obj,$model){
 

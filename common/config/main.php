@@ -6,7 +6,7 @@ return [
         '@npm'   => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-    'name' => 'TENWEK Self Service Portal',
+    'name' => 'Mhasibu Self Service Portal',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',

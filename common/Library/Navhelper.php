@@ -1474,6 +1474,62 @@ class Navhelper extends Component{
         return $model;
     }
 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   /*Method to commit single field data to services*/
+
+   public function Commit($commitervice,$field=[],$Key){
+       
+    $fieldName = $fieldValue = '';
+    if(sizeof($field)){
+        foreach($field as $key => $value){
+            $fieldName = $key;
+            $fieldValue = $value;
+        }
+    }
+
+    $service = Yii::$app->params['ServiceName'][$commitervice];
+    
+
+    $request = $this->readByKey($service,$Key);
+   // Yii::$app->recruitment->printrr($request);
+
+   
+
+
+    $data = [];
+    if(is_object($request)){
+        $data = [
+            'Key' => $request->Key,
+            $fieldName => $fieldValue
+        ];
+    }else{
+        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+        return ['error' => $request];
+    }
+
+
+
+    $result = Yii::$app->navhelper->updateData($service,$data);
+
+    Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+
+    return $result;
+
+}
+
+
+
+
     // Refactor an array with valid and existing data
 
     public function refactorArray($arr,$from,$to)

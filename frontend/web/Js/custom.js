@@ -2,7 +2,7 @@
  * Created by HP ELITEBOOK 840 G5 on 1/6/2021.
  */
 
-function closeInput(elm) {
+ function closeInput(elm) {
   var td = elm.parentNode;
   var value = elm.value;
   
@@ -117,6 +117,91 @@ async function getData(resource)
   const data = await res.json();
 
   return data;
+}
+
+
+function JquerifyField(model, fieldName) {
+  field = fieldName.toLowerCase();
+  const selector =   '#'+model+'-'+field;
+  return selector;
+}
+
+// Function to do ajax field level updating
+
+function globalFieldUpdate(entity,controller = false, fieldName, ev, autoPopulateFields = []) {
+  console.log('was invoked');
+  const model = entity.toLowerCase();
+  const field = fieldName.toLowerCase();
+  const formField = '.field-'+model+'-'+fieldName.toLowerCase();
+  const keyField ='#'+model+'-key'; 
+  const targetField = '#'+model+'-'.field;
+  const tget = '#'+model+'-'+field;
+
+  
+  const fieldValue = ev.target.value;
+  const Key = $(keyField).val();
+
+  console.log(`My Key is ${Key}`);
+  console.log(autoPopulateFields);
+ 
+  let route = '';
+  // If controller is falsy use the model value (entity) as the route
+  if(!controller) {
+    route = model;
+  }else {
+    route = controller;
+  }
+
+  console.log(`route to use is : ${route}`);
+  
+
+  if(Key.length){
+      const url = $('input[name=absolute]').val()+route+'/setfield?field='+fieldName;
+      $.post(url,{ fieldValue:fieldValue,'Key': Key}).done(function(msg){
+          
+              // Populate relevant Fields
+                                         
+              $(keyField).val(msg.Key);
+              $(targetField).val(msg[fieldName]);
+
+              // Update DOM values for fields specified in autoPopulatedFields: fields in this array should be exact case and name as specified in Nav Web Service 
+
+              if(autoPopulateFields.length > 0) {
+                autoPopulateFields.forEach((field) => {
+                  let domSelector = JquerifyField(model,field);
+
+                  console.log(`Field of Corncern is ${field}`);
+                  console.log(`Model of Corncern is ${model}`);
+                  console.log(`Jquerified field is ${domSelector}`);
+                  $(domSelector).val(msg[field]);
+                });
+              }
+
+             /*******End Field auto Population  */
+              if((typeof msg) === 'string') { // A string is an error
+                  console.log(formField);
+                  const parent = document.querySelector(formField);
+                  const helpbBlock = parent.children[2];
+                  helpbBlock.innerText = msg;
+                  
+              }else{ // An object represents correct details
+
+                  const parent = document.querySelector(formField);
+                  const helpbBlock = parent.children[2];
+                  helpbBlock.innerText = '';
+                  
+              }   
+          },'json');
+  }
+
+}         
+function disableSubmit(){
+document.getElementById('submit').setAttribute("disabled", "true");
+}
+
+function enableSubmit(){
+document.getElementById('submit').removeAttribute("disabled");
+
 }
 
 

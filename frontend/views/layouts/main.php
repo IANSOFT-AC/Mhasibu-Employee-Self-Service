@@ -827,13 +827,25 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                                     </li>
 
                                     <li class="nav-item">
+                                        <a href="<?= $absoluteUrl ?>probation/agreementlist" class="nav-link <?= Yii::$app->recruitment->currentaction('probation','agreementlist')?'active':'' ?>">
+                                            <i class="fa fa-check-square nav-icon"></i>
+                                            <p> Agreement List</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
                                         <a href="<?= $absoluteUrl ?>probation/ovproblist" class="nav-link <?= Yii::$app->recruitment->currentaction('probation','ovproblist')?'active':'' ?>">
                                             <i class="fa fa-check-square nav-icon"></i>
                                             <p> Overview Probation List</p>
                                         </a>
                                     </li>
 
-
+                                    <li class="nav-item">
+                                        <a href="<?= $absoluteUrl ?>probation/hr-list" class="nav-link <?= Yii::$app->recruitment->currentaction('probation','hr-list')?'active':'' ?>">
+                                            <i class="fa fa-check-square nav-icon"></i>
+                                            <p> HR Probation List</p>
+                                        </a>
+                                    </li>
             
 
                                     <li class="nav-item">

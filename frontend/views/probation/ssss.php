@@ -10,9 +10,11 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'HRMIS - New Employee Probation List for HR';
+use yii\helpers\Html;
+
+$this->title = Yii::$app->params['generalTitle'];
 $this->params['breadcrumbs'][] = ['label' => 'Performance Management', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => 'Probation Appraisal HR List', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Probation - Approved Goals List', 'url' => ['index']];
 ?>
 
 
@@ -38,7 +40,10 @@ if(Yii::$app->session->hasFlash('success')){
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">HR Probation Appraisal List</h3>
+
+                <h3 class="card-title"> Probation Approved Appraisal Goals List  &nbsp;    <?php Html::a('<i class="fa fa-plus-square"></i> Add New Appraisal',['create'],['class' => 'add-objective btn btn-outline-info btn-sm']) ?></h3>
+
+                
             </div>
             <div class="card-body">
                 <table class="table table-bordered dt-responsive table-hover" id="appraisal">
@@ -56,13 +61,13 @@ $script = <<<JS
         var absolute = $('input[name=absolute]').val();
          /*Data Tables*/
          
-        // $.fn.dataTable.ext.errMode = 'throw';
+         $.fn.dataTable.ext.errMode = 'throw';
         
     
           $('#appraisal').DataTable({
            
             //serverSide: true,  
-            ajax: absolute+'probation/list-hr',
+            ajax: absolute+'probation/appraiseeapprovedgoals',
             paging: true,
             columns: [
                 { title: 'Appraisal No' ,data: 'Appraisal_No'},
@@ -70,10 +75,9 @@ $script = <<<JS
                 { title: 'Employee Name' ,data: 'Employee_Name'},
                 { title: 'Level Grade' ,data: 'Level_Grade'},
                 { title: 'Job Title' ,data: 'Job_Title'},
-                { title: 'Appraisal_Start_Date' ,data: 'Appraisal_Start_Date'},
-                { title: 'Appraisal_End_Date' ,data: 'Appraisal_End_Date'},
-                { title: 'Hr_UserId' ,data: 'Hr_UserId'},
-               
+                { title: 'Appraisal Start Date' ,data: 'Appraisal_Start_Date'},
+                { title: 'Appraisal End Date' ,data: 'Appraisal_End_Date'},
+                               
                 { title: 'Action', data: 'Action' },
                 
                
@@ -82,14 +86,14 @@ $script = <<<JS
                 "zeroRecords": "No Probation Appraisals to display"
             },
             
-            order : [[ 6, "desc" ]]
+            order : [[ 0, "desc" ]]
             
            
        });
         
        //Hidding some 
        var table = $('#appraisal').DataTable();
-       //table.columns([0,6]).visible(false);
+       table.columns([3]).visible(false);
     
     /*End Data tables*/
         $('#appraisal').on('click','tr', function(){

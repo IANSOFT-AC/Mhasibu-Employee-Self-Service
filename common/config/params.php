@@ -24,7 +24,7 @@ return [
     'ServerInstance'=>env('ServerInstance'),
     'CompanyName'=> env('CompanyName'),
     'DBCompanyName' => env('DBCompanyName'),
-    'ldPrefix'=>env('ldPrefix'),
+    'ldPrefix'=> '', //env('ldPrefix'),
     'adServer' => env('adServer'),
 
     //FMS CREDENTIALS
@@ -67,7 +67,14 @@ return [
         'PortalFactory', // 50062
         'ImprestManagement', // 50017
         'EmployeeExitManagement',
+        'HRAppraisalManagement', // 50209
     ],
+
+
+    'SystemConfigs' => [
+        'UsingNTLM' => env('UsingNTLM'),
+    ],
+
     'ServiceName'=>[
 
         /**************************IMPREST*************************************/
@@ -251,6 +258,8 @@ return [
         'ProbationKPIs' => 'ProbationKPIs', //60002
 
         'EmployeeAppraisalAnswers' => 'EmployeeAppraisalAnswers', //60044
+        'Resolution' => 'Resolution', //60087
+        'ProbationHRList' => 'ProbationHRList', //60073
 
 
         /*Performance Improvement Program  - PIP*/
@@ -461,6 +470,7 @@ return [
         'Portal_Workflows' => 'Portal_Workflows', //50019 Approval code unit
         'JobApplication' => 'JobApplication', //50002 Job Aplication Management Code Unit
         'PortalReports' => 'PortalReports',//50064
+        'HRAppraisalManagement' => 'HRAppraisalManagement', // 50209
 
 
 

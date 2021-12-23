@@ -22,10 +22,11 @@ use yii\web\Controller;
 use yii\web\BadRequestHttpException;
 
 use frontend\models\Leave;
+use frontend\models\Resolution;
 use yii\web\Response;
 use kartik\mpdf\Pdf;
 
-class ObjectiveController extends Controller
+class ResolutionController extends Controller
 {
     public function behaviors()
     {
@@ -72,65 +73,58 @@ class ObjectiveController extends Controller
 
     public function actionCreate(){
 
-        $model = new Objective() ;
-        $service = Yii::$app->params['ServiceName']['ProbationKRAs'];
+        $model = new Resolution();
+        $service = Yii::$app->params['ServiceName']['HRAppraisalManagement'];
+        $model->Employee_No = Yii::$app->request->get('Employee_No');
+        $model->Appraisal_No =  Yii::$app->request->get('Appraisal_No');
+        $model->Line_No = time();
 
 
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Objective'],$model)  ){
-                        // Yii::$app->recruitment->printrr(Yii::$app->request->post());
-
-            $result = Yii::$app->navhelper->postData($service,$model);
-
-            if(Yii::$app->request->isAjax){
-                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                if(is_object($result)){
-                    return ['note' => '<div class="alert alert-success">Key Result Area Line Added Successfully. </div>' ];
-                }else{
-                    return ['note' => '<div class="alert alert-danger">Error : '.$result.'</div>'];
-                }
+        if(Yii::$app->request->isPost){
+            $data = [
+                'appraisalNo' => Yii::$app->request->get('Appraisal_No'),
+                'employeeNo' => Yii::$app->request->get('Employee_No'),
+                'resolution' => Yii::$app->request->post()['Resolution']['Resolution']
+            ];
+            $request = Yii::$app->navhelper->codeunit($service, $data,'IanaGenerateAppraisalResolutions');
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            if(!is_string($request)) {
+                return ['note' => '<div class="alert alert-success ">Record Added Successfully</div>'];
+            }else{
+                return ['note' => '<div class="alert alert-danger">Error : '.$request.'</div>' ];
             }
+        }
 
-            Yii::$app->session->setFlash('success','Key Result Area Line Added Successfully.');
-            return $this->redirect(Yii::$app->request->referrer);
-           
-
-        }//End Saving experience
-
+        
         if(Yii::$app->request->isAjax){
             return $this->renderAjax('create', [
                 'model' => $model,
+
             ]);
         }
+           
 
-        return $this->render('create',[
-            'model' => $model,
-        ]);
     }
 
 
-    public function actionUpdate(){
-        $model = new Objective() ;
+    public function actionUpdate($Key){
+        $model = new Resolution();
         $model->isNewRecord = false;
-        $service = Yii::$app->params['ServiceName']['ProbationKRAs'];
-        $filter = [
-            'Line_No' => Yii::$app->request->get('Line_No'),
-            'Employee_No' => Yii::$app->request->get('Employee_No'),
-            'Appraisal_No' => Yii::$app->request->get('Appraisal_No')
-        ];
-        $result = Yii::$app->navhelper->getData($service,$filter);
+        $service = Yii::$app->params['ServiceName']['Resolution'];
+        
+        $result = Yii::$app->navhelper->readByKey($service,$Key);
+        $model->Key = $result->Key;
 
-        if(is_array($result)){
+        if(is_object($result)){
             //load nav result to model
-            $model = Yii::$app->navhelper->loadmodel($result[0],$model) ;//$this->loadtomodeEmployee_Nol($result[0],$Expmodel);
+            $model = Yii::$app->navhelper->loadmodel($result,$model) ;//$this->loadtomodeEmployee_Nol($result[0],$Expmodel);
         }else{
             Yii::$app->recruitment->printrr($result);
         }
 
 
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Objective'],$model) ){
+        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Resolution'],$model) ){
             $result = Yii::$app->navhelper->updateData($service,$model);
-
-            //Yii::$app->recruitment->printrr($result);
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             if(!is_string($result)){
 
@@ -155,7 +149,7 @@ class ObjectiveController extends Controller
     }
 
     public function actionDelete(){
-        $service = Yii::$app->params['ServiceName']['ProbationKRAs'];
+        $service = Yii::$app->params['ServiceName']['Resolution'];
         $result = Yii::$app->navhelper->deleteData($service,Yii::$app->request->get('Key'));
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         if(!is_string($result)){
@@ -185,4 +179,16 @@ class ObjectiveController extends Controller
 
         return $model;
     }
+
+
+         /** Updates a single field */
+         public function actionSetfield($field){
+            $service = 'Resolution';
+            $value = Yii::$app->request->post('fieldValue');
+           
+            $result = Yii::$app->navhelper->Commit($service,[$field => $value],Yii::$app->request->post('Key'));
+            Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+            return $result;
+              
+        }
 }

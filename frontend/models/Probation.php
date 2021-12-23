@@ -43,6 +43,10 @@ public $Overview_Rejection_Comments;
 public $Supervisor_Rejection_Comments;
 
 public $Hr_UserId;
+public $Agree_With_Sup_Rating;
+public $Disagreement_Reason;
+public $Hr_Overall_Comments;
+
 
     public function rules()
     {

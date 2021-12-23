@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 
-if($model->Goal_Setting_Status == 'Overview_Manager' && $model->isOverview()): ?>
+if($model->Goal_Setting_Status == 'Overview_Manager' && $model->isOverview() && $model->Goal_Setting_Status !== 'Closed'): ?>
                         <div class="col-md-4 mx-1">
 
                             <?= Html::a('<i class="fas fa-backward"></i> Line Mgr.',['backtolinemgr','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
@@ -51,7 +51,23 @@ if($model->Goal_Setting_Status == 'Overview_Manager' && $model->isOverview()): ?
 
                         </div>
 
-                        <div class="col-md-4 mx-1">
+                    <!-- Send to HR -->
+
+                    <div class="col-md-4 mx-1">
+
+                        <?= Html::a('<i class="fas fa-check"></i> To Hr',['to-hr','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
+                            [
+
+                            'class' => 'mx-1 btn btn-app bg-success submitforapproval','data' => [
+                            'confirm' => 'Are you sure you want to forward probation to Human Resources ?',
+                            'method' => 'post',
+                        ],
+                            'title' => 'Send Probation to Human Resources.'
+                        ]) ?>
+
+                    </div>
+
+                    <!-- <div class="col-md-4 mx-1">
 
                             <?= Html::a('<i class="fas fa-check"></i> Approve',['approveprobationoverview','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
                                 [
@@ -63,6 +79,6 @@ if($model->Goal_Setting_Status == 'Overview_Manager' && $model->isOverview()): ?
                                 'title' => 'Approve Probation Appraisal.'
                             ]) ?>
 
-                        </div>
+                        </div>-->
 
 <?php endif; ?>

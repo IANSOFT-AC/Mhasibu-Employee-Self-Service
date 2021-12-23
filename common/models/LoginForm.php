@@ -46,18 +46,15 @@ class LoginForm extends Model
         // do Active directory authentication here
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            // echo '<pre>';
-            // print_r( $user);
-            // exit;
-
+            
            //Yii::$app->recruitment->printrr($user);
 
            // || !$user->validatePassword($this->password) || !$this->logintoAD($this->username, $this->password)
 
-            if (!$user || !$user->validatePassword($this->password) || !$this->logintoAD($this->username, $this->password) ) {//Add AD login condition here also--> when ad details are given
+           if (!$user || !$user->validatePassword($this->password) || !$this->actionAuth($this->username, $this->password) ) {//Add AD login condition here also--> when ad details are given
 
-                $this->addError($attribute, 'Incorrect username or password.');
-            }
+            $this->addError($attribute, 'Incorrect username or password.');
+        }
         }
 
     }
@@ -127,10 +124,10 @@ class LoginForm extends Model
         if ($this->_user === null) {
             //TENWEKHOSP\NAVADMIN
             // exit();
-            $this->_user = User::findByUsername(Yii::$app->params['ldPrefix'] . "\\" . strtoupper($this->username), $this->password);
-            // echo '<pre>';
-            // VarDumper::dump( $this->_user, $depth = 10, $highlight = true);
-            // exit;
+            $this->_user = User::findByUsername(strtoupper($this->username), $this->password);
+             /*echo '<pre>';
+             VarDumper::dump( $this->_user, $depth = 10, $highlight = true);
+             exit;*/
         }
 
 
@@ -150,12 +147,12 @@ class LoginForm extends Model
         $credentials->UserName = $NavisionUsername;
         $credentials->PassWord = $NavisionPassword;
         // echo '<pre>';
-        // print_r($credentials);
+        // print_r($credentials)
         // exit;
        // return $credentials;
 
         $result = \Yii::$app->navhelper->findOne($service,$credentials,'User_ID', $NavisionUsername);
-                // \yii\helpers\VarDumper::dump( $result, $depth = 10, $highlight = true); exit;
+                 //\yii\helpers\VarDumper::dump( $result, $depth = 10, $highlight = true); exit;
 
         return $result;
     }
