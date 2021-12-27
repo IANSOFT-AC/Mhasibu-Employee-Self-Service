@@ -7,7 +7,7 @@ use yii\web\Response;
 
 
 /*
- * Written By francnjamb - on Twitter
+ * Written By @francnjamb - on Twitter
  * Lots of love too....
  * */
 class Navhelper extends Component{
@@ -61,31 +61,36 @@ class Navhelper extends Component{
 
      /*Read a single entry*/
 
-    public function findOne($service,$credentials = [],$filterKey, $filterValue){
-     
+     public function findOne($service,$credentials = [],$filterKey, $filterValue){
 
         $url  =  new Services($service);
         $wsdl = $url->getUrl();
 
+        if(empty($credentials))
+        {        
+                $username =  Yii::$app->params['NavisionUsername'];
+                $password =  Yii::$app->params['NavisionPassword'];
+                $credentials = (object)[];
+                $credentials->UserName = $username;
+                $credentials->PassWord = $password;
+        }
+
         if(!Yii::$app->navision->isUp($wsdl,$credentials)) {
-         
+
             return ['error' => 'Service unavailable.'];
 
         }
-      
 
-        $res = (array)$result = Yii::$app->navision->readEntryToValidateLogin($credentials, $wsdl, $filterKey, $filterValue);
-        //yii\helpers\VarDumper::dump( $res, $depth = 10, $highlight = true); exit;
-        if(count($res)){
-            if(isset($res[$service])){
-                return $res[$service];
-            }
-            return false;
+        $res = (array)$result = Yii::$app->navision->readEntry($credentials, $wsdl, $filterKey, $filterValue);
+        //var_dump($res); exit;
+        if(count($res) && !isset($res[0])){
+            return $res[$service];
         }else{
-            return false;
+            return $res;
         }
 
     }
+
 
 
     /*Read a single Record By Key*/

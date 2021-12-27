@@ -210,91 +210,35 @@ class ImprestController extends Controller
     }
 
 
-    public function actionCreate($requestfor=''){
+    public function actionCreate($RequestFor='Self'){
 
         $model = new Imprestcard() ;
         $service = Yii::$app->params['ServiceName']['ImprestRequestCardPortal'];
-        $request = '';
+       
+        // Once Initial Request is Made Redirect to Update Page
 
-     
-
-
-        /*Do initial request */
-        if(!isset(Yii::$app->request->post()['Imprestcard'])){
+        if($RequestFor == 'Self')
+        {
+            $model->Request_For = $RequestFor;
             $model->Employee_No = Yii::$app->user->identity->Employee_No;
             $request = Yii::$app->navhelper->postData($service,$model);
-             Yii::$app->recruitment->printrr($request);
-
-            if(!is_string($request) )
-            {
-                $model = Yii::$app->navhelper->loadmodel($request,$model);
-
-                // Update Request for
-                $model->Request_For = $requestfor?$requestfor:Yii::$app->request->post()['Imprestcard']['Request_For'];
-                $model->Key = $request->Key;
-                $model->Imprest_Type = 'Local';
-                $request = Yii::$app->navhelper->updateData($service, $model);
-
-                $model = Yii::$app->navhelper->loadmodel($request,$model);
-                if(is_string($request)){
-                    Yii::$app->recruitment->printrr($request);
-                }
-
-            }else {
-                Yii::$app->session->setFlash('error', $request);
-                return $this->render('create',[
-                    'model' => $model,
-                    'employees' => $this->getEmployees(),
-                    'programs' => $this->getPrograms(),
-                    'departments' => $this->getDepartments(),
-                    'currencies' => $this->getCurrencies()
-                ]);
-            }
-        }
-
-
-
-
-
-
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Imprestcard'],$model) ){
-            //Yii::$app->recruitment->printrr(Yii::$app->request->post()['Imprestcard']);
-            $filter = [
-                'No' => $model->No,
-            ];
-
-            $refresh = Yii::$app->navhelper->getData($service,$filter);
-            $model->Key = $refresh[0]->Key;
-            //Yii::$app->navhelper->loadmodel($refresh[0],$model);
-
-            $result = Yii::$app->navhelper->updateData($service,$model);
-
-
-            if(!is_string($result)){
-
-                Yii::$app->session->setFlash('success','Imprest Request Created Successfully.' );
-
-                // Yii::$app->recruitment->printrr($result);
-                return $this->redirect(['view','No' => $result->No]);
-
-            }else{
-                Yii::$app->session->setFlash('success','Error Creating Imprest Request '.$result );
+            if(is_object($request)){
+                return $this->redirect(['update','Key' => $request->Key]);
+            }else{ // error situation
+                Yii::$app->session->setFlash('error',$request, true);
                 return $this->redirect(['index']);
-
             }
-
+        }else { // Other
+            $model->Request_For = $RequestFor;
+            $request = Yii::$app->navhelper->postData($service,$model);
+            if(is_object($request)){
+                return $this->redirect(['update','Key' => $request->Key]);
+            }else{ // error situation
+                Yii::$app->session->setFlash('error',$request, true);
+                return $this->redirect(['index']);
+            }
         }
-
-
-        //Yii::$app->recruitment->printrr($model);
-
-        return $this->render('create',[
-            'model' => $model,
-            'employees' => $this->getEmployees(),
-            'programs' => $this->getPrograms(),
-            'departments' => $this->getDepartments(),
-            'currencies' => $this->getCurrencies()
-        ]);
+       
     }
 
     
@@ -366,107 +310,47 @@ class ImprestController extends Controller
     }
 
 
-    public function actionUpdate(){
+    public function actionUpdate($No = '', $Key = ''){
         $model = new Imprestcard() ;
         $service = Yii::$app->params['ServiceName']['ImprestRequestCardPortal'];
+        $ERPservice = Yii::$app->params['ServiceName']['ImprestRequestCard'];
         $model->isNewRecord = false;
 
-        $filter = [
-            'No' => Yii::$app->request->get('No'),
-        ];
-        $result = Yii::$app->navhelper->getData($service,$filter);
-        // Yii::$app->recruitment->printrr($result);
-
-        if(is_array($result)){
-            //load nav result to model
-            $model = Yii::$app->navhelper->loadmodel($result[0],$model) ;//$this->loadtomodeEmployee_Nol($result[0],$Expmodel);
+        // Get Document
+        if(!empty($No))
+        {
+            $document = Yii::$app->navhelper->findOne($service, '','No',$No);
+            $pageRecord = Yii::$app->navhelper->findOne($ERPservice, '','No',$No);
+        }elseif(!empty($Key)){
+            $document = Yii::$app->navhelper->readByKey($service,$Key);
+            $pageRecord = Yii::$app->navhelper->readByKey($ERPservice,$Key);
         }else{
-            Yii::$app->recruitment->printrr($result);
+            Yii::$app->session->setFlash('error', 'We are unable to fetch a document to update', true);
+            return Yii::$app->redirect(['index']);
+        }
+
+        if(is_object($document)){
+            //load nav result to model
+            $model = Yii::$app->navhelper->loadmodel($document,$model) ;//$this->loadtomodeEmployee_Nol($result[0],$Expmodel);
+        }else{
+            Yii::$app->session->setFlash('error', $document, true);
+            return Yii::$app->redirect(['index']);
         }
 
 
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Imprestcard'],$model) ){
-            // Yii::$app->recruitment->printrr(Yii::$app->request->post());
-            $resultToGetUpdateKey = Yii::$app->navhelper->getData($service,$filter);
-
-            if(Yii::$app->request->post()['Imprestcard']['Imprest_Type']== 'Local'){
-                $model->Imprest_Type = Yii::$app->request->post()['Imprestcard']['Imprest_Type'];
-                $model->Currency_Code = '';
-                $model->Exchange_Rate = null;
-
-                
-            }else{
-                $model->Imprest_Type = Yii::$app->request->post()['Imprestcard']['Imprest_Type'];
-                $model->Currency_Code = Yii::$app->request->post()['Imprestcard']['Currency_Code'];
-                $model->Exchange_Rate = Yii::$app->request->post()['Imprestcard']['Exchange_Rate'];
-            }
-
-            if(Yii::$app->request->post()['Imprestcard']['Request_For']== 'Self'){
-                $model->Employee_No = Yii::$app->user->identity->employee[0]->No;
-            }else{
-                $model->Employee_No = Yii::$app->request->post()['Imprestcard']['Employee_No'];
-
-            }
-
-            // Update Request for
-            $model->Request_For = Yii::$app->request->post()['Imprestcard']['Request_For'];
-            $model->Purpose = Yii::$app->request->post()['Imprestcard']['Purpose'];
-            $model->Key = $resultToGetUpdateKey[0]->Key;
-
-            $result = Yii::$app->navhelper->updateData($service,$model);
-                                    //  Yii::$app->recruitment->printrr($result);
-
-            
-            if(!is_string($result)){
-                $model = Yii::$app->navhelper->loadmodel($result,$model) ;//$this->loadtomodeEmployee_Nol($result[0],$Expmodel);
-                Yii::$app->session->setFlash('success','Imprest Request Updated Successfully.' );
-
-                return $this->render('update',[
-                    'model' => $model,
-                    'employees' => $this->getEmployees(),
-                    'programs' => $this->getPrograms(),
-                    'departments' => $this->getDepartments(),
-                    'currencies' => $this->getCurrencies()
-                ]);
-
-            }else{
-
-                Yii::$app->session->setFlash('error','Error Creating Imprest Request '.$result );
-                return $this->render('update',[
-                    'model' => $model,
-                    'employees' => $this->getEmployees(),
-                    'programs' => $this->getPrograms(),
-                    'departments' => $this->getDepartments(),
-                    'currencies' => $this->getCurrencies()
-                ]);
-            }
-
-        }
-
-
-        // Yii::$app->recruitment->printrr($model);
-        if(Yii::$app->request->isAjax){
-            return $this->renderAjax('ImprestHeader', [
-                'model' => $model,
-                'employees' => $this->getEmployees(),
-                'programs' => $this->getPrograms(),
-                'departments' => $this->getDepartments(),
-                'currencies' => $this->getCurrencies()
-
-            ]);
-        }
-
+    
         return $this->render('update',[
             'model' => $model,
             'employees' => $this->getEmployees(),
             'programs' => $this->getPrograms(),
             'departments' => $this->getDepartments(),
-            'currencies' => $this->getCurrencies()
+            'currencies' => $this->getCurrencies(),
+            'document' => $pageRecord
         ]);
     }
 
     public function actionDelete(){
-        $service = Yii::$app->params['ServiceName']['CareerDevStrengths'];
+        $service = Yii::$app->params['ServiceName']['ImprestRequestCardPortal'];
         $result = Yii::$app->navhelper->deleteData($service,Yii::$app->request->get('Key'));
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         if(!is_string($result)){
@@ -1031,6 +915,16 @@ class ImprestController extends Controller
             return $this->redirect(['view']);
 
         }
+    }
+
+    /** Updates a single field */
+    public function actionSetfield($field){
+        $service = 'ImprestRequestCardPortal';
+        $value = Yii::$app->request->post('fieldValue');
+        $result = Yii::$app->navhelper->Commit($service,[$field => $value],Yii::$app->request->post('Key'));
+        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+        return $result;
+          
     }
 
 

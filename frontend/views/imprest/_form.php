@@ -139,7 +139,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
                 <div class="row">
                     <div class="form-group">
-                        <?= Html::submitButton(($model->isNewRecord)?'Save':'Update', ['class' => 'btn btn-success']) ?>
+                        <?php Html::submitButton(($model->isNewRecord)?'Save':'Update', ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>
 
@@ -225,202 +225,41 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 <input type="hidden" name="url" value="<?= $absoluteUrl ?>">
 <?php
 $script = <<<JS
- //Submit Rejection form and get results in json    
-       /* $('form').on('submit', function(e){
-            e.preventDefault()
-            const data = $(this).serialize();
-            const url = $(this).attr('action');
-            $.post(url,data).done(function(msg){
-                    $('.modal').modal('show')
-                    .find('.modal-body')
-                    .html(msg.note);
-        
-                },'json');
-        });*/
+      
 
 
-        var requstForValue = $('#imprestcard-request_for').val();
-        var imprestType = $('#imprestcard-imprest_type').val();
-
-
-        if(requstForValue == 'Self'){
-            $('#imprestcard-employee_no').replaceWith('<input type="text" id="imprestcard-employee_no" value="'+$('#imprestcard-employee_no').val()+'"  class="form-control" name="Imprestcard[Employee_No]" readonly>');
-        }
-        
-
-        if(imprestType == 'Local'){
-            $('#imprestcard-currency_code').replaceWith('<input type="text" id="imprestcard-currency_code" value="N/A"  class="form-control" name="Imprestcard[Currency_Code]" readonly>');
-            $('#imprestcard-exchange_rate').replaceWith('<input type="text" id="imprestcard-exchange_rate" value="N/A"  class="form-control" name="Imprestcard[Exchange_Rate]" readonly>');
-        }
-
-       
-                                    
-
-    $('#imprestcard-request_for').on('change', function(e){
-        var requstForValue = $(this).val();
-        if(requstForValue == 'Self'){
-            $('#imprestcard-employee_no').replaceWith('<input type="text" id="imprestcard-employee_no"  class="form-control" name="Imprestcard[Employee_No]" readonly>');
-            return false;
-        }
-        $('#imprestcard-employee_no').replaceWith('<select id="imprestcard-employee_no" class="form-control" name="Imprestcard[Employee_No]"></select>')
-        $.getJSON('/imprest/get-employees', function (data,e) {
-            $('#imprestcard-employee_no').append($('<option id="itemId" selected></option>').attr('value', '').text('Select Employee'));
-            $.each(data, function (key, entry) {
-                $('#imprestcard-employee_no').append($('<option id="itemId'+ entry.No+'"></option>').attr('value', entry.No).text(entry.No +' | ' +entry.Full_Name));
-                //alert(entry.No_);
-            })
-        });
-        
-
+    $('#imprestcard-employee_no').on('blur',(e) => {
+        globalFieldUpdate("Imprestcard",'imprest',"Employee_No", e);
     });
 
-
-
-    $('#imprestcard-imprest_type').on('change', function(e){
-        var imprestType = $(this).val();
-        if(imprestType == 'Local'){
-            $('#imprestcard-currency_code').replaceWith('<input type="text" id="imprestcard-currency_code" value="N/A"  class="form-control" name="Imprestcard[Currency_Code]" readonly>');
-            $('#imprestcard-exchange_rate').replaceWith('<input type="text" id="imprestcard-exchange_rate" value="N/A"  class="form-control" name="Imprestcard[Exchange_Rate]" readonly>');
-            return false;
-        }
-
-        $.getJSON('/imprest/get-currencies', function (data,e) {
-             $('#imprestcard-currency_code').replaceWith('<select id="imprestcard-currency_code" class="form-control" name="Imprestcard[Currency_Code]"></select>')
-             $('#imprestcard-currency_code').append($('<option id="itemId" selected></option>').attr('value', '').text('Select Currency'));  
-             $.each(data, function (key, entry) {
-                    $('#imprestcard-currency_code').append($('<option id="itemId'+ entry.Code+'"></option>').attr('value', entry.Code).text(entry.Code +' | ' +entry.Description));
-                    //alert(entry.No_);
-                })
-            });
-
-        $('#imprestcard-exchange_rate').replaceWith('<input type="number" id="imprestcard-exchange_rate"   class="form-control" name="Imprestcard[Exchange_Rate]">');
-        
-
+     
+     /*Set Program  */
+    
+     $('#imprestcard-global_dimension_1_code').change((e) => {
+       globalFieldUpdate('Imprestcard','imprest','Global_Dimension_1_Code', e);
     });
-     
-
-
-        // Set other Employee
-        
-     $('#imprestcard-employee_no').change(function(e){
-        const Employee_No = e.target.value;
-        const No = $('#imprestcard-no').val();
-        if(No.length){
-            const url = $('input[name=url]').val()+'imprest/setemployee';
-            $.post(url,{'Employee_No': Employee_No,'No': No}).done(function(msg){
-                   //populate empty form fields with new data
-                    console.log(typeof msg);
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-imprestcard-employee_no');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-imprestcard-employee_no');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = ''; 
-                        
-                    }
-                    
-                },'json');
-        }
-     });
-     
-     /*Set Program and Department dimension */
-     
-     $('#imprestcard-global_dimension_1_code').change(function(e){
-        const dimension = e.target.value;
-        const No = $('#imprestcard-no').val();
-        if(No.length){
-            const url = $('input[name=url]').val()+'imprest/setdimension?dimension=Global_Dimension_1_Code';
-            $.post(url,{'dimension': dimension,'No': No}).done(function(msg){
-                   //populate empty form fields with new data
-                    console.log(typeof msg);
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-imprestcard-global_dimension_1_code');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-imprestcard-global_dimension_1_code');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = ''; 
-                        
-                    }
-                    
-                },'json');
-        }
-     });
      
      
      /* set department */
      
-     $('#imprestcard-global_dimension_2_code').change(function(e){
-        const dimension = e.target.value;
-        const No = $('#imprestcard-no').val();
-        if(No.length){
-            const url = $('input[name=url]').val()+'imprest/setdimension?dimension=Global_Dimension_2_Code';
-            $.post(url,{'dimension': dimension,'No': No}).done(function(msg){
-                   //populate empty form fields with new data
-                    console.log(typeof msg);
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-imprestcard-global_dimension_2_code');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-imprestcard-global_dimension_2_code');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = ''; 
-                        
-                    }
-                    
-                },'json');
-        }
-     });
-     
-     
-     /*Set Imprest Type*/
-     
-     $('#imprestcard-imprest_type').change(function(e){
-        const Imprest_Type = e.target.value;
-        const No = $('#imprestcard-no').val();
-        if(No.length){
-            const url = $('input[name=url]').val()+'imprest/setimpresttype';
-            $.post(url,{'Imprest_Type': Imprest_Type,'No': No}).done(function(msg){
-                   //populate empty form fields with new data
-                    console.log(typeof msg);
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-imprestcard-imprest_type');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-imprestcard-imprest_type');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = '';
-                        
-                        //  $('.modal').modal('show')
-                        // .find('.modal-body')
-                        // .html('<div class="alert alert-success">Imprest Type Update Successfully.</div>');
-                        
-                    }
-                    
-                },'json');
-        }
-     });
-     
-     
-     /* Add Line */
+     $('#imprestcard-global_dimension_2_code').change((e) => {
+       globalFieldUpdate('Imprestcard','imprest','Global_Dimension_2_Code', e);
+    });
+
+    /**Update Purpose */
+
+    $('#imprestcard-purpose').change((e) => {
+       globalFieldUpdate('Imprestcard','imprest','Purpose', e);
+    });
+
+
+
+       /* Add Line */
      $('.add-line, .update-objective').on('click', function(e){
              e.preventDefault();
             var url = $(this).attr('href');
             console.log(url);
-            $('#modal').modal('show')
+            $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
 
@@ -431,8 +270,6 @@ $script = <<<JS
         var reld = location.reload(true);
         setTimeout(reld,1000);
     }); 
-     
-     
      
 JS;
 

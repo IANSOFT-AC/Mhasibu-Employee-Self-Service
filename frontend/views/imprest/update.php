@@ -26,7 +26,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Update Imprest Request', 'url' => 
         'employees' => $employees,
         'programs' => $programs,
         'departments' => $departments,
-        'currencies' => $currencies
+        'currencies' => $currencies,
+        'document' => $document
     ]) ?>
 
 </div>
