@@ -26,7 +26,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                             'data' => [
                                 'confirm' => 'Are you sure you want to send imprest request for approval?',
                                 'params'=>[
-                                    'No'=> $_GET['No'],
+                                    'No'=> $model->No,
                                     'employeeNo' =>Yii::$app->user->identity->employee[0]->No,
                                 ],
                                 'method' => 'get',
@@ -40,7 +40,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                             'data' => [
                             'confirm' => 'Are you sure you want to cancel imprest approval request?',
                             'params'=>[
-                                'No'=> $_GET['No'],
+                                'No'=> $model->No,
                             ],
                             'method' => 'get',
                         ],
@@ -87,7 +87,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
 
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
 
                             <?= $form->field($model, 'No')->textInput(['readonly'=> true]) ?>
                             <?= $form->field($model, 'Key')->hiddenInput()->label(false) ?>
@@ -103,10 +103,13 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
                             <?= $form->field($model, 'Purpose')->textInput() ?>
 
+                            <?= $form->field($model, 'Employee_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+                            <?= $form->field($model, 'Exchange_Rate')->textInput(['type'=> 'number','required' => true]) ?>
+
 
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <?= $form->field($model, 'Status')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
 
                             <?php if($model->Request_For == 'Self'): ?>
@@ -118,19 +121,13 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                             <?= $form->field($model, 'Currency_Code')->dropDownList($currencies,['prompt' => 'Select ...','required' => true]) ?>
                             <?= $form->field($model, 'Imprest_Amount')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
 
+                            <?= $form->field($model, 'Employee_Balance')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
+
                             <!-- <?= $form->field($model, 'Expected_Date_of_Surrender')->textInput(['readonly'=> true, 'disabled'=>true]) ?> -->
 
 
                         </div>
-
-                        <div class="col-md-4">
-                          <?= $form->field($model, 'Employee_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-                          <?= $form->field($model, 'Employee_Balance')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-                          <?= $form->field($model, 'Exchange_Rate')->textInput(['type'=> 'number','required' => true]) ?>
-
-
-
-                        </div>
+                  
 
 
 

@@ -220,7 +220,7 @@ class ImprestController extends Controller
         if($RequestFor == 'Self')
         {
             $model->Request_For = $RequestFor;
-            $model->Employee_No = Yii::$app->user->identity->Employee_No;
+            $model->Employee_No = Yii::$app->user->identity->{'Employee No_'};
             $request = Yii::$app->navhelper->postData($service,$model);
             if(is_object($request)){
                 return $this->redirect(['update','Key' => $request->Key]);

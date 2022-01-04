@@ -228,22 +228,5 @@ $SecondaryColorHeaderColor = 'wheat';
             <?php $this->endBody() ?>
         </body>
 
-        
-        <script>
-        //               (function (document, window, $) {
-        // setTimeout(() => {
-        //     }, 200);
-        // })(document, window, jQuery);
-
-        $(document).ready(function () {
-            $.blockUI({ message: '<h5><img src="<?=$absoluteUrl ?>dist/img/spinner.gif" /> Loading...</h5>' });
-
-            setTimeout(() => {
-                $.unblockUI();
-            }, 900);
-            $('.page-content').toggle();
-        });
-        
-                 </script>
     </html>
 <?php $this->endPage() ?>
