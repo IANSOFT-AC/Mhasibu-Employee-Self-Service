@@ -172,7 +172,8 @@ function globalFieldUpdate(entity,controller = false, fieldName, ev, autoPopulat
   if(Key.length){
       const url = $('input[name=absolute]').val()+route+'/setfield?field='+fieldName;
       $.post(url,{ fieldValue:fieldValue,'Key': Key}).done(function(msg){
-          
+            console.log(`result of operation...`);
+            console.table(msg);
               // Populate relevant Fields
                                          
               $(keyField).val(msg.Key);
@@ -234,10 +235,13 @@ function enableSubmit(){
 }
 
 function requestStateUpdater(fieldParentNode, notificationType, msg = '' ) {
-  let inputParentNode = fieldParentNode.children[1]; // This is in boostrap 5
+  let inputParentNode = fieldParentNode; // This is in boostrap 4
+
+  console.log(`show parent node...`);
+  console.log(inputParentNode);
 
   if(notificationType === 'success' ){
-    let successElement = document.createElement('span');
+    let successElement = document.createElement('p');
     successElement.innerText = 'Data Saved Successfully.';
     successElement.setAttribute('class', 'text-success small');
     inputParentNode.append(successElement);

@@ -148,7 +148,8 @@ class TrainingController extends Controller
         if(is_array($appraisals)){
             foreach($appraisals as $req){
 
-                $Viewlink = Html::a('View', ['view','Key' => $req->Key], ['class' => 'btn btn-outline-primary btn-xs']);
+                $Viewlink = Html::a('<i class="fas fa-eye"></i>', ['view','Key' => $req->Key], ['class' => 'btn btn-outline-primary btn-xs', 'title' => 'View Record Details']);
+                $Updatelink = ($req->Status == 'New')?Html::a('<i class="fas fa-pen"></i>', ['update','Key' => $req->Key], ['class' => 'mx-1 btn btn-outline-primary btn-xs','title' => 'Update Record']):'';
                 $result['data'][] = [
                     'Application_No' => !empty($req->Application_No) ? $req->Application_No : 'Not Set',
                     'Date_of_Application' => !empty($req->Date_of_Application) ? $req->Date_of_Application : '',
@@ -157,7 +158,7 @@ class TrainingController extends Controller
                     'Employee_Name' => !empty($req->Employee_Name) ? $req->Employee_Name : '',
                     'Period' =>  !empty($req->Period) ?$req->Period : '',
                     'Trainer' =>  !empty($req->Trainer) ?$req->Trainer : '',
-                    'Action' => !empty($Viewlink) ? $Viewlink : '',
+                    'Action' => $Viewlink.$Updatelink,
                 ];
             }
         }

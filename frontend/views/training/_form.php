@@ -13,11 +13,11 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 ?>
 
 <div class="row">
-    <div class="card">
-        <div class="card-body">
+    
+        
         
 
-                    <?= ($model->Status == 'New')?Html::a('<i class="fas fa-paper-plane"></i> Send Approval Req',['send-for-approval','employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-success submitforapproval',
+                    <?= ($model->Status == 'New')?Html::a('<i class="fas fa-paper-plane"></i> Send Approval Req',['send-for-approval','employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-app bg-success submitforapproval',
                         'data' => [
                             'confirm' => 'Are you sure you want to send this request for approval?',
                             'params'=>[
@@ -41,7 +41,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     ],
                                     'method' => 'get',
                                     ],
-                                    'title' => 'Cancel Imprest Approval Request'
+                                    'title' => 'Confirm Attendance'
 
                                 ]);
                             ?>
@@ -52,7 +52,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                     <?php if($model->Status == 'Approved'): ?>
                         
 
-                        <?= Html::a('<i class="fas fa-times"></i> Confirm Attendance',['confirm-training'],['class' => 'btn btn-warning submitforapproval',
+                        <?= Html::a('<i class="fas fa-check"></i> Confirm Attendance',['confirm-training'],['class' => 'btn btn-warning submitforapproval',
                                 'data' => [
                                 'confirm' => 'Are you sure you want to confirm training?',
                                 'params'=>[
@@ -70,9 +70,9 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
 
 
-        </div><!---end Card Body --->
+       
         
-    </div>
+    
     
 </div>
 
@@ -96,10 +96,10 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <?= $form->field($model, 'Application_No')->textInput(['readonly' => true]) ?>
                                     <?= $form->field($model, 'Training_Need')->dropDownList($trainingNeeds,['prompt' => 'Select ...']) ?>
                                     <?= $form->field($model, 'Date_of_Application')->textInput(['readonly' => true])?>
-                                    <?= $form->field($model, 'Training_Calender')->textInput(['readonly' => true, 'disabled' =>  true])?>
-                                    <?= $form->field($model, 'Training_Need_Description')->textInput(['readonly' => true, 'disabled' =>  true]); ?>
-                                    <?= $form->field($model, 'Employee_No')->textInput(['readonly' => true, 'disabled' =>  true]); ?>
-                                    <?= $form->field($model, 'Employee_Name')->textInput(['readonly' => true, 'disabled' =>  true]); ?>
+                                    <?= $form->field($model, 'Training_Calender')->textInput(['readonly' => true])?>
+                                    <?= $form->field($model, 'Training_Need_Description')->textInput(['readonly' => true]); ?>
+                                    <?= $form->field($model, 'Employee_No')->textInput(['readonly' => true]); ?>
+                                    <?= $form->field($model, 'Employee_Name')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Job_Group')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Key')->hiddenInput()->label(false); ?>
                     </div>
@@ -110,7 +110,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <?= $form->field($model, 'Status')->textInput(['readonly' => true])?>
                                     <?= $form->field($model, 'Start_Date')->textInput(['readonly' => true])?>
                                     <?= $form->field($model, 'End_Date')->textInput(['required' => true])?>
-                                    <?= $form->field($model, 'Period')->textInput(['readonly' => true, 'disabled' =>  true]); ?>
+                                    <?= $form->field($model, 'Period')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Expected_Cost')->textInput(['type' => 'number']); ?>
                                     <?= $form->field($model, 'Trainer')->textInput(['type' => 'number']); ?>
                                     <?= $form->field($model, 'Exceeds_Expected_Trainees')->checkbox(['Exceeds_Expected_Trainees', $model->Exceeds_Expected_Trainees]); ?>

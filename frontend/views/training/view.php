@@ -10,8 +10,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->title = 'Training Request - '.$model->Application_No;
-$this->params['breadcrumbs'][] = ['label' => 'Store Requisitions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => 'Store Requisition Card', 'url' => ['view','No'=> $model->Application_No]];
+$this->params['breadcrumbs'][] = ['label' => 'Training Applications', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Training Application', 'url' => ['view','Key'=> $model->Key]];
 
 ?>
 
@@ -43,6 +43,30 @@ $this->params['breadcrumbs'][] = ['label' => 'Store Requisition Card', 'url' => 
             'title' => 'Cancel Document Approval Request'
 
         ]):'' ?>
+
+
+
+
+
+                    <?php if($model->Status == 'Approved'): ?>
+                        
+
+                        <?= Html::a('<i class="fas fa-check"></i> Confirm Attendance',['confirm-training'],['class' => 'btn btn-app submitforapproval',
+                                'data' => [
+                                'confirm' => 'Are you sure you want to confirm training?',
+                                'params'=>[
+                                    'No'=> $model->Application_No,
+                                ],
+                                'method' => 'get',
+                                ],
+                                'title' => 'Confirm Attendance'
+
+                            ]);
+                        ?>
+
+                    <?php  endif; ?>
+
+
     </div>
 </div>
 
