@@ -68,6 +68,7 @@ return [
         'ImprestManagement', // 50017
         'EmployeeExitManagement',
         'HRAppraisalManagement', // 50209
+        'HRTrainingManagement', // 50010
     ],
 
 
@@ -472,6 +473,16 @@ return [
         'PortalReports' => 'PortalReports',//50064
         'HRAppraisalManagement' => 'HRAppraisalManagement', // 50209
 
+
+        /************TRAINING*****************/
+
+        'TrainingApplicationList' => 'TrainingApplicationList', //56003
+        'TrainingApplicationPendingList' => 'TrainingApplicationPendingList', //56010
+        'TrainingApplicationApprovedList' => 'TrainingApplicationApprovedList', //56011
+        'TrainingApplicationConfirmList' => 'TrainingApplicationConfirmList', //56008 
+        'TrainingApplicationCard' => 'TrainingApplicationCard', //56004
+        'TrainingPlanLines' => 'TrainingPlanLines', //56018
+        'HRTrainingManagement' => 'HRTrainingManagement', //50010
 
 
     ],

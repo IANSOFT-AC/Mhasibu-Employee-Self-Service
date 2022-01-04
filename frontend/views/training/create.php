@@ -11,7 +11,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\AgendaDocument */
 
-$this->title = 'Add Training Clearance Line';
+$this->title = 'Create Training Application';
 $this->params['breadcrumbs'][] = ['label' => '', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 

@@ -12,7 +12,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\AgendaDocument */
 
-$this->title = 'UpdateEmployee Objective.';
+$this->title = 'Update Training Application.';
 
 ?>
 <div class="agenda-document-update">
@@ -21,6 +21,7 @@ $this->title = 'UpdateEmployee Objective.';
 
     <?= $this->render('_form',[
         'model' => $model,
+        'trainingNeeds' => $trainingNeeds
     ]) ?>
 
 </div>

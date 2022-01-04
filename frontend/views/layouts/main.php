@@ -1140,12 +1140,49 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                                     </a>
                                 </li>
 
-                                <!--<li class="nav-item">
-                                    <a href="<?/*= $absoluteUrl */?>exit-form/create" class="nav-link <?/*= Yii::$app->recruitment->currentaction('exit-form','create')?'active':'' */?>">
+                            </ul>
+                        </li>
+
+                        <!-- Training -->
+
+                        <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl('training')?'menu-open':'' ?>">
+                            <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl('training')?'active':'' ?>">
+                                <i class="nav-icon fa fa-sign-out-alt" ></i>
+                                <p>
+                                    Training
+                                    <i class="fas fa-angle-left right"></i>
+                                    <!--<span class="badge badge-info right">6</span>-->
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="<?= $absoluteUrl ?>training" class="nav-link <?= Yii::$app->recruitment->currentaction('training','index')?'active':'' ?>">
                                         <i class="fa fa-check-square nav-icon"></i>
-                                        <p>Create an Exit Form </p>
+                                        <p>Training Application List </p>
                                     </a>
-                                </li>-->
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="<?= $absoluteUrl ?>training/pending" class="nav-link <?= Yii::$app->recruitment->currentaction('training','pending')?'active':'' ?>">
+                                        <i class="fa fa-check-square nav-icon"></i>
+                                        <p>Training Pending Approval</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="<?= $absoluteUrl ?>training/approved" class="nav-link <?= Yii::$app->recruitment->currentaction('training','approved')?'active':'' ?>">
+                                        <i class="fa fa-check-square nav-icon"></i>
+                                        <p>Approved Trainings</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="<?= $absoluteUrl ?>training/confirm" class="nav-link <?= Yii::$app->recruitment->currentaction('training','confirm')?'active':'' ?>">
+                                        <i class="fa fa-check-square nav-icon"></i>
+                                        <p>Training Confirmation</p>
+                                    </a>
+                                </li>
 
                             </ul>
                         </li>

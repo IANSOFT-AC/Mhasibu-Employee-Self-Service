@@ -5,9 +5,8 @@ use yii\base\Component;
 use common\models\Services;
 use yii\web\Response;
 
-
 /*
- * Written By @francnjamb - on Twitter
+ * Written By francnjamb@gmail.com
  * Lots of love too....
  * */
 class Navhelper extends Component{
@@ -15,7 +14,7 @@ class Navhelper extends Component{
     public function getData($service,$params=[]){
 
         # return true; //comment after dev or after testing outside Navision scope env
-        $identity = \Yii::$app->user->identity;
+        // 
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -60,7 +59,6 @@ class Navhelper extends Component{
 
 
      /*Read a single entry*/
-
      public function findOne($service,$credentials = [],$filterKey, $filterValue){
 
         $url  =  new Services($service);
@@ -81,6 +79,7 @@ class Navhelper extends Component{
 
         }
 
+
         $res = (array)$result = Yii::$app->navision->readEntry($credentials, $wsdl, $filterKey, $filterValue);
         //var_dump($res); exit;
         if(count($res) && !isset($res[0])){
@@ -92,6 +91,39 @@ class Navhelper extends Component{
     }
 
 
+    public function findOneRecord($service,$filterKey, $filterValue){
+     
+        $username =  Yii::$app->params['NavisionUsername'];
+        $password =  Yii::$app->params['NavisionPassword'];
+
+        $creds = (object)[];
+        $creds->UserName = $username;
+        $creds->PassWord = $password;
+        $url  =  new Services($service);
+        $wsdl = $url->getUrl();
+
+        if(!Yii::$app->navision->isUp($wsdl,$creds)) {
+         
+            return ['error' => 'Service unavailable.'];
+
+        }
+      
+
+        $res = (array)$result = Yii::$app->navision->readEntry($creds, $wsdl, $filterKey, $filterValue);
+        //yii\helpers\VarDumper::dump( $res, $depth = 10, $highlight = true); exit;
+        if(count($res)){
+            if(isset($res[$service])){
+                return $res[$service];
+            }
+            return false;
+        }else{
+            return false;
+        }
+
+    }
+
+
+
 
     /*Read a single Record By Key*/
 
@@ -100,8 +132,8 @@ class Navhelper extends Component{
 
         $url  =  new Services($service);
         $wsdl = $url->getUrl();
-        $username = (!Yii::$app->user->isGuest)? Yii::$app->user->identity->{'User ID'} : Yii::$app->params['ldPrefix'].'\\'.Yii::$app->params['NavisionUsername'];
-        $password = Yii::$app->session->has('IdentityPassword')? Yii::$app->session->get('IdentityPassword'):Yii::$app->params['NavisionPassword'];
+        $username = Yii::$app->params['NavisionUsername'];
+        $password = Yii::$app->params['NavisionPassword'];
 
         $creds = (object)[];
         $creds->UserName = $username;
@@ -125,9 +157,10 @@ class Navhelper extends Component{
     }
 
 
+
     //create record(s)-----> post data
     public function postData($service,$data){
-        $identity = \Yii::$app->user->identity;
+        // 
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
         $post = Yii::$app->request->post();
@@ -137,6 +170,7 @@ class Navhelper extends Component{
         $creds->PassWord = $password;
         $url = new Services($service);
         $soapWsdl=$url->getUrl();
+        // exit($soapWsdl);
 
         $entry = (object)[];
         $entryID = $service;
@@ -146,7 +180,6 @@ class Navhelper extends Component{
             }
 
         }
-//exit('lll');
         if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
             throw new \yii\web\HttpException(503, 'Service unavailable');
 
@@ -155,6 +188,8 @@ class Navhelper extends Component{
 
         // $results = Yii::$app->navision->readEntries($creds, $soapWsdl,$filter);
         $results = Yii::$app->navision->addEntry($creds, $soapWsdl,$entry, $entryID);
+        
+        // VarDumper::dump( $results, $depth = 10, $highlight = true); exit;
 
         if(is_object($results)){
             $lv =(array)$results;
@@ -172,7 +207,7 @@ class Navhelper extends Component{
     }
     //update data   -->post data
     public function updateData($service,$data ,$exception = []){
-        $identity = \Yii::$app->user->identity;
+        // 
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
         $post = Yii::$app->request->post();
@@ -211,7 +246,7 @@ class Navhelper extends Component{
     }
     //purge data --> pass key as get param
     public function deleteData($service,$key){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
         $url = new Services($service);
@@ -227,7 +262,7 @@ class Navhelper extends Component{
 
     //Generate Invoice
     public function GenerateInvoice($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username = Yii::$app->params['NavisionUsername'];
         $password = Yii::$app->params['NavisionPassword'];
 
@@ -265,7 +300,7 @@ class Navhelper extends Component{
 
     //Create Customer
     public function CreateCustomer($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username = Yii::$app->params['NavisionUsername'];
         $password = Yii::$app->params['NavisionPassword'];
 
@@ -304,7 +339,7 @@ class Navhelper extends Component{
     //Leave Mgt
 
     public function SendLeaveApprovalRequest($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -343,7 +378,7 @@ class Navhelper extends Component{
     //Cancel leave approval request
 
     public function CancelLeaveApprovalRequest($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username = (!Yii::$app->user->isGuest)? Yii::$app->user->identity->{'User ID'} : Yii::$app->params['NavisionUsername'];
         $password = Yii::$app->session->has('IdentityPassword')? Yii::$app->session->get('IdentityPassword'):Yii::$app->params['NavisionPassword'];
 
@@ -382,7 +417,7 @@ class Navhelper extends Component{
     //Approve Leave Request
 
     public function ApproveLeaveRequest($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -423,7 +458,7 @@ class Navhelper extends Component{
     //Reject Leave Application
 
     public function RejectLeaveRequest($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -465,7 +500,7 @@ class Navhelper extends Component{
     //Submit a Job Application
 
     public function SubmitJobApplication($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -505,7 +540,7 @@ class Navhelper extends Component{
 
 
     public function IanGeneratePayslip($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -544,7 +579,7 @@ class Navhelper extends Component{
 //Generate P9
 
     public function IanGenerateP9($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -585,7 +620,7 @@ class Navhelper extends Component{
 
 
     public function IanGenerateMedicalStatementReport($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -627,7 +662,7 @@ class Navhelper extends Component{
     //Generate Appraisal Report
 
     public function IanGenerateAppraisalReport($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -666,7 +701,7 @@ class Navhelper extends Component{
     //Submit AN Appraisal for Approval
 
     public function IanSendGoalSettingForApproval($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -705,7 +740,7 @@ class Navhelper extends Component{
     //Approve Goal setting of an Appraisal
 
     public function IanApproveGoalSetting($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password = Yii::$app->params['NavisionPassword'];
 
@@ -745,7 +780,7 @@ class Navhelper extends Component{
     //Reject and Return Appraisal goal setting to appraisee
 
     public function IanSendGoalSettingBackToAppraisee($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -784,7 +819,7 @@ class Navhelper extends Component{
     //Send MY Appraisal for Approval
 
     public function IanSendMYAppraisalForApproval($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -823,7 +858,7 @@ class Navhelper extends Component{
     //Approve MY Appraisal
 
     public function IanApproveMYAppraisal($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -862,7 +897,7 @@ class Navhelper extends Component{
     //Reject Mid Year Appraisal
 
     public function IanSendMYAppraisaBackToAppraisee($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -901,7 +936,7 @@ class Navhelper extends Component{
     //Send End Year Appraisal for Approval
 
     public function IanSendEYAppraisalForApproval($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -940,7 +975,7 @@ class Navhelper extends Component{
 //Approve End Year Appraisal
 
     public function IanApproveEYAppraisal($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -979,7 +1014,7 @@ class Navhelper extends Component{
     //Reject End Year Appraisal
 
     public function IanSendEYAppraisaBackToAppraisee($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -1018,7 +1053,7 @@ class Navhelper extends Component{
     //send appraisal to peer 1
 
     public function IanSendEYAppraisalToPeer1($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -1057,7 +1092,7 @@ class Navhelper extends Component{
     //send appraisal to peer 2
 
     public function IanSendEYAppraisalToPeer2($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -1096,7 +1131,7 @@ class Navhelper extends Component{
     //send End Year Appraisal back to supervisor from peer
 
     public function IanSendEYAppraisaBackToSupervisorFromPeer($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -1135,7 +1170,7 @@ class Navhelper extends Component{
     //Send End-Year Appraisal to Agreement Level
 
     public function IanSendEYAppraisalToAgreementLevel($service,$data){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -1171,249 +1206,10 @@ class Navhelper extends Component{
 
     }
 
-
-
-    public function Contractworkflow($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
-        $username =  Yii::$app->params['NavisionUsername'];
-        $password =  Yii::$app->params['NavisionPassword'];
-
-        $creds = (object)[];
-        $creds->UserName = $username;
-        $creds->PassWord = $password;
-        $url = new Services($service);
-        $soapWsdl=$url->getUrl();
-
-        $entry = (object)[];
-
-        foreach($data as $key => $value){
-            if($key !=='_csrf-frontend'){
-                $entry->$key = $value;
-            }
-
-        }
-
-        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
-            throw new \yii\web\HttpException(503, 'Service unavailable');
-
-        }
-
-        $results = Yii::$app->navision->$method($creds, $soapWsdl,$entry);
-
-        if(is_object($results)){
-            $lv =(array)$results;
-            return $lv;
-        }
-        else{
-            return $results;
-        }
-
-    }
-
-
-    /*COGRI Portal Workflows */
-
-    public function PortalWorkFlows($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
-        $username =  Yii::$app->params['NavisionUsername'];
-        $password =  Yii::$app->params['NavisionPassword'];
-
-        $creds = (object)[];
-        $creds->UserName = $username;
-        $creds->PassWord = $password;
-        $url = new Services($service);
-        $soapWsdl=$url->getUrl();
-
-        $entry = (object)[];
-
-        foreach($data as $key => $value){
-            if($key !=='_csrf-frontend'){
-                $entry->$key = $value;
-            }
-
-        }
-
-        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
-            throw new \yii\web\HttpException(503, 'Service unavailable');
-
-        }
-
-
-        $results = Yii::$app->navision->CongriApprovalWorkFlow($creds, $soapWsdl,$entry,$method);
-
-        if(is_object($results)){
-            $lv =(array)$results;
-            return $lv;
-        }
-        else{
-            return $results;
-        }
-
-    }
-
-
-    // Call Imprest Request
-
-    public function Imprest($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
-        $username =  Yii::$app->params['NavisionUsername'];
-        $password =  Yii::$app->params['NavisionPassword'];
-
-        $creds = (object)[];
-        $creds->UserName = $username;
-        $creds->PassWord = $password;
-        $url = new Services($service);
-        $soapWsdl=$url->getUrl();
-
-        $entry = (object)[];
-
-        foreach($data as $key => $value){
-            if($key !=='_csrf-frontend'){
-                $entry->$key = $value;
-            }
-
-        }
-
-        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
-            throw new \yii\web\HttpException(503, 'Service unavailable');
-
-        }
-
-
-        $results = Yii::$app->navision->CongriImprest($creds, $soapWsdl,$entry,$method);
-
-        if(is_object($results)){
-            $lv =(array)$results;
-            return $lv;
-        }
-        else{
-            return $results;
-        }
-
-    }
-
-    public function PortalReports($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
-        $username =  Yii::$app->params['NavisionUsername'];
-        $password =  Yii::$app->params['NavisionPassword'];
-
-        $creds = (object)[];
-        $creds->UserName = $username;
-        $creds->PassWord = $password;
-        $url = new Services($service);
-        $soapWsdl=$url->getUrl();
-
-        $entry = (object)[];
-
-        foreach($data as $key => $value){
-            if($key !=='_csrf-frontend'){
-                $entry->$key = $value;
-            }
-
-        }
-
-        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
-            throw new \yii\web\HttpException(503, 'Service unavailable');
-
-        }
-
-
-        $results = Yii::$app->navision->PortalReports($creds, $soapWsdl,$entry,$method);
-
-        if(is_object($results)){
-            $lv =(array)$results;
-            return $lv;
-        }
-        else{
-            return $results;
-        }
-
-    }
-
-
-    public function Jobs($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
-        $username =  Yii::$app->params['NavisionUsername'];
-        $password =  Yii::$app->params['NavisionPassword'];
-
-        $creds = (object)[];
-        $creds->UserName = $username;
-        $creds->PassWord = $password;
-        $url = new Services($service);
-        $soapWsdl=$url->getUrl();
-
-        $entry = (object)[];
-
-        foreach($data as $key => $value){
-            if($key !=='_csrf-frontend'){
-                $entry->$key = $value;
-            }
-
-        }
-
-        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
-            throw new \yii\web\HttpException(503, 'Service unavailable');
-
-        }
-
-
-        $results = Yii::$app->navision->PortalReports($creds, $soapWsdl,$entry,$method);
-
-        if(is_object($results)){
-            $lv =(array)$results;
-            return $lv;
-        }
-        else{
-            return $results;
-        }
-
-    }
-
-    /*
-     * Employee Exit Code Unit Invocation
-     * */
-
-    public function EmployeeExit($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
-        $username =  Yii::$app->params['NavisionUsername'];
-        $password =  Yii::$app->params['NavisionPassword'];
-
-        $creds = (object)[];
-        $creds->UserName = $username;
-        $creds->PassWord = $password;
-        $url = new Services($service);
-        $soapWsdl=$url->getUrl();
-
-        $entry = (object)[];
-
-        foreach($data as $key => $value){
-            if($key !=='_csrf-frontend'){
-                $entry->$key = $value;
-            }
-
-        }
-
-        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
-            throw new \yii\web\HttpException(503, 'Service unavailable');
-
-        }
-
-        $results = Yii::$app->navision->EmployeeExit($creds, $soapWsdl,$entry,$method);
-
-        if(is_object($results)){
-            $lv =(array)$results;
-            return $lv;
-        }
-        else{
-            return $results;
-        }
-
-    }
-
     //General Code unit invocation implementation method
 
      public function Codeunit($service,$data,$method){
-        $identity = \Yii::$app->user->identity;
+        
         $username =  Yii::$app->params['NavisionUsername'];
         $password =  Yii::$app->params['NavisionPassword'];
 
@@ -1450,7 +1246,53 @@ class Navhelper extends Component{
 
     }
 
+      /*Method to commit single field data to services*/
+
+      public function Commit($commitervice,$field=[],$Key){
+        $fieldName = $fieldValue = '';
+        if(sizeof($field)){
+            foreach($field as $key => $value){
+                $fieldName = $key;
+                $fieldValue = $value;
+            }
+        }
+
+        $service = Yii::$app->params['ServiceName'][$commitervice];
+        $request = $this->readByKey($service,$Key);
+        $data = [];
+        if(is_object($request)){
+            $data = [
+                'Key' => $request->Key,
+                $fieldName => $fieldValue
+            ];
+        }else{
+            Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+            return ['error' => $request];
+        }
+
+        $result = Yii::$app->navhelper->updateData($service,$data);
+        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+        return $result;
+    }
+
     /**Auxilliary methods for working with models */
+
+    public function dropdown($service,$from,$to, $filterValues = ''){
+        $service = Yii::$app->params['ServiceName'][$service];
+
+        $filter = '';
+        if(isset($filterValues) && is_array($filterValues))
+        {
+            foreach($filterValues  as $key => $value){
+                $filter[] = [$key => $value];  
+            }
+        }else {
+            $filter = [];
+        }
+
+        $result = \Yii::$app->navhelper->getData($service, $filter);
+        return Yii::$app->navhelper->refactorArray($result,$from,$to);
+    }
 
     public function loadmodel($obj,$model,$exception = []){ //load object data to a model, e,g from service data to model
 
@@ -1478,62 +1320,6 @@ class Navhelper extends Component{
 
         return $model;
     }
-
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   /*Method to commit single field data to services*/
-
-   public function Commit($commitervice,$field=[],$Key){
-       
-    $fieldName = $fieldValue = '';
-    if(sizeof($field)){
-        foreach($field as $key => $value){
-            $fieldName = $key;
-            $fieldValue = $value;
-        }
-    }
-
-    $service = Yii::$app->params['ServiceName'][$commitervice];
-    
-
-    $request = $this->readByKey($service,$Key);
-   // Yii::$app->recruitment->printrr($request);
-
-   
-
-
-    $data = [];
-    if(is_object($request)){
-        $data = [
-            'Key' => $request->Key,
-            $fieldName => $fieldValue
-        ];
-    }else{
-        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-        return ['error' => $request];
-    }
-
-
-
-    $result = Yii::$app->navhelper->updateData($service,$data);
-
-    Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-
-    return $result;
-
-}
-
-
-
 
     // Refactor an array with valid and existing data
 

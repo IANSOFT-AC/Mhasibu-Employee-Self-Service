@@ -7,20 +7,17 @@
  */
 
 namespace frontend\controllers;
-use frontend\models\Employeeappraisalkra;
-use frontend\models\Experience;
 use frontend\models\Training;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\BadRequestHttpException;
-
 use yii\web\Response;
-use kartik\mpdf\Pdf;
+
+use yii\helpers\HTML;
+
 
 class TrainingController extends Controller
 {
@@ -51,7 +48,7 @@ class TrainingController extends Controller
             ],
             'contentNegotiator' =>[
                 'class' => ContentNegotiator::class,
-                'only' => [''],
+                'only' => ['list','list-pending','list-approved','list-confirmation'],
                 'formatParam' => '_format',
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
@@ -61,94 +58,71 @@ class TrainingController extends Controller
         ];
     }
 
-    
-
-    public function actionCreate($Form_No,$Exit_no, $Employee_no){
-
-        $model = new Training();
-        $service = Yii::$app->params['ServiceName']['TrainingClearanceForm'];
-        $model->Form_No = $Form_No;
-        $model->Employee_no = $Employee_no;
-        $model->Exit_no = $Exit_no;
-        $model->isNewRecord = true;
-
-
-
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Training'],$model)  && $model->validate() ){
-
-
-            $result = Yii::$app->navhelper->postData($service,$model);
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            if(is_object($result)){
-
-                return ['note' => '<div class="alert alert-success">Record Added Successfully. </div>'];
-
-            }else{
-
-                return ['note' => '<div class="alert alert-danger">Error Adding Record : '.$result.'</div>' ];
-
-            }
-
-        }//End Saving experience
-
-        if(Yii::$app->request->isAjax){
-            return $this->renderAjax('create', [
-                'model' => $model,
-                
-            ]);
-        }
-
-        return $this->render('create',[
-            'model' => $model,
-            
-        ]);
+    public function actionIndex() 
+    {
+        return $this->render('index');
     }
 
+    public function actionPending()
+    {
+        return $this->render('pending');
+    }
 
-    public function actionUpdate(){
-        $model = new Lab ;
-        $model->isNewRecord = false;
-        $service = Yii::$app->params['ServiceName']['TrainingClearanceForm'];
-        $filter = [
-            'Line_No' => Yii::$app->request->get('Line_No'),
-        ];
-        $result = Yii::$app->navhelper->getData($service,$filter);
+    public function actionApproved()
+    {
+        return $this->render('approved');
+    }
 
-        if(is_array($result)){
-            //load nav result to model
-            $model = Yii::$app->navhelper->loadmodel($result[0],$model) ;
-        }else{
-            Yii::$app->recruitment->printrr($result);
+    public function actionConfirm()
+    {
+        return $this->render('confirm');
+    }
+
+    public function actionCreate(){
+        $model = new Training();
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationCard'];
+        $model->Employee_No = Yii::$app->user->identity->{'Employee No_'};
+        $result = Yii::$app->navhelper->postData($service,$model);
+
+        if(is_object($result)) {
+            // Redirect to Update
+            return $this->redirect(['update', 'Key' => $result->Key]);
         }
 
+        Yii::$app->session->setFlash('error', $result);
+        return $this->redirect(['index']);
+    }
 
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Lab'],$model) && $model->validate() ){
-            $result = Yii::$app->navhelper->updateData($service,$model);
-
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            if(!is_string($result)){
-
-                return ['note' => '<div class="alert alert-success">Record Updated Successfully. </div>' ];
-            }else{
-
-                return ['note' => '<div class="alert alert-danger">Error Updating Record: '.$result.'</div>'];
-            }
-
-        }
-
-        if(Yii::$app->request->isAjax){
-            return $this->renderAjax('update', [
-                'model' => $model,
-            ]);
-        }
+    public function actionUpdate($Key){
+        $model = new Training();
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationCard'];
+        $result = Yii::$app->navhelper->readByKey($service,$Key);
+        Yii::$app->navhelper->loadmodel($result, $model);
 
         return $this->render('update',[
             'model' => $model,
+            'trainingNeeds' => Yii::$app->navhelper->dropdown('TrainingPlanLines','Training_Need','Training_Need_Description')
         ]);
     }
 
+    public function actionView($Key='', $No='')
+    {
+        $model = new Training();
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationCard'];
+        if(!empty($Key))
+        {
+            $result = Yii::$app->navhelper->readByKey($service,$Key);
+        }elseif(!empty($No)){
+            $result = Yii::$app->navhelper->findOne($service,'','Application_No',$No);
+        }
+        
+        Yii::$app->navhelper->loadmodel($result, $model);
 
-
+        return $this->render('view',[
+            'model' => $model,
+            'trainingNeeds' => Yii::$app->navhelper->dropdown('TrainingPlanLines','Training_Need','Training_Need_Description')
+        ]);
+    }
    
 
     public function actionDelete(){
@@ -159,6 +133,204 @@ class TrainingController extends Controller
             return ['note' => '<div class="alert alert-success">Record Purged Successfully</div>'];
         }else{
             return ['note' => '<div class="alert alert-danger">Error Purging Record: '.$result.'</div>' ];
+        }
+    }
+
+
+    public function actionList(){
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationList'];
+        $filter = [
+            'Employee_No' => Yii::$app->user->identity->{'Employee No_'},
+        ];
+        $appraisals = \Yii::$app->navhelper->getData($service,$filter);
+        $result = [];
+
+        if(is_array($appraisals)){
+            foreach($appraisals as $req){
+
+                $Viewlink = Html::a('View', ['view','Key' => $req->Key], ['class' => 'btn btn-outline-primary btn-xs']);
+                $result['data'][] = [
+                    'Application_No' => !empty($req->Application_No) ? $req->Application_No : 'Not Set',
+                    'Date_of_Application' => !empty($req->Date_of_Application) ? $req->Date_of_Application : '',
+                    'Training_Calender' => !empty($req->Training_Calender) ? $req->Training_Calender : 'Not Set',
+                    'Employee_No' => !empty($req->Employee_No) ? $req->Employee_No : 'Not Set',
+                    'Employee_Name' => !empty($req->Employee_Name) ? $req->Employee_Name : '',
+                    'Period' =>  !empty($req->Period) ?$req->Period : '',
+                    'Trainer' =>  !empty($req->Trainer) ?$req->Trainer : '',
+                    'Action' => !empty($Viewlink) ? $Viewlink : '',
+                ];
+            }
+        }
+        return $result;
+    }
+
+    // Pending
+
+    public function actionListPending(){
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationList'];
+        $filter = [
+            'Employee_No' => Yii::$app->user->identity->{'Employee No_'},
+        ];
+        $appraisals = \Yii::$app->navhelper->getData($service,$filter);
+        $result = [];
+
+        if(is_array($appraisals)){
+            foreach($appraisals as $req){
+
+                $Viewlink = Html::a('View', ['view','Key' => $req->Key], ['class' => 'btn btn-outline-primary btn-xs']);
+                $result['data'][] = [
+                    'Application_No' => !empty($req->Application_No) ? $req->Application_No : 'Not Set',
+                    'Date_of_Application' => !empty($req->Date_of_Application) ? $req->Date_of_Application : '',
+                    'Training_Calender' => !empty($req->Training_Calender) ? $req->Training_Calender : 'Not Set',
+                    'Employee_No' => !empty($req->Employee_No) ? $req->Employee_No : 'Not Set',
+                    'Employee_Name' => !empty($req->Employee_Name) ? $req->Employee_Name : '',
+                    'Period' =>  !empty($req->Period) ?$req->Period : '',
+                    'Trainer' =>  !empty($req->Trainer) ?$req->Trainer : '',
+                    'Action' => !empty($Viewlink) ? $Viewlink : '',
+                ];
+            }
+        }
+        return $result;
+    }
+
+    // Approved
+
+    public function actionListApproved(){
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationApprovedList'];
+        $filter = [
+            'Employee_No' => Yii::$app->user->identity->{'Employee No_'},
+        ];
+        $appraisals = \Yii::$app->navhelper->getData($service,$filter);
+        $result = [];
+
+        if(is_array($appraisals)){
+            foreach($appraisals as $req){
+
+                $Viewlink = Html::a('View', ['view','Key' => $req->Key], ['class' => 'btn btn-outline-primary btn-xs']);
+                $result['data'][] = [
+                    'Application_No' => !empty($req->Application_No) ? $req->Application_No : 'Not Set',
+                    'Date_of_Application' => !empty($req->Date_of_Application) ? $req->Date_of_Application : '',
+                    'Training_Calender' => !empty($req->Training_Calender) ? $req->Training_Calender : 'Not Set',
+                    'Employee_No' => !empty($req->Employee_No) ? $req->Employee_No : 'Not Set',
+                    'Employee_Name' => !empty($req->Employee_Name) ? $req->Employee_Name : '',
+                    'Period' =>  !empty($req->Period) ?$req->Period : '',
+                    'Trainer' =>  !empty($req->Trainer) ?$req->Trainer : '',
+                    'Action' => !empty($Viewlink) ? $Viewlink : '',
+                ];
+            }
+        }
+        return $result;
+    }
+
+    // Confirmation
+
+    public function actionListConfirmation(){
+        $service = Yii::$app->params['ServiceName']['TrainingApplicationConfirmList'];
+        $filter = [
+            'Employee_No' => Yii::$app->user->identity->{'Employee No_'},
+        ];
+        $appraisals = \Yii::$app->navhelper->getData($service,$filter);
+        $result = [];
+
+        if(is_array($appraisals)){
+            foreach($appraisals as $req){
+
+                $Viewlink = Html::a('View', ['view','Key' => $req->Key], ['class' => 'btn btn-outline-primary btn-xs']);
+                $result['data'][] = [
+                    'Application_No' => !empty($req->Application_No) ? $req->Application_No : 'Not Set',
+                    'Date_of_Application' => !empty($req->Date_of_Application) ? $req->Date_of_Application : '',
+                    'Training_Calender' => !empty($req->Training_Calender) ? $req->Training_Calender : 'Not Set',
+                    'Employee_No' => !empty($req->Employee_No) ? $req->Employee_No : 'Not Set',
+                    'Employee_Name' => !empty($req->Employee_Name) ? $req->Employee_Name : '',
+                    'Period' =>  !empty($req->Period) ?$req->Period : '',
+                    'Trainer' =>  !empty($req->Trainer) ?$req->Trainer : '',
+                    'Action' => !empty($Viewlink) ? $Viewlink : '',
+                ];
+            }
+        }
+        return $result;
+    }
+
+    /** Updates a single field */
+    public function actionSetfield($field){
+        $service = 'TrainingApplicationCard';
+        $value = Yii::$app->request->post('fieldValue');
+       
+        $result = Yii::$app->navhelper->Commit($service,[$field => $value],Yii::$app->request->post('Key'));
+        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+        return $result;    
+    }
+
+
+    public function actionSendForApproval($No)
+    {
+        $service = Yii::$app->params['ServiceName']['PortalFactory'];
+
+        $data = [
+            'applicationNo' => $No,
+            'sendMail' => 1,
+            'approvalUrl' => '',
+        ];
+
+
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanSendTrainingForApproval');
+
+        if(!is_string($result)){
+            Yii::$app->session->setFlash('success', 'Request Sent for Approval Successfully.', true);
+            //return $this->redirect(['view','No' => $No]);
+             return $this->redirect(['index']);
+        }else{
+
+            Yii::$app->session->setFlash('error', 'Error Sending Request for Approval  : '. $result);
+            // return $this->redirect(['view','No' => $No]);
+             return $this->redirect(['index']);
+
+        }
+    }
+
+    /*Cancel Approval Request */
+
+    public function actionCancelRequest($No)
+    {
+        $service = Yii::$app->params['ServiceName']['PortalFactory'];
+
+        $data = [
+            'applicationNo' => $No,
+        ];
+
+
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanCancelTrainingApprovalRequest');
+
+        if(!is_string($result)){
+            Yii::$app->session->setFlash('success', 'Approval Request Cancelled Successfully.', true);
+            return $this->redirect(['view','No' => $No]);
+        }else{
+
+            Yii::$app->session->setFlash('error', 'Error Cancelling Approval Request.  : '. $result);
+            return $this->redirect(['view','No' => $No]);
+
+        }
+    }
+
+    public function actionConfirmTraining($No)
+    {
+        $service = Yii::$app->params['ServiceName']['HRTrainingManagement'];
+
+        $data = [
+            'applicationNo' => $No,
+        ];
+
+
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanVouchForEmployeeAttendancePortal');
+
+        if(!is_string($result)){
+            Yii::$app->session->setFlash('success', 'Confirmed Successfully.', true);
+            return $this->redirect(['view','No' => $No]);
+        }else{
+
+            Yii::$app->session->setFlash('error', 'Error  : '. $result);
+            return $this->redirect(['view','No' => $No]);
+
         }
     }
 

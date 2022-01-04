@@ -1,6 +1,20 @@
 /**
  * Created by HP ELITEBOOK 840 G5 on 1/6/2021.
+ * Written with love by @francnjamb -- Twitter
  */
+
+
+
+
+
+//Initialize Sweet Alert
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000
+});
 
  function closeInput(elm) {
   var td = elm.parentNode;
@@ -129,7 +143,7 @@ function JquerifyField(model, fieldName) {
 // Function to do ajax field level updating
 
 function globalFieldUpdate(entity,controller = false, fieldName, ev, autoPopulateFields = []) {
-  console.log('was invoked');
+  console.log('Global Field Update was invoked');
   const model = entity.toLowerCase();
   const field = fieldName.toLowerCase();
   const formField = '.field-'+model+'-'+fieldName.toLowerCase();
@@ -179,16 +193,32 @@ function globalFieldUpdate(entity,controller = false, fieldName, ev, autoPopulat
 
              /*******End Field auto Population  */
               if((typeof msg) === 'string') { // A string is an error
-                  console.log(formField);
+                  console.log(`Form Field is: ${formField}`);
                   const parent = document.querySelector(formField);
-                  const helpbBlock = parent.children[2];
-                  helpbBlock.innerText = msg;
+
+                  // Update Request Status from Server
+                  requestStateUpdater(parent,'error', msg);
+
+                  // Fire a sweet alert if you can
+
+                  Toast.fire({
+                    type: 'error',
+                    title: msg
+                  })
                   
               }else{ // An object represents correct details
 
                   const parent = document.querySelector(formField);
-                  const helpbBlock = parent.children[2];
-                  helpbBlock.innerText = '';
+                 
+                  // Update Request Status from Server
+                  requestStateUpdater(parent,'success');
+
+                  // If you can Fire a sweet alert                  
+
+                  Toast.fire({
+                    type: 'success',
+                    title: field+' Saved Successfully.'
+                  })
                   
               }   
           },'json');
@@ -200,8 +230,44 @@ document.getElementById('submit').setAttribute("disabled", "true");
 }
 
 function enableSubmit(){
-document.getElementById('submit').removeAttribute("disabled");
+  document.getElementById('submit').removeAttribute("disabled");
+}
 
+function requestStateUpdater(fieldParentNode, notificationType, msg = '' ) {
+  let inputParentNode = fieldParentNode.children[1]; // This is in boostrap 5
+
+  if(notificationType === 'success' ){
+    let successElement = document.createElement('span');
+    successElement.innerText = 'Data Saved Successfully.';
+    successElement.setAttribute('class', 'text-success small');
+    inputParentNode.append(successElement);
+
+    // clean up the notification elements after 3 seconds
+    setTimeout(() => {
+      successElement.remove();
+    }, 3000);
+
+  } else if(notificationType === 'error' && msg){
+
+    let errorElement = document.createElement('span');
+    errorElement.innerText = `Message: ${msg}`;
+    errorElement.setAttribute('class', 'text-danger small');
+    inputParentNode.append(errorElement);
+
+    // clean up the notification elements after 3 seconds
+    setTimeout(() => {
+      errorElement.remove();
+      location.reload(true);
+    }, 7000);
+
+  }
+  
+  
+
+  
+    
+  
+  
 }
 
 

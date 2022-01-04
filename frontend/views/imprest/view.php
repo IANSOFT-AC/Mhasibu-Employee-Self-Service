@@ -42,8 +42,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
 
         ]):'' ?>
 
-        <?php if($ApprovalDetails): ?>
-            <?php if($ApprovalDetails->Sender_No == Yii::$app->user->identity->employee[0]->No): ?>
+        
 
                 <?= ($model->Status == 'Pending_Approval')?Html::a('<i class="fas fa-times"></i> Cancel Approval Req.',['cancel-request'],['class' => 'btn btn-warning submitforapproval',
                         'data' => [
@@ -58,9 +57,9 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
                     ]):'' 
                 ?>
 
-            <?php endif; ?>
+            
 
-            <?php if($model->Status == 'Pending_Approval' && @$ApprovalDetails->Approver_No == Yii::$app->user->identity->Employee[0]->No):?>
+            <?php if($model->Status == 'Pending_Approval'):?>
             
                 <?= 
                     Html::a('Approve',['approvals/approve-request', 'app'=> $model->No,
@@ -87,22 +86,11 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
                     ])
                 ?>
 
-        <?php  endif; ?>
-        <?php endif; ?>
+       
     
 
 
-        <?= Html::a('<i class="fas fa-file-pdf"></i> Print Imprest',['print-imprest'],['class' => 'btn btn-primary ',
-            'data' => [
-                'confirm' => 'Print Imprest?',
-                'params'=>[
-                    'No'=> $model->No,
-                ],
-                'method' => 'get',
-            ],
-            'title' => 'Print Imprest.'
-
-        ]) ?>
+       
 
         
 
