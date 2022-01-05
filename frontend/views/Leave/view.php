@@ -29,7 +29,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->Applicatio
 
         <?= ($model->Status == 'New')?Html::a('<i class="fas fa-paper-plane"></i> Send Approval Req',['send-for-approval','employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-success submitforapproval',
             'data' => [
-                'confirm' => 'Are you sure you want to send imprest request for approval?',
+                'confirm' => 'Are you sure you want to send request for approval?',
                 'params'=>[
                     'No'=> $_GET['No'],
                     'employeeNo' =>Yii::$app->user->identity->employee[0]->No,

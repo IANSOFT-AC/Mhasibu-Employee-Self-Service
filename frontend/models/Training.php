@@ -32,6 +32,8 @@ class Training extends Model
     public $Training_Start_Date;
     public $isNewRecord;
     public $Key;
+    public $Global_Dimension_1_Code;
+    public $Training_Plan_Calender;
 
     public function rules()
     {

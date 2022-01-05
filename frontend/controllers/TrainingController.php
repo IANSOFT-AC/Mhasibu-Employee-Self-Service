@@ -99,9 +99,21 @@ class TrainingController extends Controller
         $result = Yii::$app->navhelper->readByKey($service,$Key);
         Yii::$app->navhelper->loadmodel($result, $model);
 
+        // Yii::$app->recruitment->printrr($result);
+        // TNeed Filters
+        $filter = [];
+        if(!empty($result->Training_Plan_Calender) && !empty($result->Global_Dimension_1_Code))
+        {
+            $filter = [
+                'Global_Dimension_1_Code' => $result->Global_Dimension_1_Code,
+                'Calender_Code' => $result->Training_Plan_Calender
+            ];
+        }
+       
+
         return $this->render('update',[
             'model' => $model,
-            'trainingNeeds' => Yii::$app->navhelper->dropdown('TrainingPlanLines','Training_Need','Training_Need_Description')
+            'trainingNeeds' => Yii::$app->navhelper->dropdown('TrainingPlanLines','Training_Need','Training_Need_Description', $filter)
         ]);
     }
 

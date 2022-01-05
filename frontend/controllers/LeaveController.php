@@ -95,7 +95,7 @@ class LeaveController extends Controller
         if(!isset(Yii::$app->request->post()['Leave']) && empty($_FILES) ){
 
             $now = date('Y-m-d');
-            // $model->Start_Date = date('Y-m-d', strtotime($now.' + 2 days'));
+            $model->Start_Date = date('Y-m-d', strtotime($now.' + 2 days'));
             $model->Employee_No = Yii::$app->user->identity->Employee[0]->No; //Yii::$app->user->identity->{'Employee No_'};
             // echo '<pre>';
             // print_r(Yii::$app->user->identity->Employee[0]->No);
@@ -880,7 +880,7 @@ class LeaveController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanSendLeaveForApproval');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanSendLeaveForApproval');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Request Sent to Supervisor for Approval Successfully.', true);
@@ -906,7 +906,7 @@ class LeaveController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanCancelLeaveApprovalRequest');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanCancelLeaveApprovalRequest');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Approval Request Cancelled Successfully.', true);

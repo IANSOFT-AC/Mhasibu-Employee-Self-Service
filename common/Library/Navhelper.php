@@ -1277,14 +1277,14 @@ class Navhelper extends Component{
 
     /**Auxilliary methods for working with models */
 
-    public function dropdown($service,$from,$to, $filterValues = ''){
+    public function dropdown($service,$from,$to, $filterValues = []){
         $service = Yii::$app->params['ServiceName'][$service];
 
-        $filter = '';
+        $filter = [];
         if(isset($filterValues) && is_array($filterValues))
         {
             foreach($filterValues  as $key => $value){
-                $filter[] = [$key => $value];  
+                $filter = [$key => $value];  
             }
         }else {
             $filter = [];

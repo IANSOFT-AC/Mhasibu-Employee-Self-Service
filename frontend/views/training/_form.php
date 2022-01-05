@@ -101,6 +101,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <?= $form->field($model, 'Employee_No')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Employee_Name')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Job_Group')->textInput(['readonly' => true]); ?>
+                                    <?= $form->field($model, 'Training_Plan_Calender')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Key')->hiddenInput()->label(false); ?>
                     </div>
 
