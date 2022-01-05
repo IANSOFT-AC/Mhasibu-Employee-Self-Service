@@ -94,7 +94,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
 
 
-                                      <?= (Yii::$app->session->get('Goal_Setting_Status') == 'Closed' && Yii::$app->session->get('Appraisal_Status') == 'Supervisor_Level')?$form->field($model, 'Appraiser_Rating')->dropDownList($ratings,['prompt' => 'Select Rating...']):'' ?>
+                                      <?= (Yii::$app->session->get('Goal_Setting_Status') == 'Closed' && (Yii::$app->session->get('Appraisal_Status') == 'Supervisor_Level') || Yii::$app->session->get('Appraisal_Status') == 'Overview_Manager')?$form->field($model, 'Appraiser_Rating')->dropDownList($ratings,['prompt' => 'Select Rating...']):'' ?>
 
 
 

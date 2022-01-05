@@ -38,7 +38,7 @@ class ProbationController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout','index','create','update','delete','view'],
+                        'actions' => ['logout','index','create','update','delete','view','submit-agreement'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -757,6 +757,32 @@ class ProbationController extends Controller
 
     }
 
+
+    // Submit to Supervisor from Agreement
+
+    public function actionSubmitAgreement($appraisalNo,$employeeNo)
+    {
+        $service = Yii::$app->params['ServiceName']['AppraisalWorkflow'];
+        $data = [
+            'appraisalNo' => $appraisalNo,
+            'employeeNo' => $employeeNo,
+            'sendEmail' => 1,
+            'approvalURL' => Yii::$app->urlManager->createAbsoluteUrl(['probation/view', 'Appraisal_No' =>$appraisalNo, 'Employee_No' =>$employeeNo ])
+        ];
+
+        $result = Yii::$app->navhelper->CodeUnit($service,$data,'IanSendEYAppraisalForApproval');
+
+        if(!is_string($result)){
+            Yii::$app->session->setFlash('success', 'Probation Agreement Submitted Successfully.', true);
+            return $this->redirect(['index']);
+        }else{
+
+            Yii::$app->session->setFlash('error', 'Error Submitting Probation Agreement : '. $result);
+            return $this->redirect(['index']);
+
+        }
+
+    }
 
 
 

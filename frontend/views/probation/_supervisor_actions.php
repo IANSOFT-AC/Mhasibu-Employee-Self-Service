@@ -36,7 +36,7 @@ if($model->Goal_Setting_Status == 'Supervisor_Level' && $model->isSupervisor()):
 
 <!-- To OverView -->
 
-<?php if($model->Appraisal_Status == 'Agreement_Level' && $model->isSupervisor()): ?>
+<?php if($model->Appraisal_Status == 'Agreement_Level' || $model->Appraisal_Status == 'Supervisor_Level' && $model->isSupervisor()): ?>
                         <!-- Send Probation to Overview -->
    <div class="col-md-4 mx-1">
             <?= Html::a('<i class="fas fa-forward"></i> To Overview ',['submitprobationtooverview','appraisalNo'=> $model->Appraisal_No,'employeeNo' => $model->Employee_No],
@@ -81,8 +81,8 @@ if($model->Goal_Setting_Status == 'Supervisor_Level' && $model->isSupervisor()):
 
    
 
-    <div class="col-md-4 mx-1">
-                                <?= Html::a('<i class="fas fa-check"></i> Agreement',['agreementlevel','appraisalNo'=> $_GET['Appraisal_No'],'employeeNo' => $_GET['Employee_No']],[
+                        <div class="col-md-4 mx-1">
+                                <?php Html::a('<i class="fas fa-check"></i> Agreement',['agreementlevel','appraisalNo'=> $_GET['Appraisal_No'],'employeeNo' => $_GET['Employee_No']],[
                                             'class' => 'btn btn-app bg-success submitforapproval',
                                             'title' => 'Move Appraisal to  Agreement Level',
                                             'data' => [

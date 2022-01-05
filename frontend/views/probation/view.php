@@ -167,7 +167,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                                 $form->field($model, 'Over_View_Manager_Comments')->textInput(['readonly'=> true])
                             ?>
                             
-                           <?= ($model->Appraisal_Status == 'Agreement_Level' && $model->isSupervisor())?
+                           <?= ($model->Appraisal_Status == 'Supervisor_Level' && $model->isSupervisor())?
                             $form->field($model, 'Supervisor_Overall_Comments')->textarea(['rows'=> 2]) 
                            :
                            $form->field($model, 'Supervisor_Overall_Comments')->textInput(['readonly'=> true]) ?>
@@ -217,7 +217,7 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                     <div class="card-title">Recommended Action</div>
                 </div>
                 <div class="card-body">
-                <?= ($model->Appraisal_Status == 'Agreement_Level' && $model->isSupervisor()) ?$form->field($model, 'Probation_Recomended_Action')->dropDownList(
+                <?= (($model->Appraisal_Status == 'Supervisor_Level' || $model->Appraisal_Status == 'Human_Resource') && $model->isSupervisor()) ?$form->field($model, 'Probation_Recomended_Action')->dropDownList(
                                                         [
                                                             '_blank_' => '_blank_',
                                                             'Confirm' => 'Confirm',
@@ -243,10 +243,17 @@ if($model->Employee_No == Yii::$app->user->identity->{'Employee No_'})
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                             <?= $form->field($model, 'Agree_With_Sup_Rating')->dropDownList([
+                                                        
+                             <?=($model->isAppraisee())? $form->field($model, 'Agree_With_Sup_Rating')->dropDownList([
                                                             'Yes' => 'Yes',
                                                             'No' => 'No'
-                                                        ],['prompt' => 'Select ...']) ?>
+                                                        ],['prompt' => 'Select ...']):
+
+                                                        $form->field($model, 'Agree_With_Sup_Rating')->dropDownList([
+                                                            'Yes' => 'Yes',
+                                                            'No' => 'No'
+                                                        ],['prompt' => 'Select ...','readonly' => true,'disabled'=> true]);
+                                                         ?>
                         </div>
 
                         <?php if($model->Agree_With_Sup_Rating == 'No'): ?>
@@ -848,50 +855,16 @@ $script = <<<JS
          });
          /*End Add Weakness Development Plan*/
 
-         
-
-
-
-
-
         
-
 
     /*Commit Recommended action by supervisor*/
 
 
      $('#probation-probation_recomended_action').change(function(e){
-        const Probation_Recomended_Action = e.target.value;
-        const Appraisal_No = $('#probation-appraisal_no').val();
-        if(Appraisal_No.length){
-            
-            const url = $('input[name=url]').val()+'probation/setaction';
-            $.post(url,{'Probation_Recomended_Action': Probation_Recomended_Action,'Appraisal_No': Appraisal_No}).done(function(msg){
-                   //populate empty form fields with new data
-                   
-                  
-                   $('#probation-key').val(msg.Key);
-                  
-
-                    console.log(typeof msg);
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-probation-probation_recomended_action');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                      
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-probation-probation_recomended_action');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = ''; 
-                        
-                        
-                    }
-                    
-                },'json');
-            
-        }     
+            globalFieldUpdate('probation',false,'Probation_Recomended_Action', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500); 
      });
 
 
