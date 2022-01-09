@@ -177,9 +177,8 @@ public $isNewRecord;
             ['Code' => 'Qualifications' ,'Desc' => 'Qualifications'],
             ['Code' => 'Proffesional_Bodies' ,'Desc' => 'Proffesional_Bodies'],
             ['Code' => 'Work_History' ,'Desc' => 'Work_History'],
-           // ['Code' => 'Contract_Renewal','Desc' => 'Contract_Renewal'],
-           // ['Code' => 'New_Contract' ,'Desc' => 'New_Contract'],
-           // ['Code' => 'salary_Increment' ,'Desc' => 'salary_Increment']
+            ['Code' => 'Inter_Transfer','Desc' => 'Inter_Transfer'],
+          
         ];
 
         return ArrayHelper::map($changes,'Code','Desc');

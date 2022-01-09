@@ -334,6 +334,30 @@ class TrainingController extends Controller
         ];
 
 
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanConfirmAttendancePortal');
+
+        if(!is_string($result)){
+            Yii::$app->session->setFlash('success', 'Confirmed Successfully.', true);
+            return $this->redirect(['view','No' => $No]);
+        }else{
+
+            Yii::$app->session->setFlash('error', 'Error  : '. $result);
+            return $this->redirect(['view','No' => $No]);
+
+        }
+    }
+
+    // HR Confirm
+
+    public function actionHrConfirmTraining($No)
+    {
+        $service = Yii::$app->params['ServiceName']['HRTrainingManagement'];
+
+        $data = [
+            'applicationNo' => $No,
+        ];
+
+
         $result = Yii::$app->navhelper->Codeunit($service,$data,'IanVouchForEmployeeAttendancePortal');
 
         if(!is_string($result)){

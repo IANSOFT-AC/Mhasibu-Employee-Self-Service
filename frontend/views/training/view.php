@@ -12,8 +12,27 @@ use yii\widgets\ActiveForm;
 $this->title = 'Training Request - '.$model->Application_No;
 $this->params['breadcrumbs'][] = ['label' => 'Training Applications', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => 'Training Application', 'url' => ['view','Key'=> $model->Key]];
-
+$absoluteUrl = \yii\helpers\Url::home(true);
 ?>
+
+
+<?php
+                    if(Yii::$app->session->hasFlash('success')){
+                        print ' <div class="alert alert-success alert-dismissable">
+                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <h5><i class="icon fas fa-check"></i> Success!</h5>
+ ';
+                        echo Yii::$app->session->getFlash('success');
+                        print '</div>';
+                    }else if(Yii::$app->session->hasFlash('error')){
+                        print ' <div class="alert alert-danger alert-dismissable">
+                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <h5><i class="icon fas fa-times"></i> Error!</h5>
+                                ';
+                        echo Yii::$app->session->getFlash('error');
+                        print '</div>';
+                    }
+                    ?>
 
 <div class="row">
     <div class="col-md-4">
@@ -66,6 +85,24 @@ $this->params['breadcrumbs'][] = ['label' => 'Training Application', 'url' => ['
 
                     <?php  endif; ?>
 
+                    <?php if($model->Status == 'Awaiting_Attendance_Confirmation'): ?>
+                        
+
+                        <?= Html::a('<i class="fas fa-check"></i> HR Confirmation',['hr-confirm-training'],['class' => 'btn btn-app submitforapproval',
+                                'data' => [
+                                'confirm' => 'Are you sure you want to confirm training?',
+                                'params'=>[
+                                    'No'=> $model->Application_No,
+                                ],
+                                'method' => 'get',
+                                ],
+                                'title' => 'HR Confirm Attendance'
+
+                            ]);
+                        ?>
+
+                    <?php  endif; ?>
+
 
     </div>
 </div>
@@ -87,23 +124,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Training Application', 'url' => ['
 
                     <h3 class="card-title">Requisition No : <?= $model->Application_No?></h3>
 
-                    <?php
-                    if(Yii::$app->session->hasFlash('success')){
-                        print ' <div class="alert alert-success alert-dismissable">
-                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    <h5><i class="icon fas fa-check"></i> Success!</h5>
- ';
-                        echo Yii::$app->session->getFlash('success');
-                        print '</div>';
-                    }else if(Yii::$app->session->hasFlash('error')){
-                        print ' <div class="alert alert-danger alert-dismissable">
-                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    <h5><i class="icon fas fa-times"></i> Error!</h5>
-                                ';
-                        echo Yii::$app->session->getFlash('error');
-                        print '</div>';
-                    }
-                    ?>
+                   
                 </div>
                 <div class="card-body">
 
@@ -124,6 +145,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Training Application', 'url' => ['
                                     <?= $form->field($model, 'Employee_Name')->textInput(['readonly' => true, 'disabled' =>  true]); ?>
                                     <?= $form->field($model, 'Job_Group')->textInput(['readonly' => true, 'disabled' =>  true]); ?>
                                     <?= $form->field($model, 'Key')->hiddenInput()->label(false); ?>
+                                    <?=($model->Status == 'Approved')?
+                                     $form->field($model, 'Training_Feedback')->textarea(['rows' => 2]):
+                                     $form->field($model, 'Training_Feedback')->textarea(['rows' => 2, 'readonly' => true, 'disabled' =>  true])
+                                     ; ?>
+
                                     </div>
 
                                     <div class="col-md-6">
@@ -156,7 +182,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Training Application', 'url' => ['
     </div>
 
 
-
+    <input type="hidden" name="absolute" value="<?= $absoluteUrl ?>">
 <?php
 
 $script = <<<JS
@@ -362,6 +388,13 @@ $script = <<<JS
 
 
             });
+
+            $('#training-training_feedback').change(function(e){
+            globalFieldUpdate('training',false,'Training_Feedback', e);
+            setTimeout(() => {
+                location.reload(true);
+            },1500); 
+     });
     
         
     });//end jquery

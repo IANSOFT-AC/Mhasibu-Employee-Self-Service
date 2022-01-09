@@ -3,10 +3,6 @@
  * Written with love by @francnjamb -- Twitter
  */
 
-
-
-
-
 //Initialize Sweet Alert
 
 const Toast = Swal.mixin({
@@ -20,8 +16,6 @@ const Toast = Swal.mixin({
   var td = elm.parentNode;
   var value = elm.value;
   
-
-
   /** Handle Checkbox state */
   var child = td.children[0];
 
@@ -30,26 +24,42 @@ const Toast = Swal.mixin({
   }
 
   /** Finish handling checkbox state */
-
-
-
   td.removeChild(elm);
   td.innerHTML = value;
 
   const data = td.dataset;
-  // console.table(data);
-
+ 
   // Post Changes
   field = document.querySelector(`#${data.validate}`);
   $.post('./commit',{'key':data.key,'name': data.name, 'no': data.no,'filterKey': data.filterField,'service': data.service, 'value': value }).done(function(msg){
-    //console.log(data.validate);
+    
+    console.log(`Committing Data....`);
 
-    if(data.validate)
+    if(data.validate) // Custom Grid Error Reporting
     {
       const DataKey = data.validate;
       field.innerText = typeof(msg) === 'string'? msg : msg[data.name];
-      console.log('Baby we getting here..');
+    }
+
+   
+    // Toasting The Outcome
+    typemsg = typeof msg;
+    console.log(typemsg);
+    if(typeof(msg) === 'string')
+    {
       console.log(msg);
+       // Fire a sweet alert if you can
+          Toast.fire({
+            type: 'error',
+            title: msg
+          })
+    }else{
+
+      console.log(msg);
+          Toast.fire({
+            type: 'success',
+            title: msg[data.name]+' Saved Successfully.'
+          })
     }
 
   });
@@ -94,7 +104,7 @@ async function addDropDown(elm,resource) {
 
   const ddContent = await getData(resource);
 
-  console.table(ddContent);
+  //console.table(ddContent);
 
 
   var select = document.createElement('select');

@@ -328,6 +328,7 @@ return [
         'Qualifications' => 'Qualifications', //5205
         'MiscArticles' => 'MiscArticles', //5218
         'EmployeeBioDataChange' => 'EmployeeBioDataChange', // 50103 
+        'EmployeeIntransfer' => 'EmployeeIntransfer', //55033
 
 
 

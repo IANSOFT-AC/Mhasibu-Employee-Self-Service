@@ -35,6 +35,8 @@ class Training extends Model
     public $Global_Dimension_1_Code;
     public $Training_Plan_Calender;
 
+    public $Training_Feedback;
+
     public function rules()
     {
         return [

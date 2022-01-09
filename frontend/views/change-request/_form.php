@@ -128,7 +128,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
             </div>
         </div>
     </div>
-<input type="hidden" name="url" value="<?= $absoluteUrl ?>">
+<input type="hidden" name="absolute" value="<?= $absoluteUrl ?>">
 <?php
 $script = <<<JS
   
@@ -147,30 +147,7 @@ $script = <<<JS
         // Set Nature of Change
         
      $('#changerequest-nature_of_change').change(function(e){
-        const Nature_of_Change = e.target.value;
-        const No = $('#changerequest-no').val();
-        if(No.length){
-            const url = $('input[name=url]').val()+'change-request/setchange';
-            $.post(url,{'Nature_of_Change': Nature_of_Change,'No': No}).done(function(msg){
-                   //populate empty form fields with new data
-                  
-                   $('#changerequest-key').val(msg.Key);
-                    console.log(typeof msg);
-                    console.table(msg);
-                    if((typeof msg) === 'string') { // A string is an error
-                        const parent = document.querySelector('.field-changerequest-nature_of_change');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = msg;
-                        
-                    }else{ // An object represents correct details
-                        const parent = document.querySelector('.field-changerequest-nature_of_change');
-                        const helpbBlock = parent.children[2];
-                        helpbBlock.innerText = ''; 
-                        
-                    }
-                    
-                },'json');
-        }
+        globalFieldUpdate('Changerequest','change-request',"Nature_of_Change", e);
      });
      
      /*Set Program and Department dimension */

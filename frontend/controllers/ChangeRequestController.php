@@ -48,7 +48,7 @@ class ChangeRequestController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout','index','list','create','update','delete','view'],
+                        'actions' => ['logout','index','list','create','update','delete','view','create-transfer-line'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -337,6 +337,79 @@ class ChangeRequestController extends Controller
         return $data;
     }
 
+    public function actionTransferStates()
+    {
+
+        $changes = [
+            ['Code' => 'New','Desc' => 'New'],
+            ['Code' => 'Old' ,'Desc' =>'Old'],
+
+        ];
+
+        $data =  ArrayHelper::map($changes,'Code','Desc');
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $data;
+    }
+
+    public function actionDimension1(){
+        $result  = Yii::$app->navhelper->dropdown('DimensionValueList','Code','Name',['Global_Dimension_No' => 1]);
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $result;
+
+    }
+
+    public function actionDimension2(){
+        $result  = Yii::$app->navhelper->dropdown('DimensionValueList','Code','Name',['Global_Dimension_No' => 2]);
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $result;
+
+    }
+
+    public function actionDimension3(){
+        $result  = Yii::$app->navhelper->dropdown('DimensionValueList','Code','Name',['Global_Dimension_No' => 3]);
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $result;
+
+    }
+
+    public function actionCreateLine($Service,$Change_No)
+    {
+        $service = Yii::$app->params['ServiceName'][$Service];
+        $data = [
+            'Change_No' => $Change_No,
+            'Employee_No' =>  Yii::$app->user->identity->{'Employee No_'},
+        ];
+
+        // Insert Record
+
+        $result = Yii::$app->navhelper->postData($service, $data);
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if(is_object($result))
+        {
+            return ['note' => 'Record Created Successfully.'];
+        }else{
+            return ['note' => $result];
+        }
+    }
+
+    public function actionDeleteLines($Service, $Key)
+    {
+        $service = Yii::$app->params['ServiceName'][$Service];
+        $result = Yii::$app->navhelper->deleteData($service,Yii::$app->request->get('Key'));
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if(!is_string($result)){
+
+            return ['note' => '<div class="alert alert-success">Record Purged Successfully</div>'];
+        }else{
+            return ['note' => '<div class="alert alert-danger">Error Purging Record: '.$result.'</div>' ];
+        }
+    }
+
+    
+
+
+
 
 
     public function actionView($No){
@@ -350,12 +423,13 @@ class ChangeRequestController extends Controller
         $result = Yii::$app->navhelper->getData($service, $filter);
 
         //load nav result to model
-        $model = $this->loadtomodel($result[0], $model);
+        $model = Yii::$app->navhelper->loadmodel($result[0], $model);
 
         //Yii::$app->recruitment->printrr($model);
 
         return $this->render('view',[
             'model' => $model,
+            'Document' => $result[0]
         ]);
     }
 
@@ -400,62 +474,19 @@ class ChangeRequestController extends Controller
 
 
 
-
-
-
-
-
-    public function actionSetchange(){
-        $model = new Changerequest();
-        $service = Yii::$app->params['ServiceName']['ChangeRequestCard'];
-
-        $filter = [
-            'No' => Yii::$app->request->post('No')
-        ];
-        $request = Yii::$app->navhelper->getData($service, $filter);
-
-        if(is_array($request)){
-            Yii::$app->navhelper->loadmodel($request[0],$model);
-            $model->Key = $request[0]->Key;
-            $model->Nature_of_Change = Yii::$app->request->post('Nature_of_Change');
-        }
-
-        $result = Yii::$app->navhelper->updateData($service,$model);
-        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-        return $result;
-    }
-
+    // Update a single  grid cell
     public function actionCommit(){
-        $commitModel = trim(Yii::$app->request->post('model'));
         $commitService = Yii::$app->request->post('service');
         $key = Yii::$app->request->post('key');
         $name = Yii::$app->request->post('name');
         $value = Yii::$app->request->post('value');
-        $filterKey = Yii::$app->request->post('filterKey');
-
-
 
         $service = Yii::$app->params['ServiceName'][$commitService];
-
-        if(!empty($filterKey))
-        {
-            $filter = [
-                $filterKey => Yii::$app->request->post('no')
-            ];
-        }
-        else{
-            $filter = [
-                'Line_No' => Yii::$app->request->post('no')
-            ];
-        }
-
-        $request = Yii::$app->navhelper->getData($service, $filter);
-
-
+        $request = Yii::$app->navhelper->readByKey($service, $key);
         $data = [];
-        if(is_array($request)){
+        if(is_object($request)){
             $data = [
-                'Key' => $request[0]->Key,
+                'Key' => $request->Key,
                 $name => $value
             ];
         }else{
@@ -463,82 +494,28 @@ class ChangeRequestController extends Controller
             return ['error' => $request];
         }
 
-
-
         $result = Yii::$app->navhelper->updateData($service,$data);
-
         Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-
         return $result;
 
     }
 
-    /* Set Imprest Type */
 
-    public function actionSetimpresttype(){
-        $model = new Imprestcard();
-        $service = Yii::$app->params['ServiceName']['ImprestRequestCardPortal'];
-
-        $filter = [
-            'Plan_No' => Yii::$app->request->post('Plan_No')
-        ];
-        $request = Yii::$app->navhelper->getData($service, $filter);
-
-        if(is_array($request)){
-            Yii::$app->navhelper->loadmodel($request[0],$model);
-            $model->Key = $request[0]->Key;
-            $model->Imprest_Type = Yii::$app->request->post('Imprest_Type');
-        }
-
-
-        $result = Yii::$app->navhelper->updateData($service,$model,['Amount_LCY']);
-
+     /** Updates a single field in a form */
+     public function actionSetfield($field){
+        $service = 'ChangeRequestCard';
+        $value = Yii::$app->request->post('fieldValue');
+       
+        $result = Yii::$app->navhelper->Commit($service,[$field => $value],Yii::$app->request->post('Key'));
         Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-
-        return $result;
-
+        return $result;    
     }
 
-        /*Set Imprest to Surrend*/
+    
 
-    public function actionSetimpresttosurrender(){
-        $model = new Imprestsurrendercard();
-        $service = Yii::$app->params['ServiceName']['ImprestSurrenderCardPortal'];
+      
 
-        $filter = [
-            'Plan_No' => Yii::$app->request->post('Plan_No')
-        ];
-        $request = Yii::$app->navhelper->getData($service, $filter);
-
-        if(is_array($request)){
-            Yii::$app->navhelper->loadmodel($request[0],$model);
-            $model->Key = $request[0]->Key;
-            $model->Imprest_Plan_No = Yii::$app->request->post('Imprest_Plan_No');
-        }
-
-
-        $result = Yii::$app->navhelper->updateData($service,$model);
-
-        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-
-        return $result;
-
-    }
-
-    public function loadtomodel($obj,$model){
-
-        if(!is_object($obj)){
-            return false;
-        }
-        $modeldata = (get_object_vars($obj)) ;
-        foreach($modeldata as $key => $val){
-            if(is_object($val)) continue;
-            $model->$key = $val;
-        }
-
-        return $model;
-    }
-
+   
     /* Call Approval Workflow Methods */
 
     public function actionSendForApproval()
@@ -552,7 +529,7 @@ class ChangeRequestController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanSendEmployeeChangeRequestForApproval');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanSendEmployeeChangeRequestForApproval');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Request Sent to Supervisor Successfully.', true);
@@ -576,7 +553,7 @@ class ChangeRequestController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanCancelChangeRequestApprovalRequest');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanCancelChangeRequestApprovalRequest');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Request Cancelled Successfully.', true);

@@ -12,30 +12,35 @@ use yii\widgets\ActiveForm;
 $this->title = 'Change Request - '.$model->No;
 $this->params['breadcrumbs'][] = ['label' => 'Change Request', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => 'Change Request Card', 'url' => ['view','No'=> $model->No]];
+$absoluteUrl = \yii\helpers\Url::home(true);
 /** Status Sessions */
-
-
 /* Yii::$app->session->set('MY_Appraisal_Status',$model->MY_Appraisal_Status);
 Yii::$app->session->set('EY_Appraisal_Status',$model->EY_Appraisal_Status);
 Yii::$app->session->set('isSupervisor',false);*/
+
+
+if(Yii::$app->session->hasFlash('success')){
+    print ' <div class="alert alert-success alert-dismissable">
+             ';
+    echo Yii::$app->session->getFlash('success');
+    print '</div>';
+}else if(Yii::$app->session->hasFlash('error')){
+    print ' <div class="alert alert-danger alert-dismissable">
+             ';
+    echo Yii::$app->session->getFlash('error');
+    print '</div>';
+}
+
+
+
 ?>
 
 <div class="row">
-    <div class="col-md-4">
-
-      
-    </div>
-</div>
-
-    <div class="row">
         <div class="col-md-12">
             <div class="card-info">
                 <div class="card-header">
                     <h3>Change Request Document </h3>
                 </div>
-
-
-
             </div>
         </div>
     </div>
@@ -47,7 +52,7 @@ Yii::$app->session->set('isSupervisor',false);*/
 
                     <div class="push-right">
                         
-                        <?= ($model->Approval_Status == 'New')?Html::a('Send For Approval',['send-for-approval'],['class' => 'btn btn-success submitforapproval ',
+                        <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-forward"></i> Send For Approval',['send-for-approval'],['class' => 'btn btn-app bg-success  submitforapproval ',
                                     'data' => [
                                         'confirm' => 'Are you sure you want to send this document for approval?',
                                         'params'=>[
@@ -75,32 +80,8 @@ Yii::$app->session->set('isSupervisor',false);*/
                         ]):'' 
                         ?>
 
-                        <?=
-                            Html::a('Go Back',['index'],['class' => 'btn btn-warning',
-                                
-                                'title' => 'Close The Current Page'
-
-                                ]);
-                        ?>
-
                     </div>
 
-
-
-
-                    <?php
-                    if(Yii::$app->session->hasFlash('success')){
-                        print ' <div class="alert alert-success alert-dismissable">
-                                 ';
-                        echo Yii::$app->session->getFlash('success');
-                        print '</div>';
-                    }else if(Yii::$app->session->hasFlash('error')){
-                        print ' <div class="alert alert-danger alert-dismissable">
-                                 ';
-                        echo Yii::$app->session->getFlash('error');
-                        print '</div>';
-                    }
-                    ?>
                 </div>
                 <div class="card-body">
 
@@ -143,7 +124,14 @@ Yii::$app->session->set('isSupervisor',false);*/
             <div class="card" id="Medical_Dependants">
                 <div class="card-header">
                     <div class="card-title">
-                       Employee Medical Depandants    <?= ($model->Approval_Status == 'New')?Html::a('Add',['dependant/create','No' => $model->No],['class' => 'add-line btn btn-sm btn-info']):'' ?>
+                       Employee Medical Depandants    
+                    </div>
+                    <div class="card-tools">
+                         <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
+                             'class' => 'add btn btn-sm btn-outline-info',
+                             'rel' => $Document->No,
+                             'data-service'=> 'EmployeeDepandants']):'' 
+                        ?>
                     </div>
                 </div>
 
@@ -179,7 +167,7 @@ Yii::$app->session->set('isSupervisor',false);*/
                                     <td data-key="<?= $obj->Key ?>" data-name="Full_Name" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addInput(this)"><?= !empty($obj->Full_Name)?$obj->Full_Name:'Not Set' ?></td>
                                     <td data-key="<?= $obj->Key ?>" data-name="ID_Birth_Certificate_No" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addInput(this)"><?= !empty($obj->ID_Birth_Certificate_No)?$obj->ID_Birth_Certificate_No:'Not Set' ?></td>
                                     <td data-key="<?= $obj->Key ?>" data-name="Is_Student" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addDropDown(this,'bool')" data-validate="Is_Student" id="Is_Student" ><?= !empty($obj->Is_Student && $obj->Is_Student)?'Yes':'No' ?></td>
-                                    <td data-key="<?= $obj->Key ?>" data-name="Date_of_Birth" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addInput(this,'date')" data-validate="_<?= $obj->Line_No ?>" id="_<?= $obj->Line_No ?>"><?= !empty($obj->Date_of_Birth)?$obj->Date_of_Birth:'Not Set' ?></td>
+                                    <td data-key="<?= $obj->Key ?>" data-name="Date_of_Birth" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addInput(this,'date')" data-validate="Date_of_Birth" id="Date_of_Birth"><?= !empty($obj->Date_of_Birth)?$obj->Date_of_Birth:'Not Set' ?></td>
                                     <td><?= !empty($obj->Age)?$obj->Age:'Not Set' ?></td>
                                     <td data-key="<?= $obj->Key ?>" data-name="Relationship" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addDropDown(this,'relatives')"><?= !empty($obj->Relationship)?$obj->Relationship:'Not Set' ?></td>
                                     <td data-key="<?= $obj->Key ?>" data-name="Gender" data-no="<?= $obj->Line_No ?>" data-model="Dependants" data-service="EmployeeDepandants" ondblclick="addDropDown(this,'gender')"><?= !empty($obj->Gender)?$obj->Gender:'Not Set' ?></td>
@@ -205,7 +193,13 @@ Yii::$app->session->set('isSupervisor',false);*/
             <div class="card" id="Next_Of_Kin">
                 <div class="card-header">
                     <div class="card-title">
-                        Employee Next of Kin    <?= ($model->Approval_Status == 'New')?Html::a('Add',['relative/create','Change_No' => $model->No],['class' => 'add-line btn btn-sm btn-info']):'' ?>
+                        Employee Next of Kin    
+                    </div>
+                    <div class="card-tools">
+                         <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
+                             'class' => 'add btn btn-sm btn-outline-info',
+                             'rel' => $Document->No,
+                             'data-service'=> 'EmployeeRelativesChange']):'' ?>
                     </div>
                 </div>
 
@@ -270,16 +264,13 @@ Yii::$app->session->set('isSupervisor',false);*/
             <div class="card" id="Employee_Beneficiaries_Change">
                 <div class="card-header">
                     <div class="card-title">
-                         <?= ($model->Approval_Status == 'New')?
-                        // Html::a('Add',['beneficiaries/create','Change_No' => $model->No],['class' => 'add-line btn btn-sm btn-info']):'' 
-                        Html::button('Add Beneficiary Request',
-                            [  'value' => yii\helpers\Url::to(['beneficiaries/create',
-                            'Change_No' => $model->No
-                            ]),
-                            'title' => 'Add Beneficiary Request',
-                            'class' => 'btn btn-success push-right showModalButton',
-                         ]):''
-                        ?>
+                        Beneficiaries Lines
+                    </div>
+                    <div class="card-tools">
+                        <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
+                             'class' => 'add btn btn-sm btn-outline-info',
+                             'rel' => $Document->No,
+                             'data-service'=> 'EmployeeBeneficiariesChange']):'' ?>
                     </div>
                 </div>
 
@@ -350,7 +341,14 @@ Yii::$app->session->set('isSupervisor',false);*/
             <div class="card" id="Employee_Work_History_Change">
                 <div class="card-header">
                     <div class="card-title">
-                        Work History    <?= ($model->Approval_Status == 'New')?Html::a('Add',['work-history/create','Change_No' => $model->No],['class' => 'add-line btn btn-sm btn-info']):'' ?>
+                        Work History Lines    
+                    </div>
+                    <div class="card-tools">
+                         <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
+                             'class' => 'add btn btn-sm btn-outline-info',
+                             'rel' => $Document->No,
+                             'data-service'=> 'EmployeeWorkHistoryChange']):'' 
+                        ?>
                     </div>
                 </div>
 
@@ -363,13 +361,13 @@ Yii::$app->session->set('isSupervisor',false);*/
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <td><b>Work_Done</b></td>
-                                    <td><b>Institution_Company</b></td>
-                                    <td><b>From_Date</b></td>
-                                    <td><b>To_Date</b></td>
-                                    <td><b>Key_Experience</b></td>
-                                    <td><b>Salary_on_Leaving</b></td>
-                                    <td><b>Reason_For_Leaving</b></td>
+                                    <td><b>Work Done</b></td>
+                                    <td><b>Institution Company</b></td>
+                                    <td><b>From Date</b></td>
+                                    <td><b>To Date</b></td>
+                                    <td><b>Key Experience</b></td>
+                                    <td><b>Salary on Leaving</b></td>
+                                    <td><b>Reason For Leaving</b></td>
                                     <!-- <td><b>Comments</b></td> -->
 
                                     <td><b>Action</b></td>
@@ -413,7 +411,14 @@ Yii::$app->session->set('isSupervisor',false);*/
             <div class="card" id="Employee_Proffesional_Bodies_C">
                 <div class="card-header">
                     <div class="card-title">
-                        Professional Bodies Affiliation    <?= ($model->Approval_Status == 'New')?Html::a('Add',['professionalchange/create','Change_No' => $model->No],['class' => 'add-line btn btn-sm btn-info']):'' ?>
+                        Professional Bodies Affiliation Lines    
+                    </div>
+                    <div class="card-tools">
+                         <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
+                             'class' => 'add btn btn-sm btn-outline-info',
+                             'rel' => $Document->No,
+                             'data-service'=> 'EmployeeProffesionalBodies']):'' 
+                        ?>
                     </div>
                 </div>
 
@@ -470,7 +475,14 @@ Yii::$app->session->set('isSupervisor',false);*/
             <div class="card" id="Employee_Qualifications_Change">
                 <div class="card-header">
                     <div class="card-title">
-                        Qualifications Change Request    <?= ($model->Approval_Status == 'New')?Html::a('Add',['qualificationchange/create','Change_No' => $model->No],['class' => 'add-line btn btn-sm btn-info']):'' ?>
+                        Qualifications Change Request Lines  
+                    </div>
+                    <div class="card-tools">
+                        <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
+                             'class' => 'add btn btn-sm btn-outline-info',
+                             'rel' => $Document->No,
+                             'data-service'=> 'EducationQualifications']):'' 
+                        ?>
                     </div>
                 </div>
 
@@ -672,10 +684,10 @@ Yii::$app->session->set('isSupervisor',false);*/
                                 <tbody>
                                 <?php
                 // print '<pre>'; print_r($model->getObjectives()); exit;
-                foreach($model->misc as $miscobj):
-                    $updateLink = Html::a('<i class="fa fa-edit"></i>',['misc/update','No'=> $miscobj->Line_No],['class' => 'update-miscobjective btn btn-outline-info btn-xs']);
-                    $deleteLink = Html::a('<i class="fa fa-trash"></i>',['misc/delete','Key'=> $miscobj->Key ],['class'=>'delete btn btn-outline-danger btn-xs']);
-                    ?>
+                                    foreach($model->misc as $miscobj):
+                                        $updateLink = Html::a('<i class="fa fa-edit"></i>',['misc/update','No'=> $miscobj->Line_No],['class' => 'update-miscobjective btn btn-outline-info btn-xs']);
+                                        $deleteLink = Html::a('<i class="fa fa-trash"></i>',['misc/delete','Key'=> $miscobj->Key ],['class'=>'delete btn btn-outline-danger btn-xs']);
+                                        ?>
                                     <tr>
 
                                         <td data-key="<?= $miscobj->Key ?>" data-name="Misc_Article_Code" data-no="<?= $miscobj->Line_No ?>" data-filter-field="Line_No" data-service="Miscinformation" ondblclick="addDropDown(this, 'misc-code')"><?= !empty($miscobj->Misc_Article_Code)?$miscobj->Misc_Article_Code:'Not Set' ?></td>
@@ -702,14 +714,138 @@ Yii::$app->session->set('isSupervisor',false);*/
 
             <?php } ?>
 
-    </div>
 
+
+            <!-- Inter Transfer -->
+
+            <?php
+            //Yii::$app->recruitment->printrr($Document);
+            if($Document->Nature_of_Change == 'Inter_Transfer') { ?>
+
+                <div class="card">
+                    <div class="card-header"> 
+                        <p class="card-title">Employee Inter-Transfer</p>
+                        <div class="card-tools">
+                        <?=  ($Document->Approval_Status == 'New')?Html::a('Add',['create-line'],[
+                            'class' => 'add btn btn-sm btn-outline-info',
+                            'rel' => $Document->No,
+                            'data-service' => 'EmployeeIntransfer'
+                            ]):'' ?>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <td class="text text-bold">Change_No</td>
+                                    <td class="text text-bold">Employee_No</td>
+                                    <td class="text text-bold">Branch Code</td>
+                                    <td class="text text-bold">Deparment Code</td>
+                                    <td class="text text-bold">Fund Sector Code</td>
+                                    <td class="text text-bold">Status</td>
+                                    <td class="text text-bold">Action</td>
+                                    
+                                </thead>
+                                <tbody>
+
+
+                                <?php
+                                    if(property_exists($Document->Employee_Inter_Transfer,'Employee_Inter_Transfer')){
+                                            foreach($Document->Employee_Inter_Transfer->Employee_Inter_Transfer as $obj):
+                                                $updateLink = '';// Html::a('<i class="fa fa-edit"></i>',['transfer/update','No'=> $obj->Line_No],['class' => 'upd$objective btn btn-outline-info btn-xs']);
+                                                $deleteLink = Html::a('<i class="fa fa-trash"></i>',['delete-lines' ],[
+                                                    'rel' => $obj->Key,
+                                                    'rev' => 'EmployeeIntransfer',
+                                                    'class'=>'del btn btn-outline-danger btn-xs']);
+                                                ?>
+                                            <tr>
+                                                <td><?= $obj->Change_No ?></td>
+                                                <td><?= $obj->Employee_No ?></td>
+                                                <td data-key="<?= $obj->Key ?>" data-name="Global_Dimension_1_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension1')"><?= !empty($obj->Global_Dimension_1_Code)?$obj->Global_Dimension_1_Code:'Not Set' ?></td>
+                                                <td data-key="<?= $obj->Key ?>" data-name="Gloabl_Dimension_2_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension2')"><?= !empty($obj->Gloabl_Dimension_2_Code)?$obj->Gloabl_Dimension_2_Code:'Not Set' ?></td>
+                                                <td data-key="<?= $obj->Key ?>" data-name="Global_Dimension_3_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension3')"><?= !empty($obj->Global_Dimension_3_Code)?$obj->Global_Dimension_3_Code:'Not Set' ?></td>
+                                                <td data-key="<?= $obj->Key ?>" data-name="Status" data-service="EmployeeIntransfer" ondblclick="addDropDown(this,'transfer-states')"><?= !empty($obj->Status)?$obj->Status:'Not Set' ?></td>
+                                                <td><?= $deleteLink?></td>
+                                                
+                                            </tr>
+                                        <?php endforeach;
+                                    } //end if
+                                ?>        
+
+
+
+
+
+                                </tbody>
+                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            <?php } // End Inter Transfer Lines ?>
+
+    </div>
+    <input type="hidden" name="absolute" value="<?= $absoluteUrl ?>">
  
 <?php
 
 $script = <<<JS
 
     $(function(){
+
+        // Add a change Request Line line
+
+        $('.add').on('click',function(e){
+            e.preventDefault();
+            let url = $(this).attr('href');
+            let changeNo = $(this).attr('rel');
+            let data = $(this).data();
+            const payload = {
+                'Change_No': changeNo,
+                'Service': data.service
+            };
+            //console.log(payload);
+            //return;
+            $('a.add').text('Inserting...');
+            $('a.add').attr('disabled', true);
+
+            $.get(url, payload).done((msg) => {
+                console.log(msg);
+                setTimeout(() => {
+                    location.reload(true);
+                },3000);
+            });
+        });
+
+        $('.del').on('click',function(e){
+            e.preventDefault();
+
+            if(confirm('Are you sure about deleting this record?'))
+            {
+                let url = $(this).attr('href');
+                let Key = $(this).attr('rel');
+                let Service = $(this).attr('rev');
+                const payload = {
+                    'Key': Key,
+                    'Service': Service
+                };
+
+                $(this).text('Deleting...');
+                $(this).attr('disabled', true);
+
+                $.get(url, payload).done((msg) => {
+                    console.log(msg);
+                    setTimeout(() => {
+                        location.reload(true);
+                    },3000);
+                });
+            }
+            
+        });
+
+
       
         
      /*Deleting Records*/

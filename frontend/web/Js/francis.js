@@ -3,10 +3,6 @@
  * Written with love by @francnjamb -- Twitter
  */
 
-
-
-
-
 //Initialize Sweet Alert
 
 const Toast = Swal.mixin({
@@ -20,8 +16,6 @@ const Toast = Swal.mixin({
   var td = elm.parentNode;
   var value = elm.value;
   
-
-
   /** Handle Checkbox state */
   var child = td.children[0];
 
@@ -30,26 +24,45 @@ const Toast = Swal.mixin({
   }
 
   /** Finish handling checkbox state */
-
-
-
   td.removeChild(elm);
   td.innerHTML = value;
 
   const data = td.dataset;
-  // console.table(data);
 
+  console.log(`The Data Set`);
+  console.table(data);
+ 
   // Post Changes
   field = document.querySelector(`#${data.validate}`);
   $.post('./commit',{'key':data.key,'name': data.name, 'no': data.no,'filterKey': data.filterField,'service': data.service, 'value': value }).done(function(msg){
-    //console.log(data.validate);
+    
+    console.log(`Committing Data....`);
 
-    if(data.validate)
+    if(data.validate) // Custom Grid Error Reporting
     {
       const DataKey = data.validate;
       field.innerText = typeof(msg) === 'string'? msg : msg[data.name];
-      console.log('Baby we getting here..');
+    }
+
+   
+    // Toasting The Outcome
+    typemsg = typeof msg;
+    console.log(typemsg);
+    if(typeof(msg) === 'string')
+    {
       console.log(msg);
+       // Fire a sweet alert if you can
+          Toast.fire({
+            type: 'error',
+            title: msg
+          })
+    }else{
+
+      console.log(msg);
+          Toast.fire({
+            type: 'success',
+            title: msg[data.name]+' Saved Successfully.'
+          })
     }
 
   });
@@ -94,7 +107,7 @@ async function addDropDown(elm,resource) {
 
   const ddContent = await getData(resource);
 
-  console.table(ddContent);
+  //console.table(ddContent);
 
 
   var select = document.createElement('select');
@@ -172,8 +185,7 @@ function globalFieldUpdate(entity,controller = false, fieldName, ev, autoPopulat
   if(Key.length){
       const url = $('input[name=absolute]').val()+route+'/setfield?field='+fieldName;
       $.post(url,{ fieldValue:fieldValue,'Key': Key}).done(function(msg){
-            console.log(`result of operation...`);
-            console.table(msg);
+          
               // Populate relevant Fields
                                          
               $(keyField).val(msg.Key);
@@ -235,13 +247,10 @@ function enableSubmit(){
 }
 
 function requestStateUpdater(fieldParentNode, notificationType, msg = '' ) {
-  let inputParentNode = fieldParentNode; // This is in boostrap 4
-
-  console.log(`show parent node...`);
-  console.log(inputParentNode);
+  let inputParentNode = fieldParentNode.children[1]; // This is in boostrap 5
 
   if(notificationType === 'success' ){
-    let successElement = document.createElement('p');
+    let successElement = document.createElement('span');
     successElement.innerText = 'Data Saved Successfully.';
     successElement.setAttribute('class', 'text-success small');
     inputParentNode.append(successElement);

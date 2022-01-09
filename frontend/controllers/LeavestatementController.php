@@ -76,7 +76,7 @@ class LeavestatementController extends Controller
             $data = [
                 'empNo' => Yii::$app->user->identity->{'Employee No_'}
              ];
-            $path = Yii::$app->navhelper->PortalReports($service,$data,'IanGenerateLeaveStatement');
+            $path = Yii::$app->navhelper->Codeunit($service,$data,'IanGenerateLeaveStatement');
             //Yii::$app->recruitment->printrr($path);
 
             if(!is_file($path['return_value'])){

@@ -336,6 +336,19 @@ class ApprovalsController extends Controller
                             'name' => $app->Table_ID
                         ]): "";
 
+                    }
+                    elseif($app->Document_Type == 'Training_Application') // Training Appliocation
+                    {
+                        $Approvelink = ($app->Status == 'Open')? Html::a('Approve Request',['approve-request','app'=> $app->Document_No, 'empNo' => $app->Approver_No, 'docType' => $app->Document_Type  ],['class'=>'btn btn-success btn-xs','data' => [
+                            'confirm' => 'Are you sure you want to Approve this request?',
+                            'method' => 'post',
+                        ]]):'';
+
+                        $Rejectlink = ($app->Status == 'Open')? Html::a('Reject Request',['reject-request', 'docType' => $app->Document_Type ],['class'=>'btn btn-warning reject btn-xs',
+                            'rel' => $app->Document_No,
+                            'rev' => $app->Record_ID_to_Approve,
+                            'name' => $app->Table_ID
+                        ]): "";
 
                     }
                     else{
@@ -404,6 +417,10 @@ class ApprovalsController extends Controller
                     {
                         $detailsLink = Html::a('View Details',['overtime/view','No'=> $app->Document_No, 'Approval' => true ],['class'=>'btn btn-outline-info btn-xs','target' => '_blank']);
                     }
+                    elseif($app->Document_Type == 'Training_Application')
+                    {
+                        $detailsLink = Html::a('View Details',['training/view','No'=> $app->Document_No, 'Approval' => true ],['class'=>'btn btn-outline-info btn-xs','target' => '_blank']);
+                    }
                     else{ //Employee_Exit
                         $detailsLink = '';
 
@@ -451,29 +468,33 @@ class ApprovalsController extends Controller
         {
         //    Yii::$app->recruitment->printrr($data);
 
-            $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanApproveRequisitionHeader');
+            $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveRequisitionHeader');
         }elseif($docType == 'Leave_Reimbursement')
         {
-             $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanApproveLeave');
+             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveLeave');
         }
         elseif($docType == 'Contract_Renewal')
         {
-             $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanApproveChangeRequest');
+             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveChangeRequest');
         }
          elseif($docType == 'Overtime_Application')
         {
-             $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanApproveOverTime');
+             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveOverTime');
         }
           elseif($docType == 'Employee_Exit')
         {
-             $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanApproveEmployeeExit');
+             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveEmployeeExit');
         }
           elseif($docType == 'Change_Request')
         {
-             $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanApproveChangeRequest');
+             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveChangeRequest');
+        }
+        elseif($docType == 'Training_Application')
+        {
+             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveTraining');
         }
         else{
-            $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanApproveImprest');
+            $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveImprest');
         }
 
 
@@ -512,6 +533,7 @@ class ApprovalsController extends Controller
 
             $data = [
                 'applicationNo' => $documentno,
+                'emplN' => Yii::$app->user->identity->{'Employee No_'}
             ];
             //save comment
             $Commentrequest = Yii::$app->navhelper->postData($Commentservice, $commentData);
@@ -524,30 +546,34 @@ class ApprovalsController extends Controller
 
             if($docType == 'Requisition_Header')
             {
-                $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanRejectRequisitionHeader');
+                $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectRequisitionHeader');
             }
             elseif($docType == 'Leave_Reimbursement')
              {
-                $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanRejectLeave');
+                $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectLeave');
              }
              elseif($docType == 'Contract_Renewal')
              {
-                $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanRejectChangeRequest');
+                $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectChangeRequest');
              }
               elseif($docType == 'Overtime_Application')
             {
-                 $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanRejectOverTime');
+                 $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectOverTime');
             }
             elseif($docType == 'Employee_Exit')
             {
-                 $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanRejectEmployeeExit');
+                 $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectEmployeeExit');
             }
             elseif($docType == 'Change_Request')
             {
-                 $result = Yii::$app->navhelper->PortalWorkFlows($service,['applicationNo' => $app],'IanRejectChangeRequest');
+                 $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectChangeRequest');
+            }
+            elseif($docType == 'Training_Application')
+            {
+                 $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveTraining');
             }
             else{
-                $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanRejectLeave');
+                $result = Yii::$app->navhelper->Codeunit($service,$data,'IanRejectLeave');
             }
 
 
