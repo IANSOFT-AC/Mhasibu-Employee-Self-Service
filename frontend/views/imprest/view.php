@@ -29,7 +29,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
 <div class="row">
     <div class="col-md-12">
 
-        <?= ($model->Status == 'New')?Html::a('<i class="fas fa-paper-plane"></i> Send Approval Req',['send-for-approval','employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-success submitforapproval',
+        <?= ($model->Status == 'New')?Html::a('<i class="fas fa-paper-plane"></i> Send Approval Req',['send-for-approval','employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-app bg-success submitforapproval',
             'data' => [
                 'confirm' => 'Are you sure you want to send imprest request for approval?',
                 'params'=>[
@@ -45,7 +45,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
         <?php if($ApprovalDetails): ?>
             <?php if($ApprovalDetails->Sender_No == Yii::$app->user->identity->employee[0]->No): ?>
 
-                <?= ($model->Status == 'Pending_Approval')?Html::a('<i class="fas fa-times"></i> Cancel Approval Req.',['cancel-request'],['class' => 'btn btn-warning submitforapproval',
+                <?= ($model->Status == 'Pending_Approval')?Html::a('<i class="fas fa-times"></i> Cancel Approval Req.',['cancel-request'],['class' => 'btn btn-app bg-warning submitforapproval',
                         'data' => [
                         'confirm' => 'Are you sure you want to cancel imprest approval request?',
                         'params'=>[
@@ -92,7 +92,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
     
 
 
-        <?= Html::a('<i class="fas fa-file-pdf"></i> Print Imprest',['print-imprest'],['class' => 'btn btn-primary ',
+        <?= Html::a('<i class="fas fa-file-pdf"></i> Print Imprest',['print-imprest'],['class' => 'btn btn-app bg-warning ',
             'data' => [
                 'confirm' => 'Print Imprest?',
                 'params'=>[

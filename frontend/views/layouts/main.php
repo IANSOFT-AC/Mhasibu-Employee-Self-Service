@@ -54,7 +54,7 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 <body class="hold-transition sidebar-mini layout-fixed ">
     <div class="wrapper">
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-dark navbar-info" style="background-color: <?= $PrimaryColor ?>">
+        <nav class="main-header navbar navbar-expand navbar-dark navbar-primary" style="background-color: <?= $PrimaryColor ?>">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -181,7 +181,7 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar elevation-4 sidebar-light-danger" style="background-color: <?= $PrimaryColor ?>">
             <!-- Brand Logo -->
-            <a href="<?= $absoluteUrl ?>site" class="brand-link">
+            <a href="<?= $absoluteUrl ?>site" class="brand-link navbar-secondary">
                 <!--<img src="<?= $webroot ?>/images/Logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8">-->
                 <span class="brand-text font-weight-light"><?= Yii::$app->params['generalTitle']?></span>

@@ -387,7 +387,7 @@ class ImprestController extends Controller
         $data = [
             'imprest' => $No
         ];
-        $path = Yii::$app->navhelper->PortalReports($service,$data,'IanGenerateImprest');
+        $path = Yii::$app->navhelper->Codeunit($service,$data,'IanGenerateImprest');
         if(!is_file($path['return_value'])){
           Yii::$app->session->setFlash('error','File is not available: '.$path['return_value']);
           return $this->render('printout',[
@@ -416,7 +416,7 @@ class ImprestController extends Controller
         $data = [
             'surrender' => $No
         ];
-        $path = Yii::$app->navhelper->PortalReports($service,$data,'IanGenerateImprestSurrender');
+        $path = Yii::$app->navhelper->Codeunit($service,$data,'IanGenerateImprestSurrender');
         if(!is_file($path['return_value'])){
             Yii::$app->session->setFlash('error','File is not available: '.$path['return_value']);
             return $this->render('printout',[
@@ -741,7 +741,6 @@ class ImprestController extends Controller
 
     public function getCurrencies(){
         $service = Yii::$app->params['ServiceName']['Currencies'];
-
         $result = \Yii::$app->navhelper->getData($service, []);
         return ArrayHelper::map($result,'Code','Description');
     }
@@ -925,6 +924,72 @@ class ImprestController extends Controller
         Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
         return $result;
           
+    }
+
+    public function actionAddLine($Service,$Document_No)
+    {
+        $service = Yii::$app->params['ServiceName'][$Service];
+        $data = [
+            'Request_No' => $Document_No,
+            'Line_No' => time()
+        ];
+
+        // Insert Record
+
+        $result = Yii::$app->navhelper->postData($service, $data);
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if(is_object($result))
+        {
+            return ['note' => 'Record Created Successfully.'];
+        }else{
+            return ['note' => $result];
+        }
+    }
+
+    public function actionCommit(){
+        $commitService = Yii::$app->request->post('service');
+        $key = Yii::$app->request->post('key');
+        $name = Yii::$app->request->post('name');
+        $value = Yii::$app->request->post('value');
+
+        $service = Yii::$app->params['ServiceName'][$commitService];
+        $request = Yii::$app->navhelper->readByKey($service, $key);
+        $data = [];
+        if(is_object($request)){
+            $data = [
+                'Key' => $request->Key,
+                $name => $value
+            ];
+        }else{
+            Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+            return ['error' => $request];
+        }
+
+        $result = Yii::$app->navhelper->updateData($service,$data);
+        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+        return $result;
+
+    }
+
+
+    public function actionTransactiontypes(){ 
+        $result  = Yii::$app->navhelper->dropdown('PaymentTypes','Code','Description',['Source_Type' => 'Imprest']);
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;    
+        return $result;
+    }
+
+    public function actionDeleteLine($Service, $Key)
+    {
+        $service = Yii::$app->params['ServiceName'][$Service];
+        $result = Yii::$app->navhelper->deleteData($service,Yii::$app->request->get('Key'));
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if(!is_string($result)){
+
+            return ['note' => '<div class="alert alert-success">Record Purged Successfully</div>'];
+        }else{
+            return ['note' => '<div class="alert alert-danger">Error Purging Record: '.$result.'</div>' ];
+        }
     }
 
 
