@@ -153,11 +153,11 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <h3>Imprest Lines</h3>
                 </div>
                 <div class="card-tools">
-                <?= Html::a('<i class="fa fa-plus-square"></i> New Imprest Line',['add-line'],[
-                    'class' => 'add btn btn-outline-info',
-                    'data-no' => $model->No,
-                    'data-service' => 'ImprestRequestSubformPortal'
-                    ]) ?>
+                        <?= Html::a('<i class="fa fa-plus-square"></i> New Imprest Line',['add-line'],[
+                            'class' => 'add btn btn-outline-info',
+                            'data-no' => $model->No,
+                            'data-service' => 'ImprestRequestSubformPortal'
+                            ]) ?>
                 </div>
             </div>
 
@@ -343,7 +343,7 @@ $script = <<<JS
                 });
             }
             
-        });
+    });
 
 
 

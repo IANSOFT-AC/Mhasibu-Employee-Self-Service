@@ -113,7 +113,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <?= $form->field($model, 'End_Date')->textInput(['required' => true])?>
                                     <?= $form->field($model, 'Period')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Expected_Cost')->textInput(['type' => 'number']); ?>
-                                    <?= $form->field($model, 'Trainer')->textInput(['type' => 'number']); ?>
+                                    <?= $form->field($model, 'Trainer')->textInput(['readonly' => true]); ?>
                                     <?= $form->field($model, 'Exceeds_Expected_Trainees')->checkbox(['Exceeds_Expected_Trainees', $model->Exceeds_Expected_Trainees]); ?>
                                    
                     </div>

@@ -1,4 +1,4 @@
-<?php
+<?php 
 return [
     'generalTitle' => 'Employee - Self Service',
     'welcomeText' => 'Mhasibu Sacco Self Service Portal',

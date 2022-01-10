@@ -475,23 +475,23 @@ class ApprovalsController extends Controller
         }
         elseif($docType == 'Contract_Renewal')
         {
-             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveChangeRequest');
+             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveChangeRequest');
         }
          elseif($docType == 'Overtime_Application')
         {
-             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveOverTime');
+             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveOverTime');
         }
           elseif($docType == 'Employee_Exit')
         {
-             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveEmployeeExit');
+             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveEmployeeExit');
         }
           elseif($docType == 'Change_Request')
         {
-             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveChangeRequest');
+             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveChangeRequest');
         }
         elseif($docType == 'Training_Application')
         {
-             $result = Yii::$app->navhelper->Codeunit($service,['applicationNo' => $app],'IanApproveTraining');
+             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveTraining');
         }
         else{
             $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveImprest');

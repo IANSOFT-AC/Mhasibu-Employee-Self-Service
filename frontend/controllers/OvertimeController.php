@@ -243,6 +243,7 @@ class OvertimeController extends Controller
         }
 
         $result = Yii::$app->navhelper->getData($service, $filter);
+       // Yii::$app->recruitment->printrr($result);
 
         //load nav result to model
         $model = Yii::$app->navhelper->loadmodel($result[0],$model) ;
@@ -534,36 +535,17 @@ class OvertimeController extends Controller
     }
 
     public function actionCommit(){
-        $commitModel = trim(Yii::$app->request->post('model'));
         $commitService = Yii::$app->request->post('service');
         $key = Yii::$app->request->post('key');
         $name = Yii::$app->request->post('name');
         $value = Yii::$app->request->post('value');
-        $filterKey = Yii::$app->request->post('filterKey');
-
-
 
         $service = Yii::$app->params['ServiceName'][$commitService];
-
-        if(!empty($filterKey))
-        {
-            $filter = [
-                $filterKey => Yii::$app->request->post('no')
-            ];
-        }
-        else{
-            $filter = [
-                'Line_No' => Yii::$app->request->post('no')
-            ];
-        }
-
-        $request = Yii::$app->navhelper->getData($service, $filter);
-
-
+        $request = Yii::$app->navhelper->readByKey($service, $key);
         $data = [];
-        if(is_array($request)){
+        if(is_object($request)){
             $data = [
-                'Key' => $request[0]->Key,
+                'Key' => $request->Key,
                 $name => $value
             ];
         }else{
@@ -571,14 +553,45 @@ class OvertimeController extends Controller
             return ['error' => $request];
         }
 
-
-
         $result = Yii::$app->navhelper->updateData($service,$data);
-
         Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
-
         return $result;
 
+    }
+
+    public function actionAddLine($Service,$Document_No)
+    {
+        $service = Yii::$app->params['ServiceName'][$Service];
+        $data = [
+            'Application_No' => $Document_No,
+            'Employee_No' => Yii::$app->user->identity->{'Employee No_'},
+            'Line_No' => time()
+        ];
+
+        // Insert Record
+
+        $result = Yii::$app->navhelper->postData($service, $data);
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if(is_object($result))
+        {
+            return ['note' => 'Record Created Successfully.'];
+        }else{
+            return ['note' => $result];
+        }
+    }
+
+    public function actionDeleteLine($Service, $Key)
+    {
+        $service = Yii::$app->params['ServiceName'][$Service];
+        $result = Yii::$app->navhelper->deleteData($service,Yii::$app->request->get('Key'));
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if(!is_string($result)){
+
+            return ['note' => '<div class="alert alert-success">Record Purged Successfully</div>'];
+        }else{
+            return ['note' => '<div class="alert alert-danger">Error Purging Record: '.$result.'</div>' ];
+        }
     }
 
 

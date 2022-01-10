@@ -25,7 +25,7 @@ class AdminlteAsset extends AssetBundle
         'plugins/jqvmap/jqvmap.min.css',
         'plugins/datatables-bs4/css/dataTables.bootstrap4.css',
         'https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css',
-        'dist/css/adminlte.min.css',
+        'dist/css/adminlte.css',
         'plugins/overlayScrollbars/css/OverlayScrollbars.min.css',
         'plugins/daterangepicker/daterangepicker.css',
         'plugins/summernote/summernote-bs4.css',

@@ -37,7 +37,7 @@ if(Yii::$app->session->hasFlash('success')){
 
 <div class="row">
         <div class="col-md-12">
-            <div class="card-info">
+            <div class="card-primary">
                 <div class="card-header">
                     <h3>Change Request Document </h3>
                 </div>
@@ -481,7 +481,7 @@ if(Yii::$app->session->hasFlash('success')){
                         <?= ($model->Approval_Status == 'New')?Html::a('<i class="fas fa-plus mx-1"></i>Add',['create-line','Change_No' => $model->No],[
                              'class' => 'add btn btn-sm btn-outline-info',
                              'rel' => $Document->No,
-                             'data-service'=> 'EducationQualifications']):'' 
+                             'data-service'=> 'EmployeeQualificationsChange']):'' 
                         ?>
                     </div>
                 </div>
@@ -741,7 +741,7 @@ if(Yii::$app->session->hasFlash('success')){
                                     <td class="text text-bold">Employee_No</td>
                                     <td class="text text-bold">Branch Code</td>
                                     <td class="text text-bold">Deparment Code</td>
-                                    <td class="text text-bold">Fund Sector Code</td>
+                                    <!-- <td class="text text-bold">Fund Sector Code</td> -->
                                     <td class="text text-bold">Status</td>
                                     <td class="text text-bold">Action</td>
                                     
@@ -763,7 +763,7 @@ if(Yii::$app->session->hasFlash('success')){
                                                 <td><?= $obj->Employee_No ?></td>
                                                 <td data-key="<?= $obj->Key ?>" data-name="Global_Dimension_1_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension1')"><?= !empty($obj->Global_Dimension_1_Code)?$obj->Global_Dimension_1_Code:'Not Set' ?></td>
                                                 <td data-key="<?= $obj->Key ?>" data-name="Gloabl_Dimension_2_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension2')"><?= !empty($obj->Gloabl_Dimension_2_Code)?$obj->Gloabl_Dimension_2_Code:'Not Set' ?></td>
-                                                <td data-key="<?= $obj->Key ?>" data-name="Global_Dimension_3_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension3')"><?= !empty($obj->Global_Dimension_3_Code)?$obj->Global_Dimension_3_Code:'Not Set' ?></td>
+                                               <!-- <td data-key="<?= $obj->Key ?>" data-name="Global_Dimension_3_Code" data-service="EmployeeIntransfer" ondblclick="addDropDown(this, 'dimension3')"><?= !empty($obj->Global_Dimension_3_Code)?$obj->Global_Dimension_3_Code:'Not Set' ?></td>-->
                                                 <td data-key="<?= $obj->Key ?>" data-name="Status" data-service="EmployeeIntransfer" ondblclick="addDropDown(this,'transfer-states')"><?= !empty($obj->Status)?$obj->Status:'Not Set' ?></td>
                                                 <td><?= $deleteLink?></td>
                                                 
@@ -844,6 +844,8 @@ $script = <<<JS
             }
             
         });
+
+        
 
 
       

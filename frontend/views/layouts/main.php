@@ -179,7 +179,7 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar elevation-4 sidebar-light-danger" style="background-color: <?= $PrimaryColor ?>">
+        <aside class="main-sidebar elevation-4 sidebar-light">
             <!-- Brand Logo -->
             <a href="<?= $absoluteUrl ?>site" class="brand-link navbar-secondary">
                 <!--<img src="<?= $webroot ?>/images/Logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
@@ -1270,8 +1270,8 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 
 
         <!-- /.content-wrapper -->
-        <footer class="main-footer">
-            <strong>Copyright &copy; <?= Yii::$app->params['generalTitle'] ?> -   2014 - <?= date('Y') ?>   <a href="#"> <?= strtoupper(Yii::$app->params['demoCompany'])?></a>.</strong>
+        <footer class="main-footer bg-secondary">
+            <strong>Copyright &copy; <?= Yii::$app->params['generalTitle'] ?> - <?= date('Y') ?>   <a href="#"> <?= strtoupper(Yii::$app->params['demoCompany'])?></a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 
