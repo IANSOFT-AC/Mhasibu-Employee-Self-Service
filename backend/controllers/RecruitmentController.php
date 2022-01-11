@@ -234,30 +234,24 @@ class RecruitmentController extends Controller
         ]);
     }
 
-    public function actionView($Job_ID){
+    public function actionView($Key){
 
        
         $service = Yii::$app->params['ServiceName']['JobsCard'];
 
-        $filter = [
-            'Job_Id' => $Job_ID
-        ];
-
-        $job = Yii::$app->navhelper->getData($service, $filter);
+        $job = Yii::$app->navhelper->readByKey($service, $Key);
         // Yii::$app->recruitment->printrr($job);
-
-
-    
         //Get the Job Requisition No
 
-        if(empty($job[0]->Requisition_No)){
-            Yii::$app->session->setFlash('error','You cannot apply for this job : Job ID ('.$job[0]->Requisition_No.') cannot be found in HR Requisitions List',true);
+        if(empty($job->Requisition_No)){
+            Yii::$app->session->setFlash('error','You cannot apply for this job : Job ID ('.$job->Requisition_No.') cannot be found in HR Requisitions List',true);
             return $this->redirect(['vacancies']);
         }
 
         
         return $this->render('view',[
-            'model' => $job[0],
+            'model' => $job,
+            'document' => $job
         ]);
     }
 

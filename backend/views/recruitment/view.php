@@ -8,8 +8,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-// print '<pre>';
-// print_r($model); exit;
+
+Yii::$app->recruitment->printrr($document); 
 
 
 ?>
@@ -75,7 +75,7 @@ if(Yii::$app->session->hasFlash('success')){
                   <hr>
                   
                     <div class="post clearfix">
-                        <?php if(!empty($model->Hr_Job_Responsibilities->Hr_Job_Responsibilities) && sizeof($model->Hr_Job_Responsibilities->Hr_Job_Responsibilities)): ?>
+                        <?php if(property_exists($document->Hr_Job_Responsibilities,'Hr_Job_Responsibilities')): ?>
                           <p>
                                 <?php
                                   
@@ -83,8 +83,7 @@ if(Yii::$app->session->hasFlash('success')){
                                         foreach($model->Hr_Job_Responsibilities->Hr_Job_Responsibilities as $resp){
 
                                             if(!empty($resp->Responsibility_Description)){
-                                                print '<li>'.$resp->Responsibility_Description.'</li>'; 
-                                            // echo (Yii::$app->recruitment->Responsibilityspecs($resp->Line_No));
+                                                print '<li>'.$resp->Responsibility_Description.'</li>';
                                             }
 
                                         }
@@ -107,7 +106,7 @@ if(Yii::$app->session->hasFlash('success')){
                   <hr>
                   
                     <div class="post clearfix">
-                      <?php if(!empty($model->Hr_job_requirements->Hr_job_requirements) && sizeof($model->Hr_job_requirements->Hr_job_requirements)): ?>
+                      <?php if(property_exists($model->Hr_job_requirements,'Hr_job_requirements')): ?>
 
                         <p>
                           
@@ -117,7 +116,7 @@ if(Yii::$app->session->hasFlash('success')){
 
                                           if(!empty($resp->Requirment_Description)){
                                               print '<li>'.$resp->Requirment_Description.'</li>'; 
-                                          // echo (Yii::$app->recruitment->Responsibilityspecs($resp->Line_No));
+                                            echo (Yii::$app->recruitment->Responsibilityspecs($resp->Line_No));
                                           }
 
                                       }

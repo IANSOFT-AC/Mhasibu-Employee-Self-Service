@@ -186,30 +186,23 @@ class RecruitmentController extends Controller
         ]);
     }
 
-    public function actionView($Job_ID){
+    public function actionView($Key){
 
- 
-        $service = Yii::$app->params['ServiceName']['JobsCard'];
+        //$service = Yii::$app->params['ServiceName']['JobsCard'];
 
-        $filter = [
-            'Job_Id' => $Job_ID
-        ];
+        $job = Yii::$app->navhelper->readByKey('JobsCard', $Key);
 
-        $job = Yii::$app->navhelper->getData($service, $filter);
-        //Get the Job Requisition No
-        // Yii::$app->recruitment->printrr($job);
-
-        if(empty($job[0]->Requisition_No)){
-            Yii::$app->session->setFlash('error','You cannot apply for this job : Job ID ('.$job[0]->Requisition_No.') cannot be found in HR Requisitions List',true);
+        if(empty($job->Requisition_No)){
+            Yii::$app->session->setFlash('error','You cannot apply for this job : Job ID ('.$job->Requisition_No.') cannot be found in HR Requisitions List',true);
             return $this->redirect(['vacancies']);
         }else{
-            Yii::$app->session->set('REQUISITION_NO', $job[0]->Requisition_No);
-            //exit($job[0]->Requisition_No);
+            Yii::$app->session->set('REQUISITION_NO', $job->Requisition_No);
         }
 
         
         return $this->render('view',[
-            'model' => $job[0],
+            'model' => $job,
+            'document' => $job
         ]);
     }
 
@@ -305,7 +298,7 @@ class RecruitmentController extends Controller
         $result = [];
         foreach($requisitions as $req){
             if(( !empty($req->No_Posts) && $req->No_Posts >= 0 && !empty($req->Job_Description) && !empty($req->Job_Id)) && ($req->Requisition_Type == 'Internal' || $req->Requisition_Type == 'Both')  ) {
-                $Viewlink = Html::a('Apply', ['view', 'Job_ID' => $req->Job_Id], [
+                $Viewlink = Html::a('Apply', ['view', 'Key' => $req->Key], [
                     'class' => 'btn btn-outline-primary btn-xs',
                     'data' => [
                         'params' => ['type' => 'Internal'],

@@ -409,7 +409,10 @@ class Recruitment extends Component
                                     if(!is_string($results) && !is_object($results)){
 
                                         foreach($results as $spec){
-
+                                                if(empty($spec->Requirement_Specifiaction))
+                                                {
+                                                    continue;
+                                                }
                                             $html .= '<tr>
                             
                                                         <td>'.$spec->Requirement_Specifiaction.'</td>

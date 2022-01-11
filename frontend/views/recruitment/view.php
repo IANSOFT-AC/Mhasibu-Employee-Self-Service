@@ -8,8 +8,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-/*print '<pre>';
-print_r($model); exit;*/
+
+// Yii::$app->recruitment->printrr($document);
 
 
 ?>
@@ -34,7 +34,7 @@ print_r($model); exit;*/
 
                     \yii\helpers\Html::a('<i class="fa fa-address-book"></i>  Update Profile and Submit Application',['applicantprofile/update','No'=> $profileID],['class' => 'btn btn-outline-warning push-right'])
                     :
-                    \yii\helpers\Html::a('<i class="fa fa-address-book"></i>  Create a Profile',['applicantprofile/create','Job_ID'=> Yii::$app->request->get('Job_ID')],['class' => 'btn btn-outline-info push-right'])
+                    \yii\helpers\Html::a('<i class="fa fa-address-book"></i>  Create a Profile',['applicantprofile/create','Job_ID'=> Yii::$app->request->get('Job_ID')],['class' => 'btn btn-outline-primary push-right'])
                 ;
 
 
@@ -122,7 +122,7 @@ if(Yii::$app->session->hasFlash('success')){
                     <div class="col-md-12">
                     <table class="table table-bordered" >
                         <?php
-                            if(!empty($model->Hr_Job_Responsibilities->Hr_Job_Responsibilities) && sizeof($model->Hr_Job_Responsibilities->Hr_Job_Responsibilities)){
+                            if(property_exists($document->Hr_Job_Responsibilities,'Hr_Job_Responsibilities')){
                                 foreach($model->Hr_Job_Responsibilities->Hr_Job_Responsibilities as $resp){
 
                                     if(!empty($resp->Responsibility_Description)){
@@ -161,7 +161,7 @@ if(Yii::$app->session->hasFlash('success')){
                         <table class="table table-bordered" >
                             <?php
 
-                            if(!empty($model->Hr_job_requirements->Hr_job_requirements) && sizeof($model->Hr_job_requirements->Hr_job_requirements)){
+                            if(property_exists($document->Hr_job_requirements, 'Hr_job_requirements') ){
                                 foreach($model->Hr_job_requirements->Hr_job_requirements as $req){
                                     if(!empty($req->Requirement)){
                                         print '<tr>
