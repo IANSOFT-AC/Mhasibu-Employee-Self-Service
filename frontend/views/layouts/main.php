@@ -478,10 +478,10 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 
                             <!--Recruitment-->
 
-                        <?php if(Yii::$app->params['ActiveModules']['Recruitment']) { ?>
+                       
 
                             <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl(Yii::$app->params['profileControllers'])?'menu-open':'' ?>">
-                                <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl('recruitment')?'active':'' ?>">
+                                <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl(Yii::$app->params['profileControllers'])?'active':'' ?>">
                                     <i class="nav-icon fas fa-briefcase " ></i>
                                     <p>
                                         Employee Recruitment
@@ -508,7 +508,7 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                                 </ul>
                             </li>
 
-                        <?php } ?>
+                        
 
                         <!--/Recruitment -->
 
