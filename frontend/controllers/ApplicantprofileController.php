@@ -105,6 +105,34 @@ class ApplicantprofileController extends Controller
         }
         $service = Yii::$app->params['ServiceName']['JobApplicantProfile'];
 
+
+        // Create this record and redirect to update route
+
+        $applicant = Yii::$app->navhelper->postData($service, $model);
+
+        if(is_object($applicant))
+        {
+
+                    $srvc = Yii::$app->params['ServiceName']['EmployeeCard'];
+                    $filter = [
+                        'No' => Yii::$app->user->identity->employee[0]->No
+                    ];
+                    $Employee = Yii::$app->navhelper->getData($srvc,$filter);
+                    $data = [
+                        'Key' => $Employee[0]->Key,
+                        'ProfileID' => $applicant->No
+                    ];
+                    Yii::$app->navhelper->updateData($srvc,$data);
+
+            return $this->redirect(['update']);
+        }else{
+            Yii::$app->recruitment->printrr($applicant);
+        }
+
+        // Create Ends Here.....
+
+
+
         if(Yii::$app->request->post() && $this->loadpost(Yii::$app->request->post()['Applicantprofile'],$model)){
 
            if(!empty($_FILES['Applicantprofile']['name']['imageFile'])){
@@ -126,20 +154,7 @@ class ApplicantprofileController extends Controller
                     $hruser->save();//do not validate model since we are just updating a single property
                 }else{
                     //update for a particular employee
-                    $srvc = Yii::$app->params['ServiceName']['EmployeeCard'];
-                    $filter = [
-                        'No' => Yii::$app->user->identity->employee[0]->No
-                    ];
-                    $Employee = Yii::$app->navhelper->getData($srvc,$filter);
-
-                    $data = [
-                        'Key' => $Employee[0]->Key,
-                        'ProfileID' => $result->No
-                    ];
-
-
-
-                    $update = Yii::$app->navhelper->updateData($srvc,$data);
+                    
                     // Yii::$app->recruitment->printrr($update);  
 
 
@@ -479,4 +494,17 @@ class ApplicantprofileController extends Controller
         return $model;
     }
 
+
+    /** Updates a single field */
+    public function actionSetfield($field){
+        $service = 'JobApplicantProfile';
+        $value = Yii::$app->request->post('fieldValue');
+        $result = Yii::$app->navhelper->Commit($service,[$field => $value],Yii::$app->request->post('Key'));
+        Yii::$app->response->format = \yii\web\response::FORMAT_JSON;
+        return $result;
+          
+    }
+
 }
+
+

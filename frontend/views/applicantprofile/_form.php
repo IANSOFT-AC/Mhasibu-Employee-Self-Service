@@ -10,8 +10,8 @@
 
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-//$this->title = 'AAS - Employee Profile'
+use yii\bootstrap4\ActiveForm;
+$absoluteUrl = \yii\helpers\Url::home(true);
 ?>
 
 
@@ -171,28 +171,114 @@ use yii\widgets\ActiveForm;
                         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
                     </div>
 
-
                 </div>
-
-
-
-
-
-
-
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
         <?php ActiveForm::end(); ?>
     </div>
 </div>
+<input type="hidden" name="absolute" value="<?= $absoluteUrl ?>">
+<?php
+
+$script = <<<JS
+
+$('#applicantprofile-first_name').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'First_Name', e);
+});
+
+
+$('#applicantprofile-middle_name').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Middle_Name', e);
+});
+
+$('#applicantprofile-last_name').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Last_Name', e);
+});
+
+$('#applicantprofile-initials').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Initials', e);
+});
+
+$('#applicantprofile-first_name').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'First_Name', e);
+});
+
+$('#applicantprofile-gender').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Gender', e);
+});
+
+$('#applicantprofile-first_name').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'First_Name', e);
+});
+
+$('#applicantprofile-address').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Address', e);
+});
+
+$('#applicantprofile-country_region_code').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Country_Region_Code', e);
+});
+
+$('#applicantprofile-city').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'City', e);
+});
+
+$('#applicantprofile-post_code').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Post_Code', e);
+});
+
+$('#applicantprofile-county').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'County', e);
+});
+
+$('#applicantprofile-phone_no').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Phone_No', e);
+});
+
+$('#applicantprofile-mobile_phone_no').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Mobile_Phone_No', e);
+});
+
+$('#applicantprofile-e_mail').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'E_Mail', e);
+});
+
+$('#applicantprofile-birth_date').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Birth_Date', e, ['Age']);
+});
+
+$('#applicantprofile-disabled').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Disabled', e);
+});
+
+
+$('#applicantprofile-describe_disability').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Describe_Disability', e);
+});
+
+$('#applicantprofile-nhif_number').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'NHIF_Number', e);
+});
+
+$('#applicantprofile-nssf_number').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'NSSF_Number', e);
+});
+
+$('#applicantprofile-kra_number').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'KRA_Number', e);
+});
+
+$('#applicantprofile-national_id').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'National_ID', e);
+});
+
+$('#applicantprofile-kra_number').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'KRA_Number', e);
+});
+
+$('#applicantprofile-marital_status').change((e) => {
+       globalFieldUpdate('Applicantprofile',false,'Marital_Status', e);
+});
+
+JS;
+$this->registerJs($script);
