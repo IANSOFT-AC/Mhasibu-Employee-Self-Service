@@ -280,7 +280,7 @@ function requestStateUpdater(fieldParentNode, notificationType, msg = '' ) {
 
 // Global Uploader
 
-async function globalUpload(service, entity, fieldName,e) {
+async function globalUpload(service, entity, fieldName) {
  
  const model = entity.toLowerCase(); 
   const key = document.querySelector(`#${model}-key`).value;

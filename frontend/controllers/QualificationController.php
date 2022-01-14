@@ -406,6 +406,9 @@ class QualificationController extends Controller
                     'method' => 'post',
                 ]]);
 
+                $documentLink = !empty($quali->Attachement_path)?
+                Html::a('<i class="fa fa-file"></i> View',['read','path'=> $quali->Attachement_path ],['class'=>'btn btn-outline-primary btn-md', 'target' => '_blank']):'';
+
                // $qualificationLink = !empty($quali->Attachement_path)? Html::a('View Document',['read','path'=> $quali->Attachement_path ],['class'=>'btn btn-outline-warning btn-xs']):$quali->Qualification_Code;
                 $result['data'][] = [
                     'index' => $count,
@@ -415,7 +418,7 @@ class QualificationController extends Controller
                     'From_Date' => !empty($quali->From_Date)?$quali->From_Date:'',
                     'To_Date' => !empty($quali->To_Date)?$quali->To_Date:'',
                     'Specialization' => !empty($quali->Specialization)?$quali->Specialization:'',
-                    'Attachement_path' => !empty($quali->Attachement_path)?$quali->Attachement_path:'',
+                    'Attachement_path' => !empty($quali->Attachement_path)?$documentLink:'',
                     
                     'Action' => $updateLink.' | '.$link,
                     
@@ -507,14 +510,14 @@ class QualificationController extends Controller
         if(Yii::$app->session->has('mode') && Yii::$app->session->get('mode') == 'external'){
             $this->layout = 'external';
         }
-        $absolute = Yii::$app->recruitment->absoluteUrl().$path;
+        //$absolute = Yii::$app->recruitment->absoluteUrl().$path;
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $fh = file_get_contents($absolute); //read file into a string or get a file handle resource from sharepoint
+        $fh = file_get_contents($path); //read file into a string or get a file handle resource from sharepoint
         $mimetype = $finfo->buffer($fh); //get mime type
 
         return $this->render('read',[
             'mimeType' => $mimetype,
-            'documentPath' => $absolute
+            'documentPath' => $path
         ]);
     }
 

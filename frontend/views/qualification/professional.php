@@ -112,6 +112,10 @@ $script = <<<JS
         
      
     /*End Data tables*/
+
+     //Hidding some 
+     var table = $('#leaves').DataTable();
+      table.columns([0]).visible(false);
     
     
     /*Update Qualifications */

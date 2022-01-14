@@ -47,7 +47,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <?= $form->field($model, 'attachment')->fileInput(['accept' => 'application/*']) ?>
                               
                 
-                                    <?= $form->field($model, 'Key')->textInput(['readonly' =>  true]) ?>
+                                    <?= $form->field($model, 'Key')->hiddenInput(['readonly' =>  true])->label(false) ?>
                              
                     </div>
                 </div>
@@ -87,7 +87,7 @@ $script = <<<JS
         });
 
         $('#qualification-attachment').change(function(e){
-          globalUpload('ProffesionalQualifications','qualification','attachment',e);
+          globalUpload('ProffesionalQualifications','qualification','attachment');
         });
       
 
