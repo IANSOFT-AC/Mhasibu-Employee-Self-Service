@@ -53,7 +53,7 @@ class AdminlteAsset extends AssetBundle
         'plugins/jquery-mapael/jquery.mapael.min.js',
         'plugins/jquery-mapael/maps/usa_states.min.js',
         'plugins/chart.js/Chart.min.js',
-        'dist/js/pages/dashboard2.js',
+       // 'dist/js/pages/dashboard2.js',
 
         'plugins/sparklines/sparkline.js',
         'plugins/jqvmap/jquery.vmap.min.js',
@@ -81,7 +81,7 @@ class AdminlteAsset extends AssetBundle
 
     ];
     public $depends = [
-        'yii\web\YiiAsset',
+       'yii\web\YiiAsset',
         //'yii\bootstrap\BootstrapAsset',
     ];
 }

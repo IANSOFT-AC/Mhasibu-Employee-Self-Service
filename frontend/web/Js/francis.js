@@ -275,14 +275,78 @@ function requestStateUpdater(fieldParentNode, notificationType, msg = '' ) {
 
   }
   
-  
 
-  
-    
-  
-  
 }
 
+// Global Uploader
+
+async function globalUpload(service, entity, fieldName,e) {
+ 
+ const model = entity.toLowerCase(); 
+  const key = document.querySelector(`#${model}-key`).value;
+  const fileInput = document.querySelector(`#${model}-${fieldName}`);
+  let endPoint = './upload/';
+  const navPayload = {
+    "Key" : key,
+    "Service": service
+  }
+
+  const formData = new FormData();
+  formData.append("attachment", fileInput.files[0]);
+
+  console.log(fileInput.files);
+
+
+  try{
+    const Request = await fetch(endPoint,
+      {
+        method: "POST",
+        body: formData,
+        headers: new Headers({
+          Origin: 'http://localhost:8047/'
+        })
+      });
+
+    const Response = await Request.json();
+    console.log(`File Upload Request`);
+    console.log(Response);
+
+    let filePath = Response.filePath;
+
+
+
+    // Do a Nav Request
+   endPoint = `${endPoint}?Key=${navPayload.Key}&Service=${navPayload.Service}&filePath=${filePath}`
+    const navReq = await  fetch(endPoint,{
+      method: "GET",
+      headers: new Headers({
+        Origin: 'http://localhost:8047/'
+      })
+    });
+
+    const NavResp = await navReq.json();
+    console.log(`Nav Request Response`);
+    console.log(NavResp);
+    console.info(navReq.ok);
+    if(navReq.ok)
+    {
+      Toast.fire({
+        type: 'success',
+        title: 'Attachment uploaded Successfully.'
+      });
+    }else {
+      Toast.fire({
+        type: 'error',
+        title: 'Attachment could not be uploaded.'
+      })
+    }
+
+
+  }catch(error)
+  {
+    console.log(error);
+  }
+}
 
 
 

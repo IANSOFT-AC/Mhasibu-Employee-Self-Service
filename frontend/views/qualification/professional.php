@@ -7,10 +7,6 @@
  */
 
 
-
-
-
-
 /* @var $this yii\web\View */
 
 $this->title = 'Recruitment - Applicant Qualifications';
@@ -30,7 +26,7 @@ $this->title = 'Recruitment - Applicant Qualifications';
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <?= \yii\helpers\Html::a('Add Qualification',['createprofessional','create'=> 1],['class' => ' create btn btn-outline-warning push-right']) ?>
+                    <?= \yii\helpers\Html::a('Add Qualification',['createprofessional'],['class' => ' add btn btn-outline-warning push-right']) ?>
                 </div>
             </div>
         </div>
@@ -59,11 +55,6 @@ if(Yii::$app->session->hasFlash('success')){
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">My Qualifications.</h3>
-
-
-
-
-
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered dt-responsive table-hover" id="leaves">
@@ -74,6 +65,10 @@ if(Yii::$app->session->hasFlash('success')){
     </div>
 
 
+
+
+
+
 <input type="hidden" name="absolute" value="<?= Yii::$app->recruitment->absoluteUrl() ?>">
 <?php
 
@@ -81,10 +76,10 @@ $script = <<<JS
 
     $(function(){
         
-        var absolute = $('input[name=absolute]').val();
+        let absolute = $('input[name=absolute]').val();
          /*Data Tables*/
          
-         $.fn.dataTable.ext.errMode = 'throw';        
+        // $.fn.dataTable.ext.errMode = 'throw';        
     
           $('#leaves').DataTable({
            
@@ -92,13 +87,13 @@ $script = <<<JS
             ajax: absolute+'qualification/getprofessionalqualifications',
             paging: true,
             columns: [
-                { title: '....', data: 'index'},
+                { title: '#', data: 'index'},
                 { title: 'Applicant ID' ,data: 'Employee_No'},
-                { title: 'Qualification Code' ,data: 'Qualification_Code'},
+                { title: 'Professional_Examiner' ,data: 'Professional_Examiner'},
                 { title: 'From Date' ,data: 'From_Date'},
                 { title: 'To Date' ,data: 'To_Date'},
-                { title: 'Description' ,data: 'Description'},
-                { title: 'Institution / Company' ,data: 'Institution_Company'},
+                { title: 'Specialization' ,data: 'Specialization'},
+                { title: 'Attachement_path' ,data: 'Attachement_path'},
                // { title: 'Comment' ,data: 'Comment'},
                
                 { title: 'Actions' ,data: 'Action'},
@@ -115,10 +110,7 @@ $script = <<<JS
            
        });
         
-       //Hidding some 
-       var table = $('#leaves').DataTable();
-      table.columns([0]).visible(false);
-    
+     
     /*End Data tables*/
     
     
@@ -136,10 +128,10 @@ $script = <<<JS
             
            //Add an experience
         
-         $('.create').on('click',function(e){
+         $('.add').on('click',function(e){
             e.preventDefault();
             var url = $(this).attr('href');
-            console.log('clicking...');
+            console.log('clicking... this...');
             $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 
@@ -158,11 +150,6 @@ JS;
 $this->registerJs($script);
 
 
-$style = <<<CSS
-    tr > td:last-child, th:last-child{ text-align: center; }
-CSS;
-
-$this->registerCss($style);
 
 
 

@@ -47,12 +47,12 @@ return [
             'charset' => 'utf8',
         ],
         'assetManager' => [
-           /* 'bundles' => [
+           'bundles' => [
                 'yii\web\JqueryAsset' => [
                     'sourcePath' => null,
                     'js' => ['/plugins/jquery/jquery.js'],
                 ]
-            ],*/
+            ],
             'appendTimestamp' => true,
         ],
         'navision' => [

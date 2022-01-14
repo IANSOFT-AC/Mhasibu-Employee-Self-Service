@@ -141,7 +141,7 @@ class QualificationController extends Controller
         ]);
     }
 
-    public function actionCreateprofessional($ProfileId){
+    public function actionCreateprofessional($ProfileId=''){
 
         $model = new Qualification();
         $service = Yii::$app->params['ServiceName']['ProffesionalQualifications'];
@@ -465,6 +465,7 @@ class QualificationController extends Controller
 
 
     public function actionGetprofessionalqualifications(){
+    
         $service = Yii::$app->params['ServiceName']['ProffesionalQualifications'];
 
         $filter = [

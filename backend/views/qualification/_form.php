@@ -6,13 +6,13 @@
  * Time: 12:13 PM
  */
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use kartik\depdrop\DepDrop;
+use yii\bootstrap4\ActiveForm;
+
 ?>
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title"><?= Html::encode($this->title) ?></h3>
             </div>
@@ -21,89 +21,39 @@ use kartik\depdrop\DepDrop;
 
 
                     <?php
-                    $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
-                <div class="row">
-                    <div class="col-md-12">
+                    $form = ActiveForm::begin([
+                        'id' => 'professional',
+                        'options' => ['enctype' => 'multipart/form-data'],
+                        ]); ?>
+               
 
-<?php
-// echo '<pre>';
-// print_r($qlist);
-// echo '..............';
-// print_r($Complete);
-// exit;
-// exit;
+                           
 
-?>
-
-                            <table class="table">
-                                <tbody>
-
-                                
-
-                                <tr>
-                                    <?= $form->field($model, 'Level')->dropDownList($EducationLevel,
-                                        ['prompt' => '- Select Level -']) 
+                
+                                    <?= $form->field($model, 'Professional_Examiner')->dropDownList($examiners,
+                                        ['prompt' => '- Select ...']) 
                                     ?>
-                                </tr>
+                              
 
-                                <tr>
-                                    <?= $form->field($model, 'Academic_Qualification')->dropDownList($qlist,
-                                        ['prompt' => 'Select Qualification', 'id'=>'Academic_Qualification']) 
-                                    ?>
-                                </tr>
-                                
-
-                                <tr>
+                                        
                                     <?= $form->field($model, 'From_Date')->textInput(['type' => 'date']) ?>
-                                </tr>
-                                <tr>
+                                
                                     <?= $form->field($model, 'To_Date')->textInput(['type' => 'date']) ?>
-                                </tr>
-                                <tr>
-                                    <?= $form->field($model, 'Institution_Company')->textInput() ?>
-                                </tr>
-                                <tr>
-                                    <?= $form->field($model, 'Attachement_path')->fileInput(['accept' => 'application/*']) ?>
-                                </tr>
+                              
+                                
+                                    <?= $form->field($model, 'Specialization')->textarea(['rows'=> 2, 'maxlength' =>  250]) ?>
+                              
+                                
+                                    <?= $form->field($model, 'attachment')->fileInput(['accept' => 'application/*']) ?>
+                              
 
-                                <tr>
+                                
 
-                                    <?= $form->field($model, 'Employee_No')->hiddenInput(['value' => Yii::$app->user->identity->profileID, 'readonly' => 'true'])->label(false) ?>
+                
                                     <?= $form->field($model, 'Key')->hiddenInput()->label(false) ?>
-                                </tr>
-
-
-
-
-
-
-
-
-
-
-
-                                </tbody>
-                            </table>
-
-
-
+                             
                     </div>
-
-
-
-
                 </div>
-
-
-
-
-
-
-
-
-
-
-
 
                 <div class="row">
 
@@ -123,23 +73,8 @@ use kartik\depdrop\DepDrop;
 
 $script = <<<JS
     $(function(){
-        $('#qualification-level').on('change', function(){
-            var selected =  $('#qualification-level').val();
-
-            $.post( "/qualification/education-qualifications?Level="+selected, function( data ) {
-                $('#Academic_Qualification').empty();
-                $('#Academic_Qualification').append($('<option id="itemId" selected="selected"></option>').attr('value', '').text('Select Qualification'));
-
-                 data.forEach(item=> {
-                 
-                  $('#Academic_Qualification').append($('<option id="itemId'+ item.Code+'" ></option>').attr('value', item.Code).text(item.Description));
-
-                });
-           });
-            
-        });
-
-        $('#qualification-qualification_code').select2();
+      
+      
     });
 JS;
 

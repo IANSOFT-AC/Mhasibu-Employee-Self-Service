@@ -16,17 +16,13 @@ class Qualification extends Model
 {
     public $Key;
     public $Employee_No;
-    public $Level;
-    public $Academic_Qualification;
+    public $Professional_Examiner;
     public $From_Date;
     public $To_Date;
-    public $Description;
-    public $Institution_Company;
-    public $Comment;
-    public $Attachement_path;
+    public $Specialization;
+    public $attachment;
     public $Line_No;
-    public $Type;
-    public $Nature;
+    public $Attachement_path;
 
 
 
@@ -34,9 +30,11 @@ class Qualification extends Model
     {
         return [
 
-            [['Employee_No','Institution_Company', 'Level', 'Academic_Qualification', 'From_Date','To_Date'],'required'],
-            [['Attachement_path'],'file','mimeTypes' => Yii::$app->params['QualificationsMimeTypes']],
-            [['Attachement_path'],'file','maxSize' => '5120000'],
+            [['Employee_No','Professional_Examiner;', 'Level',
+             'Professional_Examiner', 'From_Date','To_Date'],'required'],
+            ['Specialization', 'string', 'max' => 250],
+            [['attachment'],'file','mimeTypes' => Yii::$app->params['QualificationsMimeTypes']],
+            [['attachment'],'file','maxSize' => '5120000'], //50mb
             // ['Qualification_Code', 'string', 'min' => 5, 'max' => 150],
 
         ];

@@ -5,13 +5,16 @@
  * Date: 2/24/2020
  * Time: 12:13 PM
  */
+
+use yii\base\View;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap4\ActiveForm;
+$absoluteUrl = \yii\helpers\Url::home(true);
 ?>
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title"><?= Html::encode($this->title) ?></h3>
             </div>
@@ -20,85 +23,38 @@ use yii\widgets\ActiveForm;
 
 
                     <?php
-                    $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
-                <div class="row">
-                    <div class="col-md-12">
+                    $form = ActiveForm::begin([
+                        'id' => 'professional',
+                        'options' => ['enctype' => 'multipart/form-data'],
+                        ]); ?>
+               
 
-<?php
-// echo '<pre>';
-// print_r($qlist);
-// echo '..............';
-// print_r($Complete);
-// exit;
-// exit;
+                           
 
-?>
-
-                            <table class="table">
-                                <tbody>
-
-                                
-
-                                <tr>
-                                    <?= $form->field($model, 'Qualification_Code')->dropDownList($qlist,['prompt' => 'Select Qualifivation']) ?>
-                                </tr>
-                                <tr>
+                
+                                    <?= $form->field($model, 'Professional_Examiner')->dropDownList($examiners,
+                                        ['prompt' => '- Select ...']) 
+                                    ?>
+                                        
                                     <?= $form->field($model, 'From_Date')->textInput(['type' => 'date']) ?>
-                                </tr>
-                                <tr>
+                                
                                     <?= $form->field($model, 'To_Date')->textInput(['type' => 'date']) ?>
-                                </tr>
-                                <tr>
-                                    <?= $form->field($model, 'Institution_Company')->textInput() ?>
-                                </tr>
-                                <tr>
-                                    <?= $form->field($model, 'imageFile')->fileInput(['accept' => 'application/*']) ?>
-                                </tr>
-
-                                <tr>
-
-                                    <?= $form->field($model, 'Employee_No')->hiddenInput(['value' => Yii::$app->recruitment->getProfileID(), 'readonly' => 'true'])->label(false) ?>
-                                    <?= $form->field($model, 'Key')->hiddenInput()->label(false) ?>
-                                </tr>
-
-
-
-
-
-
-
-
-
-
-
-                                </tbody>
-                            </table>
-
-
-
+                              
+                                
+                                    <?= $form->field($model, 'Specialization')->textarea(['rows'=> 2, 'maxlength' =>  250]) ?>
+                              
+                                
+                                    <?= $form->field($model, 'attachment')->fileInput(['accept' => 'application/*']) ?>
+                              
+                
+                                    <?= $form->field($model, 'Key')->textInput(['readonly' =>  true]) ?>
+                             
                     </div>
-
-
-
-
                 </div>
 
-
-
-
-
-
-
-
-
-
-
-
                 <div class="row">
 
-                    <div class="form-group">
-                        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-                    </div>
+                   
 
 
                 </div>
@@ -107,19 +63,34 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 </div>
-
+<input type="hidden" name="absolute" value="<?= $absoluteUrl ?>">
 <?php
 
 $script = <<<JS
-    $(function(){
-        $('#qualification-qualification_code').on('change', function(){
-            var selected =  $('#qualification-qualification_code').find(':selected').text();
-            $('#qualification-description').val(selected);
-            
+    
+      
+        $('#qualification-professional_examiner').change(function(e){
+           
+            globalFieldUpdate('qualification',false,"Professional_Examiner", e);
         });
 
-        $('#qualification-qualification_code').select2();
-    });
+        $('#qualification-from_date').change(function(e){
+            globalFieldUpdate('qualification',false,"From_Date", e);
+        });
+
+        $('#qualification-to_date').change(function(e){
+            globalFieldUpdate('qualification',false,"To_Date", e);
+        });
+
+        $('#qualification-specialization').change(function(e){
+            globalFieldUpdate('qualification',false,"Specialization", e);
+        });
+
+        $('#qualification-attachment').change(function(e){
+          globalUpload('ProffesionalQualifications','qualification','attachment',e);
+        });
+      
+
 JS;
 
 $this->registerJs($script);

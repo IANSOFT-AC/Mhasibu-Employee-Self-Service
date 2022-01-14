@@ -30,7 +30,7 @@ $this->title = 'Recruitment - Applicant Qualifications';
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <?= \yii\helpers\Html::a('Add Qualification',['create','create'=> 1],['class' => ' create btn btn-outline-warning push-right']) ?>
+                    <?= \yii\helpers\Html::a('Add Qualification',['create','create'=> 1],['class' => ' add btn btn-outline-warning']) ?>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@ if(Yii::$app->session->hasFlash('success')){
 
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">My Qualifications.</h3>
 
@@ -135,12 +135,13 @@ $script = <<<JS
             });
             
             
-           //Add an experience
+           //Add Record
         
-         $('.create').on('click',function(e){
+         $('.add').on('click',function(e){
             e.preventDefault();
             var url = $(this).attr('href');
-            console.log('clicking...');
+            console.log(url);
+            console.log('clicking... this');
             $('.modal').modal('show')
                             .find('.modal-body')
                             .load(url); 

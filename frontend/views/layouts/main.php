@@ -10,17 +10,13 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AdminlteAsset;
-use common\widgets\Alert;
-use edwinhaq\simpleloading\SimpleLoading;
+
 
 AdminlteAsset::register($this);
 
-$PrimaryColor = '';//'cyan';
-$SecondaryColorHeaderColor =''; //'wheat';
+
 $webroot = Yii::getAlias(@$webroot);
 $absoluteUrl = \yii\helpers\Url::home(true);
 $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->employee))?Yii::$app->user->identity->employee[0]:[];
@@ -54,7 +50,7 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 <body class="hold-transition sidebar-mini layout-fixed ">
     <div class="wrapper">
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-dark navbar-primary" style="background-color: <?= $PrimaryColor ?>">
+        <nav class="main-header navbar navbar-expand navbar-dark navbar-primary">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -1297,31 +1293,5 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 </body>
 </html>
 <?php $this->endPage();
-
-/*function currentCtrl($ctrl){
-    $controller = Yii::$app->controller->id;
-
-    if(is_array($ctrl)){
-        if(in_array($controller,$ctrl)){
-            return true;
-        }
-    }
-    if($controller == $ctrl ){
-        return true;
-    }else{
-        return false;
-    }
-}*/
-
-/*function currentaction($ctrl,$actn){//modify it to accept an array of controllers as an argument--> later please
-    $controller = Yii::$app->controller->id;
-    $action = Yii::$app->controller->action->id;
-    if($controller == $ctrl && $action == $actn){
-        return true;
-    }else{
-        return false;
-    }
-}*/
-
 ?>
 
