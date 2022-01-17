@@ -3,26 +3,27 @@
  * Created by PhpStorm.
  * User: HP ELITEBOOK 840 G5
  * Date: 2/24/2020
- * Time: 12:29 PM
+ * Time: 12:31 PM
  */
+
 
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\AgendaDocument */
 
-$this->title = 'Add Hobby';
-$this->params['breadcrumbs'][] = ['label' => 'New Leave Application', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Update Qualification';
+
 ?>
-<div class="leave-document-create">
+<div class="agenda-document-update">
 
     <!--<h1><?= Html::encode($this->title) ?></h1>-->
 
     <?= $this->render('_form', [
         'model' => $model,
-
-
+        'levels' => $levels,
+        'academicQualifications' => $academicQualifications
+       
     ]) ?>
 
 </div>

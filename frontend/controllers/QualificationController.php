@@ -31,7 +31,7 @@ class QualificationController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup','index','professional','setfield'],
+                'only' => ['logout', 'signup','index','professional','setfield','read'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -39,7 +39,7 @@ class QualificationController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout','index','professional','setfield'],
+                        'actions' => ['logout','index','professional','setfield','read'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function($rule,$action){

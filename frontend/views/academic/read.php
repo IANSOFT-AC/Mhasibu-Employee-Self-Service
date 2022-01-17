@@ -25,7 +25,7 @@ $this->title = 'Recruitment - Applicant Qualifications';
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <?= \yii\helpers\Html::a('Go Back',['professional'],['class' => ' back btn btn-outline-primary push-right']) ?>
+                    <?= \yii\helpers\Html::a('Go Back',['index'],['class' => ' back btn btn-outline-primary push-right']) ?>
                 </div>
             </div>
         </div>

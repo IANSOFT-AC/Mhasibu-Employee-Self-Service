@@ -12,7 +12,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\AgendaDocument */
 
-$this->title = 'Update Language';
+$this->title = 'Update Qualification';
 
 ?>
 <div class="agenda-document-update">

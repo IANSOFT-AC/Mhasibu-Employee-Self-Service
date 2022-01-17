@@ -33,7 +33,7 @@ use yii\widgets\ActiveForm;
                                     <?= $form->field($model, 'Hobby_Description')->textInput() ?>
                                 </tr>
 
-                                    <?= $form->field($model, 'Key')->hiddenInput() ?>
+                                    <?= $form->field($model, 'Key')->hiddenInput()->label(false) ?>
                                 </tr>
 
 

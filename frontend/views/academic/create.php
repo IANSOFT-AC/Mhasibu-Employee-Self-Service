@@ -11,8 +11,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\AgendaDocument */
 
-$this->title = 'Add Hobby';
-$this->params['breadcrumbs'][] = ['label' => 'New Leave Application', 'url' => ['index']];
+$this->title = 'Add Qualification';
+$this->params['breadcrumbs'][] = ['label' => 'New Qualification', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="leave-document-create">
@@ -21,8 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-
-
+        'levels' => $levels,
+        'academicQualifications' => $academicQualifications
     ]) ?>
 
 </div>

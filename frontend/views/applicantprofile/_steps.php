@@ -20,6 +20,7 @@ $profileAction = (Yii::$app->session->has('ProfileID') && Yii::$app->recruitment
 
     	 <!-- <a href="<?=  Yii::$app->recruitment->absoluteUrl() .'qualification/index' ?>" <?= Yii::$app->recruitment->currentaction('qualification','index')?'class="active"': '' ?>>Academic Qualifications</a> -->
         <a href="<?=  Yii::$app->recruitment->absoluteUrl() .'qualification/professional' ?>" <?= Yii::$app->recruitment->currentaction('qualification','professional')?'class="active"': '' ?>>Professional Qualifications</a>
+        <a href="<?=  Yii::$app->recruitment->absoluteUrl() .'academic/index' ?>" <?= Yii::$app->recruitment->currentaction('academic','index')?'class="active"': '' ?>>Academic Qualifications</a>
         <a href="<?=  Yii::$app->recruitment->absoluteUrl() .'experience/index' ?>" <?= Yii::$app->recruitment->currentaction('experience','index')?'class="active"': '' ?>>Employment record</a>
         <a href="<?=  Yii::$app->recruitment->absoluteUrl() .'hobby/index' ?>" <?= Yii::$app->recruitment->currentaction('hobby','index')?'class="active"': '' ?>>Hobbies</a>
 
