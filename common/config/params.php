@@ -1,6 +1,6 @@
 <?php 
 return [
-    'generalTitle' => 'Employee - Self Service',
+    'generalTitle' => 'Employee - PORTAL',
     'welcomeText' => 'Mhasibu Sacco Self Service Portal',
     'ClientCompany' => 'KEMRI WELLCOME TRUST ', //branding
     'demoCompany' => 'IANSOFT LTD',

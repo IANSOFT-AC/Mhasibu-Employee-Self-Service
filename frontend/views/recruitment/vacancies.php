@@ -10,14 +10,14 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'HRMIS - AAS Careers';
+$this->title = 'HRMIS - MHASIBU Careers';
 $this->params['breadcrumbs'][] = ['label' => 'Recruitment ', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => 'Vacancies', 'url' => ['index']];
 ?>
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">HRMIS - Open Vacancies</h3>
 

@@ -19,7 +19,7 @@ $url = \yii\helpers\Url::home(true);
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-        <?= \yii\helpers\Html::a('New Asset Assignment',['create'],['class' => 'btn btn-info push-right', 'data' => [
+        <?= \yii\helpers\Html::a('New Asset Assignment',['create'],['class' => 'btn btn-primary push-right', 'data' => [
             'confirm' => 'Are you sure you want to create a new Request?',
             'method' => 'get',
         ],]) ?>
@@ -48,7 +48,7 @@ if(Yii::$app->session->hasFlash('success')){
 ?>
 <div class="row">
     <div class="col-md-12">
-        <div class="card card-info">
+        <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">Asset Assignment List</h3>
 

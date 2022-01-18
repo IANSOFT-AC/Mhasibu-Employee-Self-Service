@@ -25,7 +25,7 @@ $url =Url::home(true);
                     [  'value' => Url::to(['leave-reimburse/create',
                         ]),
                         'title' => 'Leave Reimbursement Application',
-                        'class' => 'btn btn-success push-right showModalButton',
+                        'class' => 'btn btn-primary push-right showModalButton',
                          ]
                     ); 
                 ?>
@@ -55,7 +55,7 @@ if(Yii::$app->session->hasFlash('success')){
 ?>
 <div class="row">
     <div class="col-md-12">
-        <div class="card card-info">
+        <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">Leave Recall Reimbursement Application List</h3>
             </div>

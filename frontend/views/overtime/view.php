@@ -213,8 +213,8 @@ $script = <<<JS
             $.get(url, payload).done((msg) => {
                 console.log(msg);
                 setTimeout(() => {
-                   // location.reload(true);
-                },3000);
+                   location.reload(true);
+                },1500);
             });
         });
 
@@ -241,7 +241,7 @@ $script = <<<JS
                     console.log(msg);
                     setTimeout(() => {
                         location.reload(true);
-                    },3000);
+                    },1000);
                 });
             }
             

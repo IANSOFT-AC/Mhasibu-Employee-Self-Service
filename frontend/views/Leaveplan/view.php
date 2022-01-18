@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Leave Plan Card', 'url' => ['view'
 /* Yii::$app->session->set('MY_Appraisal_Status',$model->MY_Appraisal_Status);
 Yii::$app->session->set('EY_Appraisal_Status',$model->EY_Appraisal_Status);
 Yii::$app->session->set('isSupervisor',false);*/
-$ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
+$ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->Plan_No);
 
 ?>
 
@@ -26,9 +26,9 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
 
     <div class="row">
         <div class="col-md-12">
-            <div class="card-info">
+            <div class="card-primary">
                 <div class="card-header">
-                    <h3>Leave Plan Card </h3>
+                    <h3 class="card-title">Leave Plan Card </h3>
                 </div>
 
 
@@ -45,19 +45,19 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
                   <div class="action-tab row" >
 
                         <?= ($model->Status == 'Open')?
-                                Html::a('Send For Approval', ['send-for-approval', 'Plan_No' => $model->Plan_No,
+                                Html::a('<i class="fa fa-forward"></i>Send For Approval', ['send-for-approval', 'Plan_No' => $model->Plan_No,
                                 'employeeNo' => Yii::$app->user->identity->{'Employee No_'}],
-                                ['class' => 'btn btn-success']):'' 
+                                ['class' => 'btn btn-app btn-success']):'' 
                         ?>
 
                         
-                        <?php if($ApprovalDetails->Sender_No = Yii::$app->user->identity->employee[0]->No): ?>
+                        <?php if(is_object($ApprovalDetails) && $ApprovalDetails->Sender_No == Yii::$app->user->identity->{'Employee No_'}): ?>
 
                             <?= ($model->Status == 'Pending_Approval')?Html::a('<i class="fas fa-times"></i> Cancel Approval Request.',['cancel-request'],['class' => 'btn btn-warning submitforapproval',
                                     'data' => [
                                     'confirm' => 'Are you sure you want to cancel approval request?',
                                     'params'=>[
-                                        'No'=>$model->Plan_N,
+                                        'No'=>$model->Plan_No,
                                     ],
                                     'method' => 'get',
                                     ],
@@ -69,7 +69,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
                         <?php endif; ?>
                     
                  
-                        <?=   Html::a('Close', ['index', ], ['class' => 'btn btn-warning']) ?>
+                        
                     </div> 
                     <?php
                     if(Yii::$app->session->hasFlash('success')){
@@ -135,7 +135,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
                             'Plan_No'=>$model->Plan_No
                             ]),
                             'title' => 'Leave Plan Item',
-                            'class' => 'btn btn-success push-right showModalButton',
+                            'class' => 'btn btn-primary push-right showModalButton',
                              ]
                          ):'' 
 

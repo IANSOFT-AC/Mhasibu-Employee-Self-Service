@@ -77,7 +77,7 @@ class PayslipController extends Controller
                 'selectedPeriod' =>Yii::$app->request->post('payperiods'),
                 'empNo' => Yii::$app->user->identity->{'Employee No_'}
              ];
-            $path = Yii::$app->navhelper->PortalReports($service,$data,'IanGeneratePayslip');
+            $path = Yii::$app->navhelper->Codeunit($service,$data,'IanGeneratePayslip');
             //Yii::$app->recruitment->printrr($path);
             if(is_file($path['return_value']))
             {

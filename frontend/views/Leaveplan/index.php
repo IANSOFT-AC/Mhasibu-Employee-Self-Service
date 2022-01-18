@@ -19,7 +19,7 @@ $url = \yii\helpers\Url::home(true);
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-        <?= \yii\helpers\Html::a('New Leave Plan Request',['create'],['class' => 'btn btn-info push-right', 'data' => [
+        <?= \yii\helpers\Html::a('New Leave Plan Request',['create'],['class' => 'btn btn-primary push-right', 'data' => [
             'confirm' => 'Are you sure you want to create a new Leave Plan Request?',
             'method' => 'get',
         ],]) ?>
@@ -48,15 +48,9 @@ if(Yii::$app->session->hasFlash('success')){
 ?>
 <div class="row">
     <div class="col-md-12">
-        <div class="card card-info">
+        <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">Leave Plan List</h3>
-
-
-
-
-
-
             </div>
             <div class="card-body">
                 <table class="table table-bordered dt-responsive table-hover" id="table">

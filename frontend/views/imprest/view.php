@@ -10,7 +10,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->title = 'Imprest - '.$model->No;
-$this->params['breadcrumbs'][] = ['label' => 'imprests', 'url' => ['/imprest']];
+$this->params['breadcrumbs'][] = ['label' => 'imprests', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => 'Imprest Card', 'url' => ['view','No'=> $model->No]];
 /** Status Sessions */
 
@@ -60,7 +60,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
 
             <?php endif; ?>
 
-            <?php if($model->Status == 'Pending_Approval' && @$ApprovalDetails->Approver_No == Yii::$app->user->identity->Employee[0]->No):?>
+            <?php if($model->Status == 'Pending_Approval' && is_object($ApprovalDetails) && $ApprovalDetails->Approver_No == Yii::$app->user->identity->Employee[0]->No):?>
             
                 <?= 
                     Html::a('Approve',['approvals/approve-request', 'app'=> $model->No,
@@ -232,7 +232,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
             <?php if(!$model->Status == 'New'): ?>
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">   <?= Html::a('<i class="fa fa-plus-square"></i> New Imprest Line',['imprestline/create','Request_No'=>$model->No],['class' => 'add-objective btn btn-outline-info']) ?></div>
+                    <div class="card-title">   <?= Html::a('<i class="fa fa-plus-square"></i> New Imprest Line',['imprestline/create','Request_No'=>$model->No],['class' => 'add-objective btn btn-outline-primary']) ?></div>
                 </div>
             <?php endif; ?>
 
@@ -272,7 +272,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->No);
                             // print '<pre>'; print_r($model->getObjectives()); exit;
 
                             foreach($model->getLines($model->No) as $obj):
-                                $updateLink = Html::a('<i class="fa fa-edit"></i>',['imprestline/update','Line_No'=> $obj->Line_No],['class' => 'update-objective btn btn-outline-info btn-xs']);
+                                $updateLink = Html::a('<i class="fa fa-edit"></i>',['imprestline/update','Line_No'=> $obj->Line_No],['class' => 'update-objective btn btn-outline-primary btn-xs']);
                                 $deleteLink = Html::a('<i class="fa fa-trash"></i>',['imprestline/delete','Key'=> $obj->Key ],['class'=>'delete btn btn-outline-danger btn-xs']);
                                 ?>
                                 <tr>

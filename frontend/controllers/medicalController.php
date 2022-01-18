@@ -77,7 +77,7 @@ class MedicalController extends Controller
             $data = [
                 'empNo' => Yii::$app->user->identity->{'Employee No_'}
              ];
-            $path = Yii::$app->navhelper->PortalReports($service,$data,'IanGenerateMedicalStatement');
+            $path = Yii::$app->navhelper->Codeunit($service,$data,'IanGenerateMedicalStatement');
 
              //Yii::$app->recruitment->printrr($path);
 

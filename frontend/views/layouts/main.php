@@ -178,9 +178,9 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
         <aside class="main-sidebar elevation-4 sidebar-light">
             <!-- Brand Logo -->
             <a href="<?= $absoluteUrl ?>site" class="brand-link navbar-secondary">
-                <!--<img src="<?= $webroot ?>/images/Logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8">-->
-                <span class="brand-text font-weight-light"><?= Yii::$app->params['generalTitle']?></span>
+            <img src="<?= $webroot ?>/images/logo.png" alt="MHASIBU Logo" height="70px" class="brand-image bg-light elevation-3"
+                     style="opacity: .8">
+                <span class="brand-text font-weight-light text-light small"><?= Yii::$app->params['generalTitle']?></span>
             </a>
 
             <!-- Sidebar -->
@@ -221,8 +221,6 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                                             <p>Approval Requests</p>
                                         </a>
                                     </li>
-
-
                                 </ul>
                             </li>
                             <?php endif; ?>
@@ -331,8 +329,8 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 
                             
                             <!--/ Imprest Mgt -->
-                            <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl('salaryadvance')?'menu-open':'' ?>">
-                                <a href="#" title="Salary Advance Module" class="nav-link <?= Yii::$app->recruitment->currentCtrl('salaryadvance')?'active':'' ?>">
+                            <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl('imprest')?'menu-open':'' ?>">
+                                <a href="#" title="Salary Advance Module" class="nav-link <?= Yii::$app->recruitment->currentCtrl('imprest')?'active':'' ?>">
                                     <i class="nav-icon fa fa-money-check"></i>
                                     <p>
                                         Imprest Management
@@ -494,12 +492,12 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                                         </a>
                                     </li>
 
-                                    <li class="nav-item">
+                                   <!--- <li class="nav-item">
                                         <a href="<?= $absoluteUrl ?>recruitment/externalvacancies" class="nav-link <?= Yii::$app->recruitment->currentaction('recruitment','externalvacancies')?'active':'' ?>">
                                             <i class="fa fa-check-square nav-icon"></i>
                                             <p>External Job Vacancies </p>
                                         </a>
-                                    </li>
+                                    </li>-->
 
                                 </ul>
                             </li>
@@ -509,8 +507,8 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                         <!--/Recruitment -->
 
                         <!--Payroll reports -->
-                        <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl(['payslip','p9'])?'menu-open':'' ?>">
-                            <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl(['payslip','p9'])?'active':'' ?>">
+                        <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl(['payslip','p9','medical'])?'menu-open':'' ?>">
+                            <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl(['payslip','p9', 'medical'])?'active':'' ?>">
                                 <i class="nav-icon fa fa-file-invoice-dollar"></i>
                                 <p>
                                     HR Reports
@@ -534,7 +532,7 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="<?= $absoluteUrl ?>medical" class="nav-link <?/*= Yii::$app->recruitment->currentaction('p9','index')?'active':'' */?>">
+                                    <a href="<?= $absoluteUrl ?>medical" class="nav-link <?= Yii::$app->recruitment->currentaction('medical','index')?'active':'' ?>">
                                         <i class="fa fa-check-square nav-icon"></i>
                                         <p>Medical Claim </p>
                                     </a>
@@ -1109,8 +1107,8 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
 
                         <!--Exit Management-->
 
-                        <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl('exit')?'menu-open':'' ?>">
-                            <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl('exit')?'active':'' ?>">
+                        <li class="nav-item has-treeview <?= Yii::$app->recruitment->currentCtrl(['exit','exit-form'])?'menu-open':'' ?>">
+                            <a href="#" class="nav-link <?= Yii::$app->recruitment->currentCtrl(['exit','exit-form'])?'active':'' ?>">
                                 <i class="nav-icon fa fa-sign-out-alt" ></i>
                                 <p>
                                     Employee Exit

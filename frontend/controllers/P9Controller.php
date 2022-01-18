@@ -76,7 +76,7 @@ class P9Controller extends Controller
                 'empNo' => Yii::$app->user->identity->{'Employee No_'},
                 'selectedYear' =>Yii::$app->request->post('p9year'),
              ];
-            $path = Yii::$app->navhelper->PortalReports($service,$data,'IanGeneratep9');
+            $path = Yii::$app->navhelper->Codeunit($service,$data,'IanGeneratep9');
             if(!empty($path['return_value']) && is_file($path['return_value'])){
                 $binary = file_get_contents($path['return_value']); //fopen($path['return_value'],'rb');
                 $content = chunk_split(base64_encode($binary));
