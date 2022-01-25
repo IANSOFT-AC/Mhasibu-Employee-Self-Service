@@ -258,7 +258,7 @@ class Dashboard extends Component
             return $result['return_value'];
          }
          else{
-            return 'We have no idea, Sorry';
+            return 'None';
          }
     }
 

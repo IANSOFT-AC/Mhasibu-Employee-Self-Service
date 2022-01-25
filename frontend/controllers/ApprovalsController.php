@@ -605,7 +605,7 @@ class ApprovalsController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanApproveLeave');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveLeave');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Request Approved Successfully.', true);
@@ -629,7 +629,7 @@ class ApprovalsController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanApproveLeaveRecall');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveLeaveRecall');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Request Approved Successfully.', true);
@@ -653,7 +653,7 @@ class ApprovalsController extends Controller
         ];
 
 
-        $result = Yii::$app->navhelper->PortalWorkFlows($service,$data,'IanApproveLeavePlan');
+        $result = Yii::$app->navhelper->Codeunit($service,$data,'IanApproveLeavePlan');
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Request Approved Successfully.', true);
