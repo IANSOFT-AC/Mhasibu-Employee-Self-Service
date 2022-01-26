@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 
-
+        <h2 class="text text-dark my-4">Log in to start your session</h2>
 
 
             <?php $form = ActiveForm::begin(['id' => 'login-form']);
@@ -82,6 +82,80 @@ $random_img = $images[array_rand($images)];
 
 
 $style = <<<CSS
+    body{
+        background: #342F7C;
+    }
+    
+    header > .logo{
+        background:  #fff;
+        max-width: 450px;
+        padding: 10px;
+    }
+
+    .logo img{
+        max-width: 430px;
+    }
+
+    h1.mhasibu-main  {
+        color: #BFC035;
+    }
+
+    
+
+    main {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+    }
+
+    .form-content {
+        width: 55%;
+        padding: 2rem 1rem;
+        border: 1px solid #fff;
+        border-radius: 20px;
+        background: #fff;
+    }
+
+    footer {
+        position: absolute;
+        display: block;
+        bottom: 0px;
+        height: 4rem;
+        width: 100%;
+        color: #fff;
+        background: #AB502A;
+    }
+
+    @media (max-width: 760px) {
+        main {
+            flex-direction: column;
+            justify-content: center;
+            padding: auto;
+        }
+
+        .form-content{
+            width: 100%;
+        }
+
+         p.tagline {
+            display: none;
+        }
+
+        p.together {
+            font-size: 20px;
+            margin: 20px 30px;
+        }
+
+        footer {
+            position: relative;
+        }
+    }
+
+
+
+
     .login-page { 
           background: url("../../background/$random_img") no-repeat center center fixed; 
           -webkit-background-size: cover;
