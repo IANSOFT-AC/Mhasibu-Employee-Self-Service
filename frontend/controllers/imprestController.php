@@ -742,7 +742,7 @@ class ImprestController extends Controller
     public function getCurrencies(){
         $service = Yii::$app->params['ServiceName']['Currencies'];
         $result = \Yii::$app->navhelper->getData($service, []);
-        return ArrayHelper::map($result,'Code','Description');
+        return @ArrayHelper::map($result,'Code','Description');
     }
 
     public function actionGetCurrencies(){
@@ -883,11 +883,11 @@ class ImprestController extends Controller
 
         if(!is_string($result)){
             Yii::$app->session->setFlash('success', 'Imprest Request Sent to Supervisor Successfully.', true);
-            return $this->redirect(['view']);
+            return $this->redirect(['index']);
         }else{
 
             Yii::$app->session->setFlash('error', 'Error Sending Imprest Request for Approval  : '. $result);
-            return $this->redirect(['view']);
+            return $this->redirect(['view', 'No'=>$No]);
 
         }
     }

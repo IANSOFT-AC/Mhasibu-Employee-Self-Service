@@ -150,7 +150,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->Applicatio
                                     <?= $form->field($model, 'Employee_No')->hiddenInput()->label(false); ?>
                                     <?= $form->field($model, 'Application_No')->hiddenInput()->label(false); ?>
                                     <?= $form->field($model, 'Leave_Code')->dropDownList($leavetypes,['prompt' => 'Select Leave Type', 'readonly'=>true, 'options' =>['id'=>'LeaveCode']]) ?>
-                                    <?= $form->field($model, 'Start_Date')->textInput(['type' => 'date','required' => true, 'readonly'=>true,]) ?>
+                                    <?= $form->field($model, 'Start_Date')->textInput(['required' => true, 'readonly'=>true,]) ?>
                                     <?= $form->field($model, 'Days_To_Go_on_Leave')->textInput(['type' => 'number', 'readonly'=>true, 'required' =>  true,'min'=> 1]) ?>
                                     <?= $form->field($model, 'Reliever')->dropDownList($employees,['prompt' => 'Select ..', 'readonly'=>true, 'required'=> true]) ?>
                                     <?= $form->field($model, 'Comments')->textarea(['rows'=> 2,'maxlength' => 250, 'readonly'=>true,]) ?>
@@ -161,7 +161,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->Applicatio
                                         <?= $form->field($model, 'Employee_No')->hiddenInput()->label(false); ?>
                                         <?= $form->field($model, 'Application_No')->hiddenInput()->label(false); ?>
                                         <?= $form->field($model, 'Leave_Code')->dropDownList($leavetypes,['prompt' => 'Select Leave Type', 'options' =>['id'=>'LeaveCode']]) ?>
-                                        <?= $form->field($model, 'Start_Date')->textInput(['type' => 'date','required' => true]) ?>
+                                        <?= $form->field($model, 'Start_Date')->textInput(['required' => true]) ?>
                                         <?= $form->field($model, 'Days_To_Go_on_Leave')->textInput(['type' => 'number','required' =>  true,'min'=> 1]) ?>
                                         <?= $form->field($model, 'Reliever')->dropDownList($employees,['prompt' => 'Select ..','required'=> true]) ?>
                                         <?= $form->field($model, 'Comments')->textarea(['rows'=> 2,'maxlength' => 250]) ?>

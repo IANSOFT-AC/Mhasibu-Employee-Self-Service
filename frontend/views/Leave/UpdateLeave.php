@@ -51,10 +51,10 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                 
                   <div class="action-tab row" >
 
-                        <?= ($model->Status == 'New')?
+                        <?= 
                                 Html::a('Send For Approval', ['send-for-approval', 'No' => $_GET['No'],
                                 'employeeNo' => Yii::$app->user->identity->{'Employee No_'}],
-                                ['class' => 'btn btn-primary']):'' 
+                                ['class' => 'btn btn-primary'])
                         ?>
                     
                         <?php ($model->Status == 'Pending_Approval')?
@@ -104,7 +104,8 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                 <?= $form->field($model, 'Employee_No')->hiddenInput()->label(false); ?>
                                 <?= $form->field($model, 'Application_No')->hiddenInput()->label(false); ?>
                                 <?= $form->field($model, 'Leave_Code')->dropDownList($leavetypes,['prompt' => 'Select Leave Type', 'options' =>['id'=>'LeaveCode']]) ?>
-                                <?= $form->field($model, 'Start_Date')->textInput(['type' => 'date','required' => true]) ?>
+                                <?= $form->field($model, 'Start_Date')->textInput(['required' => true, 'type'=>'date',]) ?>
+                                <?= $form->field($model, 'End_Date')->textInput(['readonly'=> true, 'disabled'=>true,]) ?>
                                 <?= $form->field($model, 'Days_To_Go_on_Leave')->textInput(['type' => 'number','required' =>  true,'min'=> 1]) ?>
                                 <?= $form->field($model, 'Reliever')->dropDownList($employees,['prompt' => 'Select ..','required'=> true]) ?>
                                 <?= $form->field($model, 'Comments')->textarea(['rows'=> 2,'maxlength' => 250]) ?>
@@ -121,7 +122,6 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                 <div class="row">
                                     <div class="col-md-6 col-sm-12">
 
-                                        <?= $form->field($model, 'End_Date')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                                         <?= $form->field($model, 'Total_No_Of_Days')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                                         <?= $form->field($model, 'Leave_balance')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                                         <?= $form->field($model, 'Reliever_Name')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
@@ -133,8 +133,8 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                         <?= $form->field($model, 'Holidays')->textInput(['readonly'=> true,'disabled'=>true]) ?>
                                         <?= $form->field($model, 'Weekend_Days')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                                         <?= $form->field($model, 'Balance_After')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-                                        <?= $form->field($model, 'Reporting_Date')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
-                                        <?= $form->field($model, 'Application_Date')->textInput(['required' => true, 'disabled'=>true]) ?>
+                                        <?= $form->field($model, 'Application_Date')->textInput(['required' => true, 'disabled'=>true, 'value'=>date('d-m-Y',strtotime($model->Application_Date))]) ?>
+                                        <?= $form->field($model, 'Reporting_Date')->textInput(['readonly'=> true, 'disabled'=>true, 'value'=>date('d-m-Y',strtotime($model->Reporting_Date))]) ?>
                                         <?= $form->field($model, 'Key')->hiddenInput(['required' => true, 'disabled'=>true])->label(false) ?>
                                     </div>
                                 </div>
@@ -180,13 +180,11 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                 <div class="form-group">
                     <?= Html::submitButton(($model->isNewRecord)?'Save':'Update', ['class' => 'btn btn-success','id' => 'submit']) ?>
                     
-                    <?=   \yii\helpers\Html::button('Upload Leave Attachement',
-                        [  'value' => Url::to(['leave/attach','No'=>$model->Application_No
-                            ]),
-                            'title' => 'Upoad Leave Attachement',
-                            'class' => 'btn btn-info push-right showModalButton',
-                            ]
-                        ); 
+                    <?=   
+
+                       Html::a('Update Leave Attachment',['leave/attach','No'=>$model->Application_No ],['class'=>'showModalButton btn btn-warning btn-lg']);
+
+
                     ?>
 
                 </div>
@@ -224,30 +222,33 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
     <!--My Bs Modal template  --->
 
-    <div class="modal fade bs-example-modal-lg bs-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+    <div class="modal fade bs-example-modal-lg bs-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="modal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="modalContent">
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel" style="position: absolute">Leave Management</h4>
-                </div>
-                <div class="modal-body">
+                            <div class="modal-header" id="modalHeader">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel" style="position: absolute"></h4>
+                            </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
-                </div>
+                            <div class="modal-body">
 
-            </div>
-        </div>
-    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 <input type="hidden" name="url"  id="url" value="<?= $absoluteUrl ?>">
 <?php
 $script = <<<JS
    $('#attachmentform').hide();
+
+   
         // Set Leave Type
 
         // Set Leave to recall
@@ -362,7 +363,7 @@ $script = <<<JS
 
      
      /* Add Line */
-     $('.add-line').on('click', function(e){
+     $('.showModalButton').on('click', function(e){
              e.preventDefault();
             var url = $(this).attr('href');
             console.log(url);
@@ -388,10 +389,10 @@ $script = <<<JS
         setTimeout(reld,1000);
     }); 
 
-    $('#attachmentfile').change((e) => {
-        $//(e.target).closest('form').trigger('submit');
-        console.log('Upload Submitted ...');
-    }); 
+    // $('#attachmentfile').change((e) => {
+    //     $(e.target).closest('form').trigger('submit');
+    //     console.log('Upload Submitted ...');
+    // }); 
 
       
     /*Divs parenting*/
@@ -406,8 +407,9 @@ $script = <<<JS
 
      
      
-     $.fn.dataTable.ext.errMode = 'throw';
+    //  $.fn.dataTable.ext.errMode = 'throw';
         const url = $('#url').val();
+        // alert(url)
     
           $('#table').DataTable({
            

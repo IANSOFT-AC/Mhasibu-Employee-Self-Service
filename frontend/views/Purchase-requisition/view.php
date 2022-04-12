@@ -15,6 +15,27 @@ $this->params['breadcrumbs'][] = ['label' => 'Store Requisition Card', 'url' => 
 
 ?>
 
+<div class="modal fade bs-example-modal-lg bs-modal-lg" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel" style="position: absolute"> </h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 <div class="row">
     <div class="col-md-4">
 
@@ -127,7 +148,8 @@ if(Yii::$app->session->hasFlash('success')){
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        <?=($model->Status == 'New')?Html::a('<i class="fa fa-plus-square"></i> Add Line',['purchase-requisitionline/create','No'=>$model->No],['class' => 'add-line btn btn-outline-info',
+                        <?=($model->Status == 'New')?
+                        Html::a('<i class="fa fa-plus-square"></i> Add Line',['purchase-requisitionline/create','No'=>$model->No],['class' => 'add-line btn btn-outline-info',
                         ]):'' ?>
                     </div>
                 </div>
@@ -164,7 +186,7 @@ if(Yii::$app->session->hasFlash('success')){
                                 </thead>
                                 <tbody>
                                 <?php
-                                // print '<pre>'; print_r($model->getObjectives()); exit;
+                                // print '<pre>'; print_r($model->lines); exit;
 
                                 foreach($model->lines as $obj):
                                     $updateLink = Html::a('<i class="fa fa-edit"></i>',['purchase-requisitionline/update','No'=> $obj->Line_No],['class' => 'update-objective btn btn-outline-info btn-xs']);
@@ -173,7 +195,7 @@ if(Yii::$app->session->hasFlash('success')){
                                     <tr>
 
                                         <td><?= !empty($obj->Type)?$obj->Type:'Not Set' ?></td>
-                                        <td><?= !empty($obj->Name)?$obj->Name:'Not Set' ?></td>
+                                        <td><?= !empty($obj->Item_Description)?$obj->Item_Description:'Not Set' ?></td>
                                         <td><?= !empty($obj->Unit_of_Measure)?$obj->Unit_of_Measure:'Not Set' ?></td>
                                         <td><?= !empty($obj->Reason_For_Requisition)?$obj->Reason_For_Requisition:'Not Set' ?></td>
                                         <td><?= !empty($obj->Quantity)?$obj->Quantity:'Not Set' ?></td>
@@ -211,6 +233,10 @@ if(Yii::$app->session->hasFlash('success')){
 $script = <<<JS
 
     $(function(){
+
+        $('.modal').on('hidden.bs.modal',function(){
+            var reld = location.reload(true);
+        });
       
         
      /*Deleting Records*/
@@ -224,10 +250,14 @@ $script = <<<JS
            
          var url = $(this).attr('href');
          $.get(url).done(function(msg){
-             $('#modal').modal('show')
+             $('.modal').modal('show')
                     .find('.modal-body')
                     .html(msg.note);
          },'json');
+
+       
+
+         
      });
       
     
@@ -249,7 +279,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 

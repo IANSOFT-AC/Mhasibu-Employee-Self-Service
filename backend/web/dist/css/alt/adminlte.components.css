@@ -2008,7 +2008,7 @@ textarea.form-control.is-warning {
 }
 
 .card-primary:not(.card-outline) > .card-header {
-  background-color: #007bff;
+  background-color: #6c757d !important;
 }
 
 .card-primary:not(.card-outline) > .card-header,

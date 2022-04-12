@@ -58,6 +58,30 @@ if(Yii::$app->session->hasFlash('success')){
     </div>
 </div>
 
+                    <!-- Global Modal Here -->
+                    <div class="modal fade bs-example-modal-lg bs-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="modal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="modalContent">
+
+                            <div class="modal-header" id="modalHeader">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel" style="position: absolute"></h4>
+                            </div>
+
+                            <div class="modal-body">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+
 <input type="hidden" value="<?= $url ?>" id="url" />
 <?php
 

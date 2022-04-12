@@ -14,7 +14,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 
 <div class="card">
     <div class="actions card-body">
-            <?= ($model->Status == 'New')?Html::a('<i class="fas fa-forward"></i>Send For Approval',['send-for-approval','employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-app bg-success btn-success submitforapproval',
+            <?= ($model->Status == 'New')?Html::a('<i class="fas fa-forward"></i>Send For Approval',['send-for-approval', 'No'=> $model->No, 'employeeNo' => Yii::$app->user->identity->employee[0]->No],['class' => 'btn btn-app bg-success btn-success submitforapproval',
                                 'data' => [
                                     'confirm' => 'Are you sure you want to send imprest request for approval?',
                                     'params'=>[

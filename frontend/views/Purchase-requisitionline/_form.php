@@ -47,7 +47,7 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                 <?= $form->field($model, 'Requisition_No')->textInput(['readonly' => true]) ?>
 
                                 <?= $form->field($model, 'Estimate_Total_Amount')->textInput(['readonly' => true, 'disabled' =>  true]) ?>
-                                <?= $form->field($model, 'Institution_Code')->dropDownList($institutions, ['Prompt' => 'Select Institution ...']) ?>
+                                <!-- <?= $form->field($model, 'Institution_Code')->dropDownList($institutions, ['Prompt' => 'Select Institution ...']) ?> -->
 
 
                             </div>
@@ -88,6 +88,10 @@ $absoluteUrl = \yii\helpers\Url::home(true);
 <?php
 $script = <<<JS
 
+    $('.modal').on('hidden.bs.modal',function(){
+            var reld = location.reload(true);
+        });
+
 
  //Submit form and get results in json    
         $('.SaveButton').on('click', function(e){
@@ -95,9 +99,11 @@ $script = <<<JS
             const data = $('form').serialize();
             const url = $('form').attr('action');
             $.post(url,data).done(function(msg){
-                    $('#modal').modal('show')
+                    $('.modal').modal('show')
                     .find('.modal-body')
                     .html(msg.note);
+
+                     /*Handle dismissal eveent of modal */
         
                 },'json');
         });

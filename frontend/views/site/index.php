@@ -51,7 +51,7 @@ exit;*/
 
                 <!-- About Me Box -->
                 <div class="card card-primary">
-                    <div class="card-header">
+                    <div class="card-header" style="background-color:  #A24A28">
                         <h3 class="card-title">About Me</h3>
                     </div>
                     <!-- /.card-header -->
@@ -337,8 +337,8 @@ exit;*/
                 <div class="row">
 
                     <div class="col-md-7">
-                        <div class="card card-primary">
-                            <div class="card-header">
+                        <div class="card card-primary" >
+                            <div class="card-header" style="background-color:  #A24A28">
                                 <h3 class="card-title">My Leave Balances</h3>
                             </div>
                             <div class="card-body">
@@ -381,7 +381,7 @@ exit;*/
                     <div class="col-md-5">
 
                         <div class="card card-primary">
-                            <div class="card-header">
+                            <div class="card-header" style="background-color:  #A24A28">
                                 <h3 class="card-title">Current Performance Appraisal Status</h3>
                             </div>
                             <div class="card-body">

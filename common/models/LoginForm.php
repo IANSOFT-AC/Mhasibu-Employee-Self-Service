@@ -42,7 +42,8 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
-       
+        $this->username = Yii::$app->params['ldPrefix'].'\\'.$this->username;
+        //Yii::$app->recruitment->printrr($this->actionAuth($this->username, $this->password));
         // do Active directory authentication here
         if (!$this->hasErrors()) {
             $user = $this->getUser();
@@ -51,7 +52,7 @@ class LoginForm extends Model
 
            // || !$user->validatePassword($this->password) || !$this->logintoAD($this->username, $this->password)
 
-           if (!$user || !$user->validatePassword($this->password) || !$this->actionAuth($this->username, $this->password) ) {//Add AD login condition here also--> when ad details are given
+           if (!$user || !$user->validatePassword($this->password) || $this->logintoAD($this->username, $this->password) ) {//Add AD login condition here also--> when ad details are given
 
             $this->addError($attribute, 'Incorrect username or password.');
         }
@@ -81,24 +82,21 @@ class LoginForm extends Model
     //Ad Login
 
     function logintoAD($username,$password){
-        return true;
+       
         // $me=['ye'=>'ds'];//replace this hack for go live, this hack is for dev env only
         // return $me;//replace this hack for go live
 
-        $adServer = Yii::$app->params['adServer'];//
+        $adServer = 'ldap://'.Yii::$app->params['adServer'];//
         $ldap = ldap_connect($adServer, 389);//connect
         $ldaprdn = Yii::$app->params['ldPrefix'] . "\\" . strtoupper($username);//put the username in a way specific to the domain
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
         $bind = @ldap_bind($ldap, $ldaprdn, $password);
-            // echo '<pre>';
-            // VarDumper::dump( $bind, $depth = 10, $highlight = true);
-            // exit;
         if ($bind) {
            
-            // return $bind; // True for a bind else false
+            return $bind; // True for a bind else false
             $filter = "(sAMAccountName=$username)";
-            $result = ldap_search($ldap, "CN=Users,DC=tenwekhosp, DC=org", $filter);
+            $result = ldap_search($ldap, "CN=Users,DC=mhasibusacco, DC=com", $filter);
            
             // ldap_sort($ldap,$result,"sn");
             $info = ldap_get_entries($ldap, $result);
@@ -122,14 +120,10 @@ class LoginForm extends Model
     {
 
         if ($this->_user === null) {
-            //TENWEKHOSP\NAVADMIN
-            // exit();
+           
             $this->_user = User::findByUsername(strtoupper($this->username), $this->password);
-             /*echo '<pre>';
-             VarDumper::dump( $this->_user, $depth = 10, $highlight = true);
-             exit;*/
+            
         }
-
 
         return $this->_user;
     }
@@ -138,18 +132,13 @@ class LoginForm extends Model
     {
         $service = Yii::$app->params['ServiceName']['UserSetup'];
         $credentials = new \stdClass();
-        // $json = file_get_contents('php://input');
-        // Convert it into a PHP object
-        //$data = json_decode($json);
+        
         $NavisionUsername = $UserName;
         $NavisionPassword = $Password;
 
         $credentials->UserName = $NavisionUsername;
         $credentials->PassWord = $NavisionPassword;
-        // echo '<pre>';
-        // print_r($credentials)
-        // exit;
-       // return $credentials;
+        
 
         $result = \Yii::$app->navhelper->findOne($service,$credentials,'User_ID', $NavisionUsername);
                  //\yii\helpers\VarDumper::dump( $result, $depth = 10, $highlight = true); exit;

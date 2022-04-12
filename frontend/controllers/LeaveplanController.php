@@ -143,7 +143,8 @@ class LeaveplanController extends Controller
         }
 
 
-        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Salaryadvance'],$model) ){
+        if(Yii::$app->request->post() && Yii::$app->navhelper->loadpost(Yii::$app->request->post()['Leaveplan'],$model) ){
+            
             $filter = [
                 'Plan_No' => $model->Plan_No,
             ];

@@ -37,6 +37,10 @@ public $Institution_Name;
 public $Requisition_No;
 public $Line_No;
 public $isNewRecord;
+public $Plan_Type;
+public $Planned_Amount;
+public $Used_Amount;
+public $Item_Description;
 
     /*public function __construct(array $config = [])
     {

@@ -48,6 +48,27 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
     
 
 <body class="hold-transition sidebar-mini layout-fixed ">
+<div class="modal fade bs-example-modal-lg bs-modal-lg" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel" style="position: absolute"> </h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark navbar-primary">
@@ -177,10 +198,10 @@ $employee = (!Yii::$app->user->isGuest && is_array(Yii::$app->user->identity->em
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar elevation-4 sidebar-light">
             <!-- Brand Logo -->
-            <a href="<?= $absoluteUrl ?>site" class="brand-link navbar-secondary">
-            <img src="<?= $webroot ?>/images/logo.png" alt="MHASIBU Logo" height="70px" class="brand-image bg-light elevation-3"
-                     style="opacity: .8">
-                <span class="brand-text font-weight-light text-light small"><?= Yii::$app->params['generalTitle']?></span>
+            <a href="<?= $absoluteUrl ?>site" class="brand-link">
+            <img src="<?= $webroot ?>/images/MhasibuNewLogo.png" alt="MHASIBU Logo" height="120px" width="200px" class=" bg-light"
+                     >
+                
             </a>
 
             <!-- Sidebar -->

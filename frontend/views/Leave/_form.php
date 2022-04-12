@@ -85,8 +85,6 @@ $absoluteUrl = \yii\helpers\Url::home(true);
                                     <?= $form->field($model, 'Status')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
-
-
                                     <?= $form->field($model, 'Holidays')->textInput(['readonly'=> true,'disabled'=>true]) ?>
                                     <?= $form->field($model, 'Weekend_Days')->textInput(['readonly'=> true, 'disabled'=>true]) ?>
                                     <?= $form->field($model, 'Balance_After')->textInput(['readonly'=> true, 'disabled'=>true]) ?>

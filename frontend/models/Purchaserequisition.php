@@ -26,6 +26,7 @@ public $Transaction_Type;
 public $Status;
 public $Approval_Entries;
 public $Purchase_Requisition_Line;
+public $Global_Dimension_1_Code;
 public $isNewRecord;
 
     /*public function __construct(array $config = [])

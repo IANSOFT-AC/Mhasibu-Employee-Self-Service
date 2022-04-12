@@ -375,6 +375,45 @@ class Navhelper extends Component{
 
     }
 
+    
+    public function PortalWorkFlows($service,$data,$method){
+        
+        $username =  Yii::$app->params['NavisionUsername'];
+        $password =  Yii::$app->params['NavisionPassword'];
+
+        $creds = (object)[];
+        $creds->UserName = $username;
+        $creds->PassWord = $password;
+        $url = new Services($service);
+        $soapWsdl=$url->getUrl();
+
+        $entry = (object)[];
+
+        foreach($data as $key => $value){
+            if($key !=='_csrf-frontend'){
+                $entry->$key = $value;
+            }
+
+        }
+
+        if(!Yii::$app->navision->isUp($soapWsdl,$creds)) {
+            throw new \yii\web\HttpException(503, 'Service unavailable');
+
+        }
+
+
+        $results = Yii::$app->navision->CongriApprovalWorkFlow($creds, $soapWsdl,$entry,$method);
+
+        if(is_object($results)){
+            $lv =(array)$results;
+            return $lv;
+        }
+        else{
+            return $results;
+        }
+
+    }
+
     //Cancel leave approval request
 
     public function CancelLeaveApprovalRequest($service,$data){

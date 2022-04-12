@@ -3,7 +3,7 @@ return [
     'generalTitle' => 'Employee - PORTAL',
     'welcomeText' => 'Mhasibu Sacco Self Service Portal',
     'ClientCompany' => 'KEMRI WELLCOME TRUST ', //branding
-    'demoCompany' => 'IANSOFT LTD',
+    'demoCompany' => 'Mhasibu Sacco Limited',
     'VendorCompany' => 'IANSOFT TECHNOLOGIES LTD',
     'ltAppraisalHeader' => 'Long Term Performance Appraisal',
     'stAppraisalHeader' => 'Short Term Performance Appraisal',
@@ -24,7 +24,7 @@ return [
     'ServerInstance'=>env('ServerInstance'),
     'CompanyName'=> env('CompanyName'),
     'DBCompanyName' => env('DBCompanyName'),
-    'ldPrefix'=> '', //env('ldPrefix'),
+    'ldPrefix'=> env('ldPrefix'),
     'adServer' => env('adServer'),
 
     //FMS CREDENTIALS

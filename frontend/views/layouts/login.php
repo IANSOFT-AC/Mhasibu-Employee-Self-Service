@@ -27,50 +27,44 @@ $this->title = Yii::$app->params['welcomeText'];
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition">
 <?php $this->beginBody() ?>
 
-<div class="top-logo">
-   <!--  <img src="<?= \yii\helpers\Url::to('/images/Logo.jpg')?>" /> -->
-</div>
+            <div class="container">
+                <header class="mb-md-5">
 
+                        <!-- Add Logo here -->
+                        <div class="logo">
+                            <img src="<?= \yii\helpers\Url::to('/images/logo.png')?>" alt="">
+                        </div>
+                        
+                </header>
+                <main class="my-3">
+                            <div class="left-content">
+                                <h2 class="text mb-md-4 mt-3 text-bold">The SACCO For Professionals</h2>
+                                <h1 class="text mhasibu-main text-bold mb-md-5">Welcome to Mhasibu Staff Portal</h1>
+                                <p class="text tagline lead mb-5 mb-md-5 text-bold">Experience Service Excellence!</p>
 
-<!-- /.login-logo -->
-<div class="card">
-    <div class="card-body login-card-body">
-    <div class="login-logo text-center row-no-gutters">
-    <a href="#"><b><?= $this->title ?></a>
-</div>
-        <!--<p class="login-box-msg">Sign in to start your session</p>-->
-
-        <?= $content?>
-
-        <!--<div class="social-auth-links text-center mb-3">
-            <p>- OR -</p>
-            <a href="#" class="btn btn-block btn-primary">
-                <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-            </a>
-            <a href="#" class="btn btn-block btn-danger">
-                <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-            </a>
-        </div>-->
-
-    </div>
-    <!-- /.login-card-body -->
-</div>
-</div>
+                                <p class="together h2 text-bold">Together We Make The Difference!</p>
+                            </div>
+                            <!-- Login form and Helo content -->
+                            <div class="form-content">
+                                <?= $content?>
+                            </div>
+                            
+                </main>
+               
+            </div>
+            <footer class="footer">
+                <div class="container p-3">
+                            <strong>Copyright &copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?>.</strong>
+                                    All rights reserved.
+                </div>
+                                    
+            </footer>
 
 
 </body>
-<footer class="footer">
-    <strong>Copyright &copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-        <b></b>
-    </div>
-
-</footer>
-
 <?php $this->endBody() ?>
 </body>
 </html>

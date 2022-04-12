@@ -24,6 +24,7 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->Plan_No);
 
 
 
+
     <div class="row">
         <div class="col-md-12">
             <div class="card-primary">
@@ -129,15 +130,11 @@ $ApprovalDetails = Yii::$app->recruitment->getApprovaldetails($model->Plan_No);
                 <div class="card-header">
                     <div class="card-title">
                         <?=($model->Status == 'Open')? 
-                        
-                        \yii\helpers\Html::button('New Leave Plan Item',
-                         [  'value' => \yii\helpers\Url::to(['leaveplanline/create',
-                            'Plan_No'=>$model->Plan_No
-                            ]),
-                            'title' => 'Leave Plan Item',
-                            'class' => 'btn btn-primary push-right showModalButton',
-                             ]
-                         ):'' 
+
+                            Html::a('New Leave Plan Item',['leaveplanline/create',
+                            'Plan_No'=>$model->Plan_No],['class' => 'add-line btn btn-outline-info',
+                            ])
+                        :'' 
 
                         ?>
                     </div>
@@ -234,7 +231,7 @@ $script = <<<JS
            
          var url = $(this).attr('href');
          $.get(url).done(function(msg){
-             $('#modal').modal('show')
+             $('.modal').modal('show')
                     .find('.modal-body')
                     .html(msg.note);
          },'json');
@@ -242,9 +239,9 @@ $script = <<<JS
       
     
     /*Evaluate KRA*/
-        $('.evalkra').on('click', function(e){
+        $('.showModalButton').on('click', function(e){
              e.preventDefault();
-            var url = $(this).attr('href');
+            var url = $(this).attr('value');
             console.log('clicking...');
             $('#modal').modal('show')
                             .find('.modal-body')
@@ -259,7 +256,7 @@ $script = <<<JS
         e.preventDefault();
         var url = $(this).attr('href');
         console.log('clicking...');
-        $('#modal').modal('show')
+        $('.modal').modal('show')
                         .find('.modal-body')
                         .load(url); 
 
@@ -311,7 +308,7 @@ $script = <<<JS
       
     
     /*Handle modal dismissal event  */
-    $('#modal').on('hidden.bs.modal',function(){
+    $('.modal').on('hidden.bs.modal',function(){
         var reld = location.reload(true);
         setTimeout(reld,1000);
     }); 
