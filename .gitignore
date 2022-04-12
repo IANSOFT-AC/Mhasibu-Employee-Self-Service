@@ -49,3 +49,6 @@ phpunit.phar
 /frontend/web/images
 /frontend/web/leave_attachments
 /frontend/web/ess_attachments
+
+
+/common/models/LoginForm.php

@@ -78,7 +78,7 @@ exit;*/
 
                         <hr>
 
-                        <strong><i class="far fa-file-alt mr-1"></i> Date of Join:</strong>
+                        <strong><i class="far fa-file-alt mr-1"></i> Date of Joining:</strong>
 
                         <p class="text-muted"><?= !empty($employee->Employment_Date)?$employee->Employment_Date:'' ?></p>
                     </div>
@@ -239,7 +239,7 @@ exit;*/
                                 <span class="info-box-icon bg-blue elevation-1"><i class="fas fa-users"></i></span>
 
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Super Approved</span>
+                                    <span class="info-box-text">Supervisor Approved</span>
                                     <span class="info-box-number"><?= number_format(Yii::$app->dashboard->getSuperApproved())?></span>
                                 </div>
                                 <!-- /.info-box-content -->
@@ -264,7 +264,7 @@ exit;*/
                                 <span class="info-box-icon bg-blue elevation-1"><i class="fas fa-users"></i></span>
 
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Super Rejected</span>
+                                    <span class="info-box-text">Supervisor Rejected</span>
                                     <span class="info-box-number"><?=number_format(Yii::$app->dashboard->getSuperRejected())?></span>
                                 </div>
                                 <!-- /.info-box-content -->
